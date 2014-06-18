@@ -73,13 +73,13 @@ namespace UI{
   }
     
   //TLのScrolledWindow
-  class TLScrolled:Gtk.ScrolledWindow{
+  class TLScrolledUI:Gtk.ScrolledWindow{
     //コンストラクタ
     private Gtk.ListBox lbox=new Gtk.ListBox();
     
-    public TLScrolled(){
+    public TLScrolledUI(){
       //プロパティ
-      this.set_policy(Gtk.PolicyType.NEVER,Gtk.PolicyType.Always);
+      this.set_policy(Gtk.PolicyType.NEVER,Gtk.PolicyType.ALWAYS);
       //レイアウト
       this.add(lbox);
     }
@@ -92,8 +92,32 @@ namespace UI{
     public Gtk.EventBox name_ebox=new Gtk.EventBox();
     public Gtk.EventBox source_ebox=new Gtk.EventBox();
     
-    public Gtk.
+    public Gtk.Box text_box=new Gtk.Box(Gtk.Orientation.VERTICAL,0);
+    public Gtk.Box create_at_box=new Gtk.Box(Gtk.Orientation.VERTICAL,0);
     
+    public Gtk.DrawingArea icon_area=new Gtk.DrawingArea();
+    public Gtk.DrawingArea name_area=new Gtk.DrawingArea();
+    public Gtk.DrawingArea text_area=new Gtk.DrawingArea();
+    public Gtk.DrawingArea create_at_area=new Gtk.DrawingArea();
+    public Gtk.DrawingArea source_area=new Gtk.DrawingArea();
+    
+    public TweetObjUI(){
+      //レイアウト
+      icon_ebox.add(icon_area);
+      name_ebox.add(name_area);
+      source_ebox.add(source_area);
+      
+      text_box.add(text_area);
+      create_at_box.add(create_at_area);
+      
+      this.attach(icon_ebox,0,0,1,2);
+      this.attach(name_ebox,1,0,1,1);
+      this.attach(text_box,1,1,1,1);
+      this.attach(create_at_area,1,2,1,1);
+      this.attach(source_ebox,1,3,1,1);
+    }
+  }
+
   
   //認証用UI
   class OAuthUI:Gtk.Grid{

@@ -144,26 +144,4 @@ namespace SqliteOpr{
     while(stmt.step()!=Sqlite.DONE);
     stmt.reset();  
   }
-    
-  public int get_account_id(string my_screen_name,Sqlite.Database cpr_db){ //アカウント名投げるとデータベースでのID返してくれるありがた迷惑メソッド
-    int ec;
-    int id=0;
-    Sqlite.Statement stmt;
-    
-    string prepared_query_str=GET_ID;
-    ec=cpr_db.prepare_v2(prepared_query_str,prepared_query_str.length,out stmt);
-    if(ec!=Sqlite.OK){
-      print("Error:%d:%s\n",cpr_db.errcode(),cpr_db.errmsg());
-    }
-    
-    int name_param_position=stmt.bind_parameter_index("$NAME");
-    stmt.bind_text(name_param_position,my_screen_name);
-    
-    while(stmt.step()==Sqlite.ROW){
-      id=stmt.column_int(0);
-    }
-    
-    stmt.reset();
-    return id;
-  }
 }

@@ -3,6 +3,7 @@ using Sqlite;
 using AccountInfo;
 using OAuth;
 using SqliteOpr;
+using TweetObject;
 using Twitter;
 using UI;
 
@@ -24,6 +25,15 @@ namespace Capricorn{
         Twitter.post_tweet(post,account.api_proxy);
         post_textview.buffer.text="";
       }
+    }
+  }
+  
+  //TLScrolled
+  class TLScrolledObj:GLib.Object{
+    private TLScrolled 
+    //コンストラクタ
+    private GLib.Array<TweetObj> tweet_obj_arrat=new GLib.Array<TweetObj>();
+    public class TLScrolled(Account account,Sqlite.Database db){
     }
   }
 }

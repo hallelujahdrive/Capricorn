@@ -11,9 +11,11 @@ all:
 	main.vala \
 	capricorn.vala	\
 	twitter.vala \
+	tweet_object.vala \
 	ui.vala \
 	oauth.vala \
 	file_opr.vala \
 	sqlite_opr.vala \
 	account_info.vala \
+	json_opr.vala \
 	-o Capricorn_BETA 
