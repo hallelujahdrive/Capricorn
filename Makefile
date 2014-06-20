@@ -11,7 +11,7 @@ all:
 	main.vala \
 	capricorn.vala	\
 	twitter.vala \
-	tweet_object.vala \
+	tl_object.vala \
 	ui.vala \
 	oauth.vala \
 	file_opr.vala \

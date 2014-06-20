@@ -4,6 +4,7 @@ using AccountInfo;
 using Capricorn;
 using FileOpr;
 using OAuth;
+using Twitter;
 using UI;
 
 int main(string[] args){
@@ -43,6 +44,7 @@ int main(string[] args){
       Account account=new Account();
       account_array.append_val(account);
       SqliteOpr.select_account(i,account_array.index(i),db);
+      Twitter.get_account_info(account_array.index(i));
     }
     CprWindow main_window=new CprWindow(account_array,db);
     main_window.show_all();

@@ -22,6 +22,10 @@ namespace UI{
       
       app_grid.set_column_homogeneous(true);
       
+      home_tl_note.set_vexpand(true);
+      mention_tl_note.set_vexpand(true);
+      various_note.set_vexpand(true);
+      
       //レイアウト
       app_grid.attach(post_box,0,0,3,1);
       app_grid.attach(home_tl_note,0,1,1,1);
@@ -75,49 +79,62 @@ namespace UI{
   //TLのScrolledWindow
   class TLScrolledUI:Gtk.ScrolledWindow{
     //コンストラクタ
-    private Gtk.ListBox lbox=new Gtk.ListBox();
+    public Gtk.ListBox lbox=new Gtk.ListBox();
     
     public TLScrolledUI(){
       //プロパティ
       this.set_policy(Gtk.PolicyType.NEVER,Gtk.PolicyType.ALWAYS);
+      lbox.set_vexpand(true);
       //レイアウト
       this.add(lbox);
     }
   }
   
   //ツイートのオブジェクト
-  class TweetObjUI:Gtk.Grid{
+  class TweetObjUI:Gtk.ListBoxRow{
     //コンストラクタ
+    public Gtk.Grid tweet_obj_grid=new Gtk.Grid();    
+    public Gtk.EventBox tweet_obj_ebox=new Gtk.EventBox();
+    
     public Gtk.EventBox icon_ebox=new Gtk.EventBox();
-    public Gtk.EventBox name_ebox=new Gtk.EventBox();
     public Gtk.EventBox source_ebox=new Gtk.EventBox();
     
+    public Gtk.Box name_box=new Gtk.Box(Gtk.Orientation.VERTICAL,0);
     public Gtk.Box text_box=new Gtk.Box(Gtk.Orientation.VERTICAL,0);
-    public Gtk.Box create_at_box=new Gtk.Box(Gtk.Orientation.VERTICAL,0);
+    public Gtk.Box created_at_box=new Gtk.Box(Gtk.Orientation.VERTICAL,0);
     
     public Gtk.DrawingArea icon_area=new Gtk.DrawingArea();
     public Gtk.DrawingArea name_area=new Gtk.DrawingArea();
     public Gtk.DrawingArea text_area=new Gtk.DrawingArea();
-    public Gtk.DrawingArea create_at_area=new Gtk.DrawingArea();
+    public Gtk.DrawingArea created_at_area=new Gtk.DrawingArea();
     public Gtk.DrawingArea source_area=new Gtk.DrawingArea();
     
     public TweetObjUI(){
+      //プロパティ
+      icon_ebox.set_vexpand(true);
+      icon_ebox.set_hexpand(true);
+      name_box.set_vexpand(true);
+      name_box.set_hexpand(true);
+      text_box.set_vexpand(true);
+      text_box.set_hexpand(true);
+      created_at_box.set_vexpand(true);
+      source_ebox.set_vexpand(true);
+      
       //レイアウト
       icon_ebox.add(icon_area);
-      name_ebox.add(name_area);
+      name_box.pack_start(name_area);
+      text_box.pack_start(text_area);
+      created_at_box.add(created_at_area);
       source_ebox.add(source_area);
       
-      text_box.add(text_area);
-      create_at_box.add(create_at_area);
+      //tweet_obj_grid.attach(icon_ebox,0,0,1,2);
+      tweet_obj_grid.attach(name_box,0,0,1,1);
+      tweet_obj_grid.attach(text_box,1,0,1,1);
       
-      this.attach(icon_ebox,0,0,1,2);
-      this.attach(name_ebox,1,0,1,1);
-      this.attach(text_box,1,1,1,1);
-      this.attach(create_at_area,1,2,1,1);
-      this.attach(source_ebox,1,3,1,1);
+      tweet_obj_ebox.add(tweet_obj_grid);
+      this.add(tweet_obj_ebox);
     }
   }
-
   
   //認証用UI
   class OAuthUI:Gtk.Grid{
