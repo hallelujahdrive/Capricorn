@@ -90,7 +90,7 @@ namespace OAuth{
           message_label.set_text("");
           status_label.set_text("認証完了");
           //アカウント情報もらってきて
-          account.my_id=SqliteOpr.record_count(db,"ACCOUNT");
+          account.my_list_id=SqliteOpr.record_count(db,"ACCOUNT");
           Twitter.get_account_info(account);
           //データベースに書き出し
           SqliteOpr.insert_account(account,db);

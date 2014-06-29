@@ -23,18 +23,20 @@ namespace Capricorn{
     //時差
     private static int[] time_deff={9,0};
     
-    public CprWindow(GLib.Array<Account> account_array,Sqlite.Database db){
+    public CprWindow(GLib.Array<Account> account_array,string cache_dir,Sqlite.Database db){
       //プロパティ
       font_desk.set_size((int)font_size*Pango.SCALE);
       font_desk.set_family(font_family);
       
       //これ暫定の何かだから気にしないで
-      Gtk.Label debug_label=new Gtk.Label("debug");
+      Gtk.Label home_label=new Gtk.Label("home");
+      Gtk.Label mention_label=new Gtk.Label("mention");
       //TLを作ろう!
       for(int i=0;i<account_array.length;i++){
-        TLScrolled tl_scrolled=new TLScrolled(account_array.index(i),get_tweet_max,time_deff,font_desk,db);
+        TLScrolled tl_scrolled=new TLScrolled(account_array.index(i),get_tweet_max,cache_dir,time_deff,font_desk,db);
         tl_scrolled_array.append_val(tl_scrolled);
-        this.home_tl_note.append_page(tl_scrolled_array.index(i).home_tl_scrolled,debug_label);
+        this.home_tl_note.append_page(tl_scrolled_array.index(i).home_tl_scrolled,home_label);
+        this.mention_note.append_page(tl_scrolled_array.index(i).mention_scrolled,mention_label);
       }
       
       //シグナルのコネクト
@@ -58,9 +60,10 @@ namespace Capricorn{
     //コンストラクタ
     public TLScrolledObj home_tl_scrolled=new TLScrolledObj();
     public TLScrolledObj mention_scrolled=new TLScrolledObj();
-    public TLScrolled(Account account,int get_tweet_max,int[] time_deff,Pango.FontDescription font_desk,Sqlite.Database db){
+    public TLScrolled(Account account,int get_tweet_max,string cache_dir,int[] time_deff,Pango.FontDescription font_desk,Sqlite.Database db){
       //tl初期化
-      home_tl_scrolled.add_tweet_obj(get_timeline_json(account.api_proxy,get_tweet_max,false),account.my_screen_name,time_deff,font_desk,db);
+      home_tl_scrolled.add_tweet_obj(get_timeline_json(account.api_proxy,get_tweet_max,false),account.my_screen_name,cache_dir,time_deff,font_desk,db);
+      mention_scrolled.add_tweet_obj(get_timeline_json(account.api_proxy,get_tweet_max,true),account.my_screen_name,cache_dir,time_deff,font_desk,db);
     }
   }
 }

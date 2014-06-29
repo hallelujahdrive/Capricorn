@@ -61,7 +61,7 @@ namespace Twitter{
   public void get_account_info(Account account){
     //prox_call
     ProxyCall profile_call=account.api_proxy.new_call();
-    profile_call.set_function(FUNCTION_ACCOUNT_SETTINGS);
+    profile_call.set_function(FUNCTION_ACCOUNT_VERIFY_CREDENTIALS);
     profile_call.set_method("GET");
     try{
       profile_call.run();
@@ -77,6 +77,8 @@ namespace Twitter{
       foreach(string member in profile_object.get_members()){
         switch(member){
           case "screen_name": account.my_screen_name=profile_object.get_string_member("screen_name");
+          break;
+          case "id": account.my_id=(int)profile_object.get_int_member("id");
           break;
         }
       }

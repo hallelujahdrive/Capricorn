@@ -17,6 +17,7 @@ namespace JsonOpr{
     public string text;
     public string source_label;
     public string source_url;
+    public int id;
     
     public string rt_name;
     public string rt_screen_name;
@@ -69,6 +70,8 @@ namespace JsonOpr{
                 Json.Object user_obj=json_main_obj.get_object_member("user");
                 foreach(string user_member in user_obj.get_members()){
                   switch(user_member){
+                    case "id": id=(int)user_obj.get_int_member("id");
+                    break;
                     case "name": name=parse_name(user_obj.get_string_member("name"));
                     break;
                     case "screen_name": screen_name=user_obj.get_string_member("screen_name");
@@ -93,6 +96,8 @@ namespace JsonOpr{
         //print("%s\n",e.message);
       }
     }
+    
+    //created_atのparse
     private string parse_created_at(string get_created_at,int[] time_deff){
       GLib.StringBuilder created_at_sb=new GLib.StringBuilder();
       try{  //セイキヒョウゲンカッコバクショウで投稿日時を解析

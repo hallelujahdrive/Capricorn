@@ -9,7 +9,7 @@ namespace UI{
     public PostBox post_box=new PostBox();
     
     public Gtk.Notebook home_tl_note=new Gtk.Notebook();
-    public Gtk.Notebook mention_tl_note=new Gtk.Notebook();
+    public Gtk.Notebook mention_note=new Gtk.Notebook();
     public Gtk.Notebook various_note=new Gtk.Notebook();
     
     public AppWindow (){
@@ -23,13 +23,13 @@ namespace UI{
       app_grid.set_column_homogeneous(true);
       
       home_tl_note.set_vexpand(true);
-      mention_tl_note.set_vexpand(true);
+      mention_note.set_vexpand(true);
       various_note.set_vexpand(true);
       
       //レイアウト
       app_grid.attach(post_box,0,0,3,1);
       app_grid.attach(home_tl_note,0,1,1,1);
-      app_grid.attach(mention_tl_note,1,1,1,1);
+      app_grid.attach(mention_note,1,1,1,1);
       app_grid.attach(various_note,2,1,1,1);
       
       this.add(app_grid);
@@ -96,40 +96,43 @@ namespace UI{
     public Gtk.Grid tweet_obj_grid=new Gtk.Grid();    
     public Gtk.EventBox tweet_obj_ebox=new Gtk.EventBox();
     
-    public Gtk.EventBox icon_ebox=new Gtk.EventBox();
+    public Gtk.EventBox profile_image_ebox=new Gtk.EventBox();
     public Gtk.EventBox source_ebox=new Gtk.EventBox();
     
+    public Gtk.Box profile_image_box=new Gtk.Box(Gtk.Orientation.VERTICAL,0);
     public Gtk.Box name_box=new Gtk.Box(Gtk.Orientation.VERTICAL,0);
     public Gtk.Box text_box=new Gtk.Box(Gtk.Orientation.VERTICAL,0);
-    public Gtk.Box created_at_box=new Gtk.Box(Gtk.Orientation.VERTICAL,0);
-    
-    public Gtk.DrawingArea icon_area=new Gtk.DrawingArea();
+    public Gtk.Box created_at_box=new Gtk.Box(Gtk.Orientation.HORIZONTAL,0);
+
     public Gtk.DrawingArea name_area=new Gtk.DrawingArea();
     public Gtk.DrawingArea text_area=new Gtk.DrawingArea();
     public Gtk.DrawingArea created_at_area=new Gtk.DrawingArea();
     public Gtk.DrawingArea source_area=new Gtk.DrawingArea();
     
+    public Gtk.Image profile_image=new Gtk.Image();
     public TweetObjUI(){
       //プロパティ
-      icon_ebox.set_vexpand(true);
-      icon_ebox.set_hexpand(true);
-      name_box.set_vexpand(true);
+      profile_image_ebox.set_vexpand(false);
       name_box.set_hexpand(true);
       text_box.set_vexpand(true);
       text_box.set_hexpand(true);
-      created_at_box.set_vexpand(true);
-      source_ebox.set_vexpand(true);
+      created_at_box.set_hexpand(true);
+      source_ebox.set_hexpand(true);
       
       //レイアウト
-      icon_ebox.add(icon_area);
+      profile_image_ebox.add(profile_image);
       name_box.pack_start(name_area);
       text_box.pack_start(text_area);
-      created_at_box.add(created_at_area);
+      created_at_box.pack_start(created_at_area,true,true,0);
       source_ebox.add(source_area);
       
-      //tweet_obj_grid.attach(icon_ebox,0,0,1,2);
-      tweet_obj_grid.attach(name_box,0,0,1,1);
-      tweet_obj_grid.attach(text_box,1,0,1,1);
+      profile_image_box.pack_start(profile_image_ebox,false,false,0);
+      
+      tweet_obj_grid.attach(profile_image_box,0,0,1,2);
+      tweet_obj_grid.attach(name_box,1,0,1,1);
+      tweet_obj_grid.attach(text_box,1,1,1,1);
+      tweet_obj_grid.attach(created_at_box,1,2,1,1);
+      tweet_obj_grid.attach(source_ebox,1,3,1,1);
       
       tweet_obj_ebox.add(tweet_obj_grid);
       this.add(tweet_obj_ebox);

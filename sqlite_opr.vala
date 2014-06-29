@@ -1,19 +1,30 @@
+using Gdk;
 using Rest;
 using Sqlite;
 
 using AccountInfo;
+using FileOpr;
 using Twitter;
 namespace SqliteOpr{
   //文字列定数.てかsql文の雛形
   private const string CREATE_TABLE_ACCOUNT_QUERY="""
   CREATE TABLE ACCOUNT(
-  id  INT PRIMARY KEY NOT NULL,
+  list_id INT PRIMARY KEY NOT NULL,
+  id  INT NOT NULL,
   token_key TEXT  NOT NULL,
   token_secret  TEXT  NOT NULL
   );""";
-  private const string INSERT_ACCOUNT_QUERY="INSERT INTO ACCOUNT VALUES($ID,$TOKEN,$TOKEN_SECRET);";
-  private const string SELECT_FROM_ACCOUNT="SELECT * FROM ACCOUNT WHERE id=$ID;";
+  private const string CREATE_TABLE_IMAGE_PATH_QUERY="""
+  CREATE TABLE IMAGE_PATH(
+  id  INT PRIMARY KEY NOT NULL,
+  path  TEXT NOT NULL
+  );""";
+  private const string INSERT_ACCOUNT_QUERY="INSERT INTO ACCOUNT VALUES($LIST_ID,$ID,$TOKEN,$TOKEN_SECRET);";
+  private const string INSERT_IMAGE_PATH_QUERY="INSERT INTO IMAGE_PATH VALUES($ID,$PATH);";
+  private const string SELECT_FROM_ACCOUNT="SELECT * FROM ACCOUNT WHERE list_id=$LIST_ID;";
+  private const string SELECT_FROM_IMAGE_PATH="SELECT * FROM IMAGE_PATH WHERE id=$ID;";
   private const string DELETE_FROM_ACCOUNT="DELETE FROM ACCOUNT WHERE name=$NAME;";
+  private const string DELETE_ALL_RECORD_FROM_IMAGE_PATH="DELETE FROM IMAGE_PATH;";
   private const string GET_ID="SELECT id FROM ACCOUNT WHERE name=$NAME;";
   
   public bool create_tables(Sqlite.Database db){ //テーブルの作成
@@ -39,11 +50,18 @@ namespace SqliteOpr{
     }
     //tableが存在しなければ作る
     if(no_table){
-      query=CREATE_TABLE_ACCOUNT_QUERY;
-      ec=db.exec(query,null,out errmsg);
-      //エラー処理
-      if(ec!=Sqlite.OK){
-        print("Sqlite error:%s\n",errmsg);
+      for(int i=0;i<2;i++){
+        switch(i){
+          case 0:query=CREATE_TABLE_ACCOUNT_QUERY;
+          break;
+          case 1:query=CREATE_TABLE_IMAGE_PATH_QUERY;
+          break;
+        }
+        ec=db.exec(query,null,out errmsg);
+        //エラー処理
+        if(ec!=Sqlite.OK){
+          print("Sqlite error:%s\n",errmsg);
+        }
       }
     }
     //tableの有無を返す
@@ -82,11 +100,13 @@ namespace SqliteOpr{
       print("Error:%d:%s\n",db.errcode(),db.errmsg());
     }
     //パラメータの設定
+    int list_id_param_position=stmt.bind_parameter_index("$LIST_ID");
     int id_param_position=stmt.bind_parameter_index("$ID");
     int token_param_position=stmt.bind_parameter_index("$TOKEN");
     int token_secret_param_position=stmt.bind_parameter_index("$TOKEN_SECRET");
     
     //インサート
+    stmt.bind_int(list_id_param_position,account.my_list_id);
     stmt.bind_int(id_param_position,account.my_id);
     stmt.bind_text(token_param_position,account.api_proxy.get_token());
     stmt.bind_text(token_secret_param_position,account.api_proxy.get_token_secret());
@@ -94,6 +114,27 @@ namespace SqliteOpr{
     while(stmt.step()!=Sqlite.DONE);
     stmt.reset();
   }
+  
+  //profile_imageのインサート
+  public void insert_image_path(int id,string image_path,Sqlite.Database db){
+    int ec;
+    Sqlite.Statement stmt;
+    
+    string prepared_query_str=INSERT_IMAGE_PATH_QUERY;
+    ec=db.prepare_v2(prepared_query_str,prepared_query_str.length,out stmt);
+    if(ec!=Sqlite.OK){
+      print("Error:%d:%s\n",db.errcode(),db.errmsg());
+    }
+    //パラメータの設定
+    int id_param_position=stmt.bind_parameter_index("$ID");
+    int path_param_position=stmt.bind_parameter_index("$PATH");
+    //インサート
+    stmt.bind_int(id_param_position,id);
+    stmt.bind_text(path_param_position,image_path);
+    
+    while(stmt.step()!=Sqlite.DONE);
+    stmt.reset();
+  }  
   
   //accountの読み出し
   public void select_account(int id,Account account,Sqlite.Database db){
@@ -106,18 +147,20 @@ namespace SqliteOpr{
       print("Error:%d:%s\n",db.errcode(),db.errmsg());
     }
     
-    int id_param_position=stmt.bind_parameter_index("$ID");
-    stmt.bind_int(id_param_position,id);
+    int list_id_param_position=stmt.bind_parameter_index("$LIST_ID");
+    stmt.bind_int(list_id_param_position,id);
     
     int cols=stmt.column_count();
     while(stmt.step()==Sqlite.ROW){
       for(int i=0;i<cols;i++){
         switch(i){
-          case 0:account.my_id=stmt.column_int(i);
+          case 0:account.my_list_id=stmt.column_int(i);
           break;
-          case 1:account.api_proxy.set_token(stmt.column_text(i));
+          case 1:account.my_id=stmt.column_int(i);
           break;
-          case 2:account.api_proxy.set_token_secret(stmt.column_text(i));
+          case 2:account.api_proxy.set_token(stmt.column_text(i));
+          break;
+          case 3:account.api_proxy.set_token_secret(stmt.column_text(i));
           break;
         }
       }
@@ -127,6 +170,53 @@ namespace SqliteOpr{
     
     stmt.reset();
   }
+  
+  //image_pathの読み出し
+  public  string select_image_path(int id,string cache_dir,Sqlite.Database db){
+    //tableに存在しなかった場合cache_dirを返す
+    string image_path=cache_dir;
+    int ec;
+    Sqlite.Statement stmt;
+    
+    string prepared_query_str=SELECT_FROM_IMAGE_PATH;
+    ec=db.prepare_v2(prepared_query_str,prepared_query_str.length,out stmt);
+    if(ec!=Sqlite.OK){
+      print("Error:%d:%s\n",db.errcode(),db.errmsg());
+    }
+    
+    int id_param_position=stmt.bind_parameter_index("$ID");
+    stmt.bind_int(id_param_position,id);
+    
+    int cols=stmt.column_count();
+    while(stmt.step()==Sqlite.ROW){
+      for(int i=0;i<cols;i++){
+        switch(i){
+          case 1:image_path=stmt.column_text(i);
+          break;
+        }
+      }
+    }
+    stmt.reset();
+    
+    return image_path;
+  }
+  
+  //image_pathの全削除
+  public void delete_all_image_path(Sqlite.Database db){
+    int ec;
+    Sqlite.Statement stmt;
+    
+    string prepared_query_str=DELETE_ALL_RECORD_FROM_IMAGE_PATH;
+    ec=db.prepare_v2(prepared_query_str,prepared_query_str.length,out stmt);
+    if(ec!=Sqlite.OK){
+      print("Error:%d:%s\n",db.errcode(),db.errmsg());
+    }
+      
+    while(stmt.step()!=Sqlite.DONE);
+    stmt.reset();  
+  }
+  
+  //アカウントの削除
   public void delete_account(string my_screen_name,Sqlite.Database cpr_db){
     int ec;
     Sqlite.Statement stmt;
