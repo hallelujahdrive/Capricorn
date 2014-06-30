@@ -12,28 +12,54 @@ namespace TLObject{
   //TLScrolled
   class TLScrolledObj:TLScrolledUI{
     //コンストラクタ
-    private GLib.Array<TweetObj> tweet_obj_array=new GLib.Array<TweetObj>();
+    public GLib.Array<TweetObj> tweet_obj_array=new GLib.Array<TweetObj>();
     //インスタンス
     //TweetObjの初期配置
-    public void add_tweet_obj(string[] json_str_array,string my_screen_name,string cache_dir,int[] time_deff,Pango.FontDescription font_desk,Sqlite.Database db){
-      foreach(string json_str in json_str_array){
-        ParseJson parse_json=new ParseJson(json_str,my_screen_name,time_deff,db);
-        //parse_jsonが存在することを確認して
-        if(parse_json.obj_not_null){
-          bool has_image=true;
-          if(SqliteOpr.select_image_path(parse_json.id,cache_dir,db)==cache_dir){
-            has_image=false;
-          }
-          TweetObj tweet_obj=new TweetObj(parse_json,cache_dir,has_image,font_desk,db);
-          tweet_obj_array.append_val(tweet_obj);
-          this.lbox.add(tweet_obj_array.index(tweet_obj_array.length-1));
+    public void add_tweet_obj(TweetObj tweet_obj,int get_tweet_max,bool stream){
+      if(stream){
+        //オブジェクト削除
+        if(tweet_obj_array.length==get_tweet_max){
+          tweet_obj_array.index(get_tweet_max-1).destroy();
+          tweet_obj_array.remove_index(get_tweet_max-1);
         }
+        //prepend
+        tweet_obj_array.prepend_val(tweet_obj);
+        this.lbox.prepend(tweet_obj_array.index(0));
+      }else{
+        //append
+        tweet_obj_array.append_val(tweet_obj);
+        this.lbox.add(tweet_obj_array.index(tweet_obj_array.length-1));
       }
       //表示
       this.lbox.show_all();
     }
   }
   
+  //Tweet
+  class Tweet:GLib.Object{
+    public TweetObj normal_tweet_obj;
+    public TweetObj reply_obj;
+    
+    public Tweet(ParseJson parse_json,string cache_dir,bool stream,Pango.FontDescription font_desk,Sqlite.Database db){
+      //画像あるかどうか
+      bool has_image=false;
+      string image_path=SqliteOpr.select_image_path(parse_json.id,cache_dir,db);
+        if(!image_path.has_suffix("cache")){
+        has_image=true;
+      }
+      //普通の
+      //通常APIによる取得であれば,
+      if(!stream){
+        image_path=cache_dir;
+      }
+      normal_tweet_obj=new TweetObj(parse_json,image_path,has_image,font_desk,db);
+      //リプライを作るかもしれない
+      if(parse_json.reply){
+        reply_obj=new TweetObj(parse_json,image_path,true,font_desk,db);
+      }
+    }
+  }
+    
   //TweetObj
   class TweetObj:TweetObjUI{
     //コンストラクタ
@@ -50,6 +76,7 @@ namespace TLObject{
             var image_data_stream=new DataInputStream(image_stream);
             Pixbuf pixbuf=new Pixbuf.from_stream(image_data_stream,null);
             pixbuf.save(new_image_path,"png");
+            //この辺Cairo
             Cairo.ImageSurface surface=new Cairo.ImageSurface(Cairo.Format.ARGB32,48,48);
             Cairo.Context context=new Cairo.Context(surface);
             context.arc(24,24,24,0,2*Math.PI);

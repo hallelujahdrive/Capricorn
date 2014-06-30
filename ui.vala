@@ -71,8 +71,8 @@ namespace UI{
       
       a_box.pack_start(account_cbox,false,false,0);
       
-      this.pack_start(p_box);
-      this.pack_start(a_box);
+      this.pack_start(p_box,false,false,0);
+      this.pack_start(a_box,false,false,0);
     }
   }
     
@@ -84,7 +84,6 @@ namespace UI{
     public TLScrolledUI(){
       //プロパティ
       this.set_policy(Gtk.PolicyType.NEVER,Gtk.PolicyType.ALWAYS);
-      lbox.set_vexpand(true);
       //レイアウト
       this.add(lbox);
     }

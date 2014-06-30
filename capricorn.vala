@@ -1,7 +1,9 @@
+using Rest;
 using Pango;
 using Sqlite;
 
 using AccountInfo;
+using JsonOpr;
 using OAuth;
 using SqliteOpr;
 using TLObject;
@@ -60,10 +62,81 @@ namespace Capricorn{
     //コンストラクタ
     public TLScrolledObj home_tl_scrolled=new TLScrolledObj();
     public TLScrolledObj mention_scrolled=new TLScrolledObj();
-    public TLScrolled(Account account,int get_tweet_max,string cache_dir,int[] time_deff,Pango.FontDescription font_desk,Sqlite.Database db){
+    
+    private GLib.StringBuilder json_sb=new GLib.StringBuilder();
+    
+    private int get_tweet_max;
+    private string *cache_dir;
+    private int[] time_deff;
+    private Account account;
+    private Pango.FontDescription *font_desk;
+    private Sqlite.Database *db;
+    public TLScrolled(Account account_param,int get_tweet_max_param,string cache_dir_param,int[] time_deff_param,Pango.FontDescription font_desk_param,Sqlite.Database db_param){
+      //もうポインタで呼べばいいんじゃねーの
+      get_tweet_max=get_tweet_max_param;
+      cache_dir=cache_dir_param;
+      time_deff=time_deff_param;
+      account=account_param;
+      font_desk=font_desk_param;
+      db=db_param;      
       //tl初期化
-      home_tl_scrolled.add_tweet_obj(get_timeline_json(account.api_proxy,get_tweet_max,false),account.my_screen_name,cache_dir,time_deff,font_desk,db);
-      mention_scrolled.add_tweet_obj(get_timeline_json(account.api_proxy,get_tweet_max,true),account.my_screen_name,cache_dir,time_deff,font_desk,db);
+      //通常apiによる取得
+      //home
+      get_timeline(account,false,get_tweet_max,cache_dir,time_deff,font_desk,db);
+      //mention
+      get_timeline(account,true,get_tweet_max,cache_dir,time_deff,font_desk,db);
+      
+      //StreamingAPI
+      ProxyCall stream_call=account.stream_proxy.new_call();
+      stream_call.set_function(FUNCTION_USER);
+      stream_call.set_method("GET");
+      try{
+        stream_call.continuous(user_stream_cb,stream_call);
+      }catch(Error e){
+        print("%s\n",e.message);
+      }
+    }
+    
+    //APIで取得
+    private void get_timeline(Account account,bool mention,int get_tweet_max,string cache_dir,int[] time_deff,Pango.FontDescription font_desk,Sqlite.Database db){
+      uint obj_count=0;
+      //json用のstring[]
+      string[] tl_json=Twitter.get_timeline_json(account.api_proxy,get_tweet_max,mention);
+      if(mention){
+        obj_count=mention_scrolled.tweet_obj_array.length;
+      }
+      for(int i=(int)obj_count;i<tl_json.length;i++){
+        make_and_add_tweet(tl_json[i],mention,false);
+      }
+    }
+    
+    //objectを作る
+    private void make_and_add_tweet(string json_str,bool mention,bool stream){
+      ParseJson parse_json=new ParseJson(json_str,account.my_screen_name,time_deff,db);
+      //tlに追加
+      if(parse_json.created_at!=null){
+        Tweet new_tweet=new Tweet(parse_json,cache_dir,stream,font_desk,db);
+        if(!mention){
+          home_tl_scrolled.add_tweet_obj(new_tweet.normal_tweet_obj,get_tweet_max,stream);
+        }
+        //replyはmentionに追加する
+        if(parse_json.reply||mention){
+            mention_scrolled.add_tweet_obj(new_tweet.reply_obj,get_tweet_max,stream);
+        }
+      }
+    }
+    
+    //ユーザーストリームのcallback
+    private void user_stream_cb(ProxyCall stream_call,string buf,size_t len,Error? error){
+    string tweet_json=buf.substring(0,(int)len);
+      if(tweet_json!="\n"){
+        json_sb.append(tweet_json);
+        if(tweet_json.has_suffix("\r\n")||tweet_json.has_suffix("\r")){
+          //投げる
+          make_and_add_tweet(json_sb.str,false,true);
+          json_sb.erase();
+        }
+      }
     }
   }
 }
