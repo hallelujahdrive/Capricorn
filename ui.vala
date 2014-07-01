@@ -53,7 +53,7 @@ namespace UI{
     public Gtk.ListStore account_list_store=new Gtk.ListStore(1,typeof(string));
     public Gtk.TreeIter iter;
     public Gtk.ComboBox account_cbox;
-    
+      
     public PostBox(){
       //プロパティ
       this.set_orientation(Gtk.Orientation.VERTICAL);
@@ -63,7 +63,6 @@ namespace UI{
       //レイアウト
       pb_scrolled.add(post_textview);
       post_bbox.add(post_button);
-      
       
       p_box.pack_start(chars_count_label,false,false,0);
       p_box.pack_start(pb_scrolled,true,true,0);

@@ -16,6 +16,6 @@ all:
 	oauth.vala \
 	file_opr.vala \
 	sqlite_opr.vala \
-	account_info.vala \
+	contents_obj.vala \
 	json_opr.vala \
 	-o Capricorn_BETA 

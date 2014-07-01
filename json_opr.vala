@@ -5,7 +5,7 @@ using Sqlite;
 using SqliteOpr;
 
 namespace JsonOpr{
-  class ParseJson{
+  public class ParseJson{
     //コンストラクタ
     public bool obj_not_null=false;
     public bool retweet=false;

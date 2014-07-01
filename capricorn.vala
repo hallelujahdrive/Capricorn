@@ -2,7 +2,8 @@ using Rest;
 using Pango;
 using Sqlite;
 
-using AccountInfo;
+using ContentsObj;
+using FileOpr;
 using JsonOpr;
 using OAuth;
 using SqliteOpr;
@@ -30,15 +31,12 @@ namespace Capricorn{
       font_desk.set_size((int)font_size*Pango.SCALE);
       font_desk.set_family(font_family);
       
-      //これ暫定の何かだから気にしないで
-      Gtk.Label home_label=new Gtk.Label("home");
-      Gtk.Label mention_label=new Gtk.Label("mention");
       //TLを作ろう!
       for(int i=0;i<account_array.length;i++){
         TLScrolled tl_scrolled=new TLScrolled(account_array.index(i),get_tweet_max,cache_dir,time_deff,font_desk,db);
         tl_scrolled_array.append_val(tl_scrolled);
-        this.home_tl_note.append_page(tl_scrolled_array.index(i).home_tl_scrolled,home_label);
-        this.mention_note.append_page(tl_scrolled_array.index(i).mention_scrolled,mention_label);
+        this.home_tl_note.append_page(tl_scrolled_array.index(i).home_tl_scrolled,tl_scrolled_array.index(i).home_icon);
+        this.mention_note.append_page(tl_scrolled_array.index(i).mention_scrolled,tl_scrolled_array.index(i).mention_icon);
       }
       
       //シグナルのコネクト
@@ -63,6 +61,9 @@ namespace Capricorn{
     public TLScrolledObj home_tl_scrolled=new TLScrolledObj();
     public TLScrolledObj mention_scrolled=new TLScrolledObj();
     
+    public Gtk.Image home_icon=new Gtk.Image();
+    public Gtk.Image mention_icon=new Gtk.Image();
+    
     private GLib.StringBuilder json_sb=new GLib.StringBuilder();
     
     private int get_tweet_max;
@@ -78,8 +79,20 @@ namespace Capricorn{
       time_deff=time_deff_param;
       account=account_param;
       font_desk=font_desk_param;
-      db=db_param;      
-      //tl初期化
+      db=db_param;
+      //アイコン
+      string image_path=SqliteOpr.select_image_path(account.my_id,cache_dir,db);
+      ImageParam image_param=new ImageParam(account.my_screen_name+"_icon",
+                                                 account.my_id,
+                                                 account.my_profile_image_url,
+                                                 image_path,
+                                                 24,
+                                                 true,
+                                                 false);
+      get_image(image_param,home_icon,cache_dir,db);
+      get_image(image_param,mention_icon,cache_dir,db);
+      
+      //TL初期化
       //通常apiによる取得
       //home
       get_timeline(account,false,get_tweet_max,cache_dir,time_deff,font_desk,db);
@@ -106,22 +119,22 @@ namespace Capricorn{
         obj_count=mention_scrolled.tweet_obj_array.length;
       }
       for(int i=(int)obj_count;i<tl_json.length;i++){
-        make_and_add_tweet(tl_json[i],mention,false);
+        make_and_add_tweet(tl_json[i],mention,true);
       }
     }
     
     //objectを作る
-    private void make_and_add_tweet(string json_str,bool mention,bool stream){
+    private void make_and_add_tweet(string json_str,bool mention,bool always_get){
       ParseJson parse_json=new ParseJson(json_str,account.my_screen_name,time_deff,db);
       //tlに追加
       if(parse_json.created_at!=null){
-        Tweet new_tweet=new Tweet(parse_json,cache_dir,stream,font_desk,db);
+        Tweet new_tweet=new Tweet(parse_json,cache_dir,always_get,font_desk,db);
         if(!mention){
-          home_tl_scrolled.add_tweet_obj(new_tweet.normal_tweet_obj,get_tweet_max,stream);
+          home_tl_scrolled.add_tweet_obj(new_tweet.normal_tweet_obj,get_tweet_max,always_get);
         }
         //replyはmentionに追加する
         if(parse_json.reply||mention){
-            mention_scrolled.add_tweet_obj(new_tweet.reply_obj,get_tweet_max,stream);
+            mention_scrolled.add_tweet_obj(new_tweet.reply_obj,get_tweet_max,always_get);
         }
       }
     }
@@ -133,7 +146,7 @@ namespace Capricorn{
         json_sb.append(tweet_json);
         if(tweet_json.has_suffix("\r\n")||tweet_json.has_suffix("\r")){
           //投げる
-          make_and_add_tweet(json_sb.str,false,true);
+          make_and_add_tweet(json_sb.str,false,false);
           json_sb.erase();
         }
       }

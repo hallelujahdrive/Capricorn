@@ -1,6 +1,6 @@
 using Rest;
 
-using AccountInfo;
+using ContentsObj;
 
 namespace Twitter{
   //ConsumerKey,URL,Function
@@ -79,6 +79,8 @@ namespace Twitter{
           case "screen_name": account.my_screen_name=profile_object.get_string_member("screen_name");
           break;
           case "id": account.my_id=(int)profile_object.get_int_member("id");
+          break;
+          case "profile_image_url": account.my_profile_image_url=profile_object.get_string_member("profile_image_url");
           break;
         }
       }

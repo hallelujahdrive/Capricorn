@@ -1,6 +1,6 @@
 using Gtk;
 
-using AccountInfo;
+using ContentsObj;
 using SqliteOpr;
 using Twitter;
 using UI;

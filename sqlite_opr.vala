@@ -2,7 +2,7 @@ using Gdk;
 using Rest;
 using Sqlite;
 
-using AccountInfo;
+using ContentsObj;
 using FileOpr;
 using Twitter;
 namespace SqliteOpr{
