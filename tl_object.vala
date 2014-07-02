@@ -50,7 +50,7 @@ namespace TLObject{
                                                  image_path,
                                                  48,
                                                  always_get,
-                                                 true);
+                                                 false);
       //普通の
       //通常APIによる取得であれば
       normal_tweet_obj=new TweetObj(parse_json,font_desk);

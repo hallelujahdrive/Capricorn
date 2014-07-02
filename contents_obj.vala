@@ -23,9 +23,9 @@ namespace ContentsObj{
     public int size{get;set;}
     public bool always_get{get;set;}
     public bool has_image=false;
-    public bool save;
+    public bool never_save;
     
-    public ImageParam(string set_file_name,int set_id,string set_profile_image_url,string set_image_path,int set_size,bool set_always_get,bool set_save){
+    public ImageParam(string set_file_name,int set_id,string set_profile_image_url,string set_image_path,int set_size,bool set_always_get,bool set_never_save){
       //set
       this.file_name=set_file_name;
       this.id=set_id;
@@ -33,7 +33,7 @@ namespace ContentsObj{
       this.image_path=set_image_path;
       this.size=set_size;
       this.always_get=set_always_get;
-      this.save=set_save;
+      this.never_save=set_never_save;
     }
   }
 }

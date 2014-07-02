@@ -30,13 +30,13 @@ namespace Capricorn{
       //プロパティ
       font_desk.set_size((int)font_size*Pango.SCALE);
       font_desk.set_family(font_family);
-      
+           
       //TLを作ろう!
       for(int i=0;i<account_array.length;i++){
         TLScrolled tl_scrolled=new TLScrolled(account_array.index(i),get_tweet_max,cache_dir,time_deff,font_desk,db);
         tl_scrolled_array.append_val(tl_scrolled);
-        this.home_tl_note.append_page(tl_scrolled_array.index(i).home_tl_scrolled,tl_scrolled_array.index(i).home_icon);
-        this.mention_note.append_page(tl_scrolled_array.index(i).mention_scrolled,tl_scrolled_array.index(i).mention_icon);
+        this.home_tl_note.append_page(tl_scrolled_array.index(i).home_tl_scrolled,tl_scrolled_array.index(i).home_tag_image);
+        this.mention_note.append_page(tl_scrolled_array.index(i).mention_scrolled,tl_scrolled_array.index(i).mention_tag_image);
       }
       
       //シグナルのコネクト
@@ -61,8 +61,8 @@ namespace Capricorn{
     public TLScrolledObj home_tl_scrolled=new TLScrolledObj();
     public TLScrolledObj mention_scrolled=new TLScrolledObj();
     
-    public Gtk.Image home_icon=new Gtk.Image();
-    public Gtk.Image mention_icon=new Gtk.Image();
+    public Gtk.Image home_tag_image=new Gtk.Image();
+    public Gtk.Image mention_tag_image=new Gtk.Image();
     
     private GLib.StringBuilder json_sb=new GLib.StringBuilder();
     
@@ -80,17 +80,17 @@ namespace Capricorn{
       account=account_param;
       font_desk=font_desk_param;
       db=db_param;
-      //アイコン
-      string image_path=SqliteOpr.select_image_path(account.my_id,cache_dir,db);
-      ImageParam image_param=new ImageParam(account.my_screen_name+"_icon",
+      //tagのimage
+      ImageParam image_param=new ImageParam(account.my_screen_name+"_tag",
                                                  account.my_id,
                                                  account.my_profile_image_url,
-                                                 image_path,
+                                                 cache_dir,
                                                  24,
                                                  true,
-                                                 false);
-      get_image(image_param,home_icon,cache_dir,db);
-      get_image(image_param,mention_icon,cache_dir,db);
+                                                 true);
+      //もらってくる(冗長に見えるがどのみちGtk.main();までpngは書き出されない)
+      get_image(image_param,home_tag_image,cache_dir,db);
+      get_image(image_param,mention_tag_image,cache_dir,db);
       
       //TL初期化
       //通常apiによる取得
