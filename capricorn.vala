@@ -6,6 +6,7 @@ using ContentsObj;
 using FileOpr;
 using JsonOpr;
 using OAuth;
+using Settings;
 using SqliteOpr;
 using TLObject;
 using Twitter;
@@ -26,6 +27,8 @@ namespace Capricorn{
     //時差
     private static int[] time_deff={9,0};
     
+    //アカウント操作がされたかどうか
+    private bool account_add_or_remove;
     public CprWindow(GLib.Array<Account> account_array,string cache_dir,Sqlite.Database db){
       //プロパティ
       font_desk.set_size((int)font_size*Pango.SCALE);
@@ -44,8 +47,21 @@ namespace Capricorn{
         post_button_clicked(this.post_box.post_textview,account_array.index(0));
       });
       
+      //settings_windowの起動
+      this.settings_box.settings_button.clicked.connect(()=>{
+        SettingsWindow settings_window=new SettingsWindow(account_array,cache_dir,&account_add_or_remove,db);
+        settings_window.show_all();
+        //もしアカウントが操作されていれば,削除,追加
+        settings_window.destroy.connect(()=>{
+          if(account_add_or_remove){
+            add_or_remove_TLScrolled(account_array,cache_dir,db);
+          }else{
+          }
+        });
+      });
     }
     
+    //ポスト
     private void post_button_clicked(Gtk.TextView post_textview,Account account){
       string post=post_textview.buffer.text;
       if(post!=""){
@@ -53,16 +69,43 @@ namespace Capricorn{
         post_textview.buffer.text="";
       }
     }
+    
+    //tl_scrolled_arrayの追加と削除
+    private void add_or_remove_TLScrolled(GLib.Array<Account> account_array,string cache_dir,Sqlite.Database db){
+      //削除
+      for(int i=0;i<tl_scrolled_array.length;){
+        if(account_array.index(i)==null||tl_scrolled_array.index(i).my_id!=account_array.index(i).my_id){
+          home_tl_note.remove(tl_scrolled_array.index(i).home_tl_scrolled);
+          mention_note.remove(tl_scrolled_array.index(i).mention_scrolled);
+          tl_scrolled_array.remove_index(i);
+        }else{
+          i++;
+        }
+      }
+      //追加
+      for(int i=(int)tl_scrolled_array.length;i<account_array.length;i++){
+        TLScrolled tl_scrolled=new TLScrolled(account_array.index(i),get_tweet_max,cache_dir,time_deff,font_desk,db);
+        tl_scrolled_array.append_val(tl_scrolled);
+        this.home_tl_note.append_page(tl_scrolled_array.index(i).home_tl_scrolled,tl_scrolled_array.index(i).home_tag_image);
+        this.mention_note.append_page(tl_scrolled_array.index(i).mention_scrolled,tl_scrolled_array.index(i).mention_tag_image);
+      }
+    //表示
+    this.home_tl_note.show_all();
+    this.mention_note.show_all();
+    }
   }
   
   //TLScrolled
   class TLScrolled:GLib.Object{
     //コンストラクタ
-    public TLScrolledObj home_tl_scrolled=new TLScrolledObj();
-    public TLScrolledObj mention_scrolled=new TLScrolledObj();
+    public TLScrolledObj home_tl_scrolled;
+    public TLScrolledObj mention_scrolled;
     
     public Gtk.Image home_tag_image=new Gtk.Image();
     public Gtk.Image mention_tag_image=new Gtk.Image();
+    
+    //持っとくと便利かな
+    public int my_id;
     
     private GLib.StringBuilder json_sb=new GLib.StringBuilder();
     
@@ -80,17 +123,33 @@ namespace Capricorn{
       account=account_param;
       font_desk=font_desk_param;
       db=db_param;
+      
+      my_id=account.my_id;
+      
+        home_tl_scrolled=new TLScrolledObj(get_tweet_max);
+      mention_scrolled=new TLScrolledObj(get_tweet_max);
       //tagのimage
-      ImageParam image_param=new ImageParam(account.my_screen_name+"_tag",
-                                                 account.my_id,
-                                                 account.my_profile_image_url,
-                                                 cache_dir,
-                                                 24,
-                                                 true,
-                                                 true);
       //もらってくる(冗長に見えるがどのみちGtk.main();までpngは書き出されない)
-      get_image(image_param,home_tag_image,cache_dir,db);
-      get_image(image_param,mention_tag_image,cache_dir,db);
+      get_image(account.my_screen_name+"_icon",
+                 account.my_id,
+                 account.my_profile_image_url,
+                 null,
+                 24,
+                 true,
+                 true,
+                 home_tag_image,
+                 cache_dir,
+                 db);
+        get_image(account.my_screen_name+"_icon",
+                 account.my_id,
+                 account.my_profile_image_url,
+                 null,
+                 24,
+                 true,
+                 true,
+                 mention_tag_image,
+                 cache_dir,
+                 db);
       
       //TL初期化
       //通常apiによる取得
@@ -112,13 +171,9 @@ namespace Capricorn{
     
     //APIで取得
     private void get_timeline(Account account,bool mention,int get_tweet_max,string cache_dir,int[] time_deff,Pango.FontDescription font_desk,Sqlite.Database db){
-      uint obj_count=0;
       //json用のstring[]
       string[] tl_json=Twitter.get_timeline_json(account.api_proxy,get_tweet_max,mention);
-      if(mention){
-        obj_count=mention_scrolled.tweet_obj_array.length;
-      }
-      for(int i=(int)obj_count;i<tl_json.length;i++){
+      for(int i=0;i<tl_json.length;i++){
         make_and_add_tweet(tl_json[i],mention,true);
       }
     }
@@ -128,26 +183,52 @@ namespace Capricorn{
       ParseJson parse_json=new ParseJson(json_str,account.my_screen_name,time_deff,db);
       //tlに追加
       if(parse_json.created_at!=null){
-        Tweet new_tweet=new Tweet(parse_json,cache_dir,always_get,font_desk,db);
+        string image_path=SqliteOpr.select_image_path(parse_json.id,db);
+        //通常APIによる取得であれば
         if(!mention){
-          home_tl_scrolled.add_tweet_obj(new_tweet.normal_tweet_obj,get_tweet_max,always_get);
+          TweetObj normal_tweet_obj=new TweetObj(parse_json,font_desk);
+          get_image(parse_json.screen_name,
+                     parse_json.id,
+                     parse_json.profile_image_url,
+                     image_path,
+                     48,
+                     always_get,
+                     false,
+                     normal_tweet_obj.profile_image,
+                     cache_dir,
+                     db);
+          home_tl_scrolled.add_tweet_obj(normal_tweet_obj,get_tweet_max,always_get);
         }
-        //replyはmentionに追加する
-        if(parse_json.reply||mention){
-            mention_scrolled.add_tweet_obj(new_tweet.reply_obj,get_tweet_max,always_get);
+        //リプライを作るかもしれない
+        if(parse_json.reply){
+          TweetObj reply_obj=new TweetObj(parse_json,font_desk);
+          get_image(parse_json.screen_name,
+                     parse_json.id,
+                     parse_json.profile_image_url,
+                     image_path,
+                     48,
+                     always_get,
+                     false,
+                     reply_obj.profile_image,
+                     cache_dir,
+                     db);
+          //replyはmentionに追加する
+          mention_scrolled.add_tweet_obj(reply_obj,get_tweet_max,always_get);
         }
       }
     }
     
     //ユーザーストリームのcallback
-    private void user_stream_cb(ProxyCall stream_call,string buf,size_t len,Error? error){
-    string tweet_json=buf.substring(0,(int)len);
-      if(tweet_json!="\n"){
-        json_sb.append(tweet_json);
-        if(tweet_json.has_suffix("\r\n")||tweet_json.has_suffix("\r")){
-          //投げる
-          make_and_add_tweet(json_sb.str,false,false);
-          json_sb.erase();
+    private void user_stream_cb(ProxyCall stream_call,string? buf,size_t len,Error? error){
+      if(buf!=null){
+        string tweet_json=buf.substring(0,(int)len);
+        if(tweet_json!="\n"){
+          json_sb.append(tweet_json);
+          if(tweet_json.has_suffix("\r\n")||tweet_json.has_suffix("\r")){
+            //投げる
+            make_and_add_tweet(json_sb.str,false,false);
+            json_sb.erase();
+          }
         }
       }
     }

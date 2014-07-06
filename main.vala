@@ -25,7 +25,10 @@ int main(string[] args){
   
   Gtk.init(ref args);    
   //データベースのオープン
-  int ec=Sqlite.Database.open(DB_PATH,out db);
+  int ec=Sqlite.Database.open_v2(DB_PATH,out db,Sqlite.OPEN_READWRITE|OPEN_CREATE);
+  if(ec!=Sqlite.OK){
+    print("Can't open database:%d:%s\n",db.errcode(),db.errmsg());
+  }
   
   //ディレクトリが新規作成された場合,認証Windowを開く.
   if(mk_new_dir){
@@ -35,7 +38,6 @@ int main(string[] args){
     OAuthWindow oauth_window=new OAuthWindow(account,db);
     oauth_window.show_all();
     Gtk.main();
-    account_count=1;
   }
   //データベースにあるアカウント数を確認後,読み出し
   account_count=SqliteOpr.record_count(db,"ACCOUNT");

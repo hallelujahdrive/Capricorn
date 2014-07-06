@@ -23,9 +23,9 @@ namespace SqliteOpr{
   private const string INSERT_IMAGE_PATH_QUERY="INSERT INTO IMAGE_PATH VALUES($ID,$PATH);";
   private const string SELECT_FROM_ACCOUNT="SELECT * FROM ACCOUNT WHERE list_id=$LIST_ID;";
   private const string SELECT_FROM_IMAGE_PATH="SELECT * FROM IMAGE_PATH WHERE id=$ID;";
-  private const string DELETE_FROM_ACCOUNT="DELETE FROM ACCOUNT WHERE name=$NAME;";
+  private const string DELETE_FROM_ACCOUNT="DELETE FROM ACCOUNT WHERE list_id=$LIST_ID;";
   private const string DELETE_ALL_RECORD_FROM_IMAGE_PATH="DELETE FROM IMAGE_PATH;";
-  private const string GET_ID="SELECT id FROM ACCOUNT WHERE name=$NAME;";
+  private const string UPDATE_ACCOUNT_ID="UPDATE ACCOUNT SET list_id=$NEW_LIST_ID WHERE list_id=$OLD_LIST_ID;";
   
   public bool create_tables(Sqlite.Database db){ //テーブルの作成
     //テーブルが存在するか
@@ -172,9 +172,9 @@ namespace SqliteOpr{
   }
   
   //image_pathの読み出し
-  public  string select_image_path(int id,string cache_dir,Sqlite.Database db){
+  public  string? select_image_path(int id,Sqlite.Database db){
     //tableに存在しなかった場合cache_dirを返す
-    string image_path=cache_dir;
+    string image_path=null;
     int ec;
     Sqlite.Statement stmt;
     
@@ -217,21 +217,41 @@ namespace SqliteOpr{
   }
   
   //アカウントの削除
-  public void delete_account(string my_screen_name,Sqlite.Database cpr_db){
+  public void delete_account(int list_id,Sqlite.Database db){
     int ec;
     Sqlite.Statement stmt;
     
     string prepared_query_str=DELETE_FROM_ACCOUNT;
-    ec=cpr_db.prepare_v2(prepared_query_str,prepared_query_str.length,out stmt);
+    ec=db.prepare_v2(prepared_query_str,prepared_query_str.length,out stmt);
     if(ec!=Sqlite.OK){
-      print("Error:%d:%s\n",cpr_db.errcode(),cpr_db.errmsg());
+      print("Error:%d:%s\n",db.errcode(),db.errmsg());
     }
     //パラメータの設定
-    int name_param_position=stmt.bind_parameter_index("$NAME");
+    int list_id_param_position=stmt.bind_parameter_index("$LIST_ID");
     
-    stmt.bind_text(name_param_position,my_screen_name);
+    stmt.bind_int(list_id_param_position,list_id);
     
     while(stmt.step()!=Sqlite.DONE);
     stmt.reset();  
+  }
+  
+  //list_idの更新
+  public void update_account(int new_list_id,int old_list_id,Sqlite.Database db){
+    int ec;
+    Sqlite.Statement stmt;
+    
+    string prepared_query_str=UPDATE_ACCOUNT_ID;
+    ec=db.prepare_v2(prepared_query_str,prepared_query_str.length,out stmt);
+    if(ec!=Sqlite.OK){
+      print("Error:%d:%s\n",db.errcode(),db.errmsg());
+    }
+    
+    int new_list_id_param_position=stmt.bind_parameter_index("$NEW_LIST_ID");
+    stmt.bind_int(new_list_id_param_position,new_list_id);
+    int old_list_id_param_position=stmt.bind_parameter_index("$OLD_LIST_ID");
+    stmt.bind_int(old_list_id_param_position,old_list_id);
+       
+    while(stmt.step()!=Sqlite.DONE);
+    stmt.reset();
   }
 }

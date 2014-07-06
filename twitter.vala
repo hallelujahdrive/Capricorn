@@ -58,7 +58,7 @@ namespace Twitter{
   }
   
   //アカウント情報の取得
-  public void get_account_info(Account account){
+  public bool get_account_info(Account account){
     //prox_call
     ProxyCall profile_call=account.api_proxy.new_call();
     profile_call.set_function(FUNCTION_ACCOUNT_VERIFY_CREDENTIALS);
@@ -84,8 +84,10 @@ namespace Twitter{
           break;
         }
       }
+      return true;
     }catch(Error e){
       print("%s\n",e.message);
+      return false;
     }
   }
     

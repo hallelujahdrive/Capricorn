@@ -14,52 +14,33 @@ namespace TLObject{
   //TLScrolled
   class TLScrolledObj:TLScrolledUI{
     //コンストラクタ
-    public GLib.Array<TweetObj> tweet_obj_array=new GLib.Array<TweetObj>();
+    private TweetObj[] tweet_obj_array;
+    private int array_val;
     //インスタンス
     //TweetObjの初期配置
+    public TLScrolledObj(int get_tweet_max){
+      array_val=get_tweet_max;
+      tweet_obj_array=new TweetObj[get_tweet_max];
+    }
     public void add_tweet_obj(TweetObj tweet_obj,int get_tweet_max,bool always_get){
       if(!always_get){
         //オブジェクト削除
-        if(tweet_obj_array.length==get_tweet_max){
-          tweet_obj_array.index(get_tweet_max-1).destroy();
-          tweet_obj_array.remove_index(get_tweet_max-1);
+        if(tweet_obj_array[array_val]!=null){
+          tweet_obj_array[array_val].destroy();
         }
         //prepend
-        tweet_obj_array.prepend_val(tweet_obj);
-        this.lbox.prepend(tweet_obj_array.index(0));
+        tweet_obj_array[array_val]=tweet_obj;
+        this.lbox.prepend(tweet_obj_array[array_val]);
+        
+        (array_val+1)>=get_tweet_max ? array_val=0:array_val++;
       }else{
         //append
-        tweet_obj_array.append_val(tweet_obj);
-        this.lbox.add(tweet_obj_array.index(tweet_obj_array.length-1));
-      }
+        array_val--;
+        tweet_obj_array[array_val]=tweet_obj;
+        this.lbox.add(tweet_obj_array[array_val]);
+      }     
       //表示
       this.lbox.show_all();
-    }
-  }
-  
-  //Tweet
-  class Tweet:GLib.Object{
-    public TweetObj normal_tweet_obj;
-    public TweetObj reply_obj;
-    
-    public Tweet(ParseJson parse_json,string cache_dir,bool always_get,Pango.FontDescription font_desk,Sqlite.Database db){
-      string image_path=SqliteOpr.select_image_path(parse_json.id,cache_dir,db);
-      ImageParam image_param=new ImageParam(parse_json.screen_name,
-                                                 parse_json.id,
-                                                 parse_json.profile_image_url,
-                                                 image_path,
-                                                 48,
-                                                 always_get,
-                                                 false);
-      //普通の
-      //通常APIによる取得であれば
-      normal_tweet_obj=new TweetObj(parse_json,font_desk);
-      get_image(image_param,normal_tweet_obj.profile_image,cache_dir,db);
-      //リプライを作るかもしれない
-      if(parse_json.reply){
-        reply_obj=new TweetObj(parse_json,font_desk);
-        get_image(image_param,reply_obj.profile_image,cache_dir,db);
-      }
     }
   }
     
@@ -140,6 +121,8 @@ namespace TLObject{
        
         return true;
       });
+
+      //destroy
     }
   }
 }

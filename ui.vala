@@ -7,6 +7,7 @@ namespace UI{
     private Gtk.Grid app_grid=new Gtk.Grid();
     
     public PostBox post_box=new PostBox();
+    public SettingsBox settings_box=new SettingsBox();
     
     public Gtk.Notebook home_tl_note=new Gtk.Notebook();
     public Gtk.Notebook mention_note=new Gtk.Notebook();
@@ -31,10 +32,12 @@ namespace UI{
       app_grid.attach(home_tl_note,0,1,1,1);
       app_grid.attach(mention_note,1,1,1,1);
       app_grid.attach(various_note,2,1,1,1);
+      app_grid.attach(settings_box,0,2,3,1);
       
       this.add(app_grid);
     }
   }
+  
   //PostBox
   class PostBox:Gtk.Box{
     //コンストラクタ
@@ -72,6 +75,23 @@ namespace UI{
       
       this.pack_start(p_box,false,false,0);
       this.pack_start(a_box,false,false,0);
+    }
+  }
+  
+  //SettingsButton用
+  class SettingsBox:Gtk.Box{
+    //コンストラクタ
+    private Gtk.ButtonBox settings_bbox=new Gtk.ButtonBox(Gtk.Orientation.HORIZONTAL);
+    public Gtk.Button settings_button=new Gtk.Button.with_label("Settings");
+    
+    public SettingsBox(){
+      //プロパティ
+      this.set_orientation(Gtk.Orientation.HORIZONTAL);
+      this.set_spacing(2);
+      
+      //レイアウト
+      settings_bbox.add(settings_button);
+      this.pack_end(settings_bbox,false,false,0);
     }
   }
     
@@ -172,6 +192,57 @@ namespace UI{
       this.attach(send_pin_bbox,1,2,1,1);
       this.attach(status_label,0,3,1,1);
       this.attach(reconquiestion_bbox,1,3,1,1);
+    }
+  }
+  
+  class SettingsWindowUI:Gtk.Window{
+    //コンストラクタ
+    public Gtk.Notebook settings_note=new Gtk.Notebook();
+    
+    public SettingsWindowUI(){
+      //Windowの設定
+      this.title="設定";
+      this.set_default_size(800,500);
+      this.border_width=2;
+      this.window_position=Gtk.WindowPosition.CENTER;
+      
+      //レイアウト
+      this.add(settings_note);
+    }
+  }
+  
+  class AccountManagementUI:Gtk.Grid{
+    //コンストラクタ
+    private Gtk.Frame account_frame=new Gtk.Frame(null);
+    public Gtk.ListStore account_list_store=new Gtk.ListStore(3,typeof(int),typeof(Gdk.Pixbuf),typeof(string));
+    public Gtk.TreeIter iter;
+    private Gtk.ButtonBox account_bbox=new Gtk.ButtonBox(Gtk.Orientation.VERTICAL);
+    public Gtk.Button account_add_button=new Gtk.Button.with_label("add");
+    public Gtk.Button account_remove_button=new Gtk.Button.with_label("remove");
+    
+    //TreeView
+    public Gtk.TreeView account_view;
+    public Gtk.TreeSelection account_selection;
+   
+    //oauth_boxのためのbox
+    public Gtk.Box dummy_oauth_box=new Gtk.Box(Gtk.Orientation.VERTICAL,0);
+    public AccountManagementUI(){
+      //プロパティ
+      this.set_row_homogeneous(true);
+      //レイアウト
+      //TreeViewの設定
+      account_view=new Gtk.TreeView.with_model(account_list_store);
+      account_view.set_hexpand(true);
+      account_frame.add(account_view);
+    
+      account_bbox.set_layout(Gtk.ButtonBoxStyle.START);
+      account_bbox.set_spacing(5);
+      account_bbox.add(account_add_button);
+      account_bbox.add(account_remove_button);
+      
+      this.attach(account_frame,0,0,1,1);
+      this.attach(account_bbox,1,0,1,1);
+      this.attach(dummy_oauth_box,0,1,1,1);
     }
   }
 }

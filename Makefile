@@ -15,6 +15,7 @@ all:
 	ui.vala \
 	oauth.vala \
 	file_opr.vala \
+	settings.vala \
 	sqlite_opr.vala \
 	contents_obj.vala \
 	json_opr.vala \
