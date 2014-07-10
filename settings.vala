@@ -74,11 +74,23 @@ namespace Settings{
       private void load_treeview(GLib.Array<Account> account_array,string cache_dir,Sqlite.Database db){
         account_list_store.clear();
         for(int i=0;i<account_array.length;i++){
-          //get_image(image_param,null,cache_dir,db);
           try{
-           // Gdk.Pixbuf pixbuf=new Gdk.Pixbuf.from_file(image_param.image_path);
+            Gdk.Pixbuf pixbuf=new Gdk.Pixbuf.from_file("");
             this.account_list_store.append(out iter);
-           // this.account_list_store.set(iter,0,account_array.index(i).my_list_id,1,pixbuf,2,"@"+account_array.index(i).my_screen_name);
+            this.account_list_store.set(iter,0,account_array.index(i).my_list_id,1,pixbuf,2,"@"+account_array.index(i).my_screen_name);
+            string icon_path=SqliteOpr.select_icon_path(account_array.index(i).my_id,db);
+            get_image(account_array.index(i).my_screen_name+"_icon",
+                       account_array.index(i).my_id,
+                       account_array.index(i).my_profile_image_url,
+                       icon_path,
+                       true,
+                       false,
+                       false,
+                       null,
+                       account_list_store,
+                       iter,
+                       cache_dir,
+                       db);
           }catch(Error e){
             print("%s\n",e.message);
           }

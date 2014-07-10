@@ -24,23 +24,34 @@ namespace FileOpr{
   }
   
   //profile_imageの読み出し
-  public void get_image(string file_name,int id,string profile_image_url,string? image_path,int size,bool always_get,bool never_save,Gtk.Image? profile_image,string cache_dir,Sqlite.Database db){
+  public void get_image(string file_name,int id,string profile_image_url,string? image_path,
+                           bool always_get,bool never_save,bool original_size,
+                           Gtk.Image? profile_image,Gtk.ListStore? account_list_store,Gtk.TreeIter? iter,
+                           string cache_dir,Sqlite.Database db){
+    //画像のサイズ
+    int size;
+    if(original_size){
+      size=48;
+    }else{
+      size=24;
+    }
     bool has_image=false;
+    GLib.Cancellable cancellable=new GLib.Cancellable();
     //image_pathが正常に取得できていればそのまま設定できる
     if(image_path!=null){
       has_image=true;
     }
     //もしアイコンを持っていなければ取得
-    if(!has_image||always_get){
+    if(!has_image||always_get||!image_path.has_suffix("gif")){
       //image_pathの設定
       string new_image_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,cache_dir,file_name);
       var image=File.new_for_uri(profile_image_url);
-      image.read_async.begin(Priority.DEFAULT,null,(obj,res)=>{
+      image.read_async.begin(Priority.DEFAULT,cancellable,(obj,res)=>{
         try{
           //streamからのpixbuf
           var image_stream=image.read_async.end(res);
-          Pixbuf pixbuf=new Pixbuf.from_stream(image_stream,null);
-          pixbuf.save(new_image_path,"png");
+          Pixbuf stream_pixbuf=new Pixbuf.from_stream(image_stream,null);
+          stream_pixbuf.save(new_image_path,"png");
           //この辺Cairo
           Cairo.ImageSurface surface=new Cairo.ImageSurface(Cairo.Format.ARGB32,size,size);
           Cairo.Context context=new Cairo.Context(surface);
@@ -56,6 +67,9 @@ namespace FileOpr{
           //imageに設定
           if(profile_image!=null){
             profile_image.set_from_file(new_image_path);
+          }else{
+            Pixbuf pixbuf=new Pixbuf.from_file(new_image_path);
+            account_list_store.set(iter,1,pixbuf);
           }
         }catch(Error e){
           print("Error:%s\n",e.message);
@@ -63,13 +77,30 @@ namespace FileOpr{
       });
       //insertされていなければ書き出す
       if(!has_image&&!never_save){
-        SqliteOpr.insert_image_path(id,new_image_path,db);
+        if(original_size){
+          SqliteOpr.insert_image_path(id,new_image_path,db);
+        }else{
+          SqliteOpr.insert_icon_path(id,new_image_path,db);
+        }
       }
     }else{
       //既に取得済みであれば問題なし
       if(profile_image!=null){
-       profile_image.set_from_file(image_path);
+        profile_image.set_from_file(image_path);
+      }else{
+        try{
+          Pixbuf pixbuf=new Pixbuf.from_file(image_path);
+          account_list_store.set(iter,1,pixbuf);
+        }catch(Error e){
+          print("%s\n",e.message);
+        }
       }
+        
+            
+      //シグナルの処理
+      cancellable.cancelled.connect(()=>{
+        print("Cancelled\n");
+        });
     }
   }  
   //キャッシュの全削除

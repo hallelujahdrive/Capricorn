@@ -130,27 +130,33 @@ namespace Capricorn{
       mention_scrolled=new TLScrolledObj(get_tweet_max);
       //tagのimage
       //もらってくる(冗長に見えるがどのみちGtk.main();までpngは書き出されない)
+      string icon_path=SqliteOpr.select_icon_path(account.my_id,db);
       get_image(account.my_screen_name+"_icon",
                  account.my_id,
                  account.my_profile_image_url,
                  null,
-                 24,
                  true,
-                 true,
+                 false,
+                 false,
                  home_tag_image,
+                 null,
+                 null,
                  cache_dir,
                  db);
+        print("%s\n",icon_path);
         get_image(account.my_screen_name+"_icon",
                  account.my_id,
                  account.my_profile_image_url,
-                 null,
-                 24,
+                 icon_path,
                  true,
                  true,
+                 false,
                  mention_tag_image,
+                 null,
+                 null,
                  cache_dir,
                  db);
-      
+                 
       //TL初期化
       //通常apiによる取得
       //home
@@ -191,10 +197,12 @@ namespace Capricorn{
                      parse_json.id,
                      parse_json.profile_image_url,
                      image_path,
-                     48,
                      always_get,
                      false,
+                     true,
                      normal_tweet_obj.profile_image,
+                     null,
+                     null,
                      cache_dir,
                      db);
           home_tl_scrolled.add_tweet_obj(normal_tweet_obj,get_tweet_max,always_get);
@@ -206,10 +214,12 @@ namespace Capricorn{
                      parse_json.id,
                      parse_json.profile_image_url,
                      image_path,
-                     48,
                      always_get,
-                     false,
+                     !mention,
+                     true,
                      reply_obj.profile_image,
+                     null,
+                     null,
                      cache_dir,
                      db);
           //replyはmentionに追加する

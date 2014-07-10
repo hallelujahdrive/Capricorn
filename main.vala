@@ -51,7 +51,7 @@ int main(string[] args){
     CprWindow main_window=new CprWindow(account_array,CACHE_DIR,db);
     main_window.show_all();
     Gtk.main();
-    SqliteOpr.delete_all_image_path(db);
+    SqliteOpr.delete_all(db);
     FileOpr.clear_cache(CACHE_DIR);
   }
   return 0;
