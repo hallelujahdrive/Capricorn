@@ -10,3 +10,5 @@ valaで書かれた軽量Twitterクライアント
 6/30  タイムラインの取得を実装(User Stream未実装)
 
 7/1   UserStream実装
+
+7/14　マルチアカウントによるpostに対応

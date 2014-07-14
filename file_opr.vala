@@ -52,6 +52,7 @@ namespace FileOpr{
           var image_stream=image.read_async.end(res);
           Pixbuf stream_pixbuf=new Pixbuf.from_stream(image_stream,null);
           stream_pixbuf.save(new_image_path,"png");
+          image_stream.close();
           //この辺Cairo
           Cairo.ImageSurface surface=new Cairo.ImageSurface(Cairo.Format.ARGB32,size,size);
           Cairo.Context context=new Cairo.Context(surface);
@@ -72,7 +73,7 @@ namespace FileOpr{
             account_list_store.set(iter,1,pixbuf);
           }
         }catch(Error e){
-          print("Error:%s\n",e.message);
+          print("Error:%s\n%s\n",e.message,file_name);
         }
       });
       //insertされていなければ書き出す

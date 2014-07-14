@@ -23,17 +23,26 @@ namespace Capricorn{
     
     private GLib.Array<TLScrolled> tl_scrolled_array=new GLib.Array<TLScrolled>();
     //ツイートの取得数上限
-    private static int get_tweet_max=10;
+    private static int get_tweet_max=15;
     //時差
     private static int[] time_deff={9,0};
     
+    //選択中のアカウント
+    private int select_account_num;
+    //アカウントリスト更新中のchangedシグナルの停止
+    private bool list_not_reloading=true;
+    
     //アカウント操作がされたかどうか
     private bool account_add_or_remove;
+    
     public CprWindow(GLib.Array<Account> account_array,string cache_dir,Sqlite.Database db){
       //プロパティ
       font_desk.set_size((int)font_size*Pango.SCALE);
       font_desk.set_family(font_family);
-           
+      
+      //comboboxにアカウント入れて
+      load_combobox(account_array,cache_dir,db);
+      
       //TLを作ろう!
       for(int i=0;i<account_array.length;i++){
         TLScrolled tl_scrolled=new TLScrolled(account_array.index(i),get_tweet_max,cache_dir,time_deff,font_desk,db);
@@ -44,7 +53,22 @@ namespace Capricorn{
       
       //シグナルのコネクト
       this.post_box.post_button.clicked.connect(()=>{
-        post_button_clicked(this.post_box.post_textview,account_array.index(0));
+        post_button_clicked(this.post_box.post_textview,account_array.index(select_account_num));
+      });
+      
+      //文字数のカウントですよ
+      this.post_box.post_textview.buffer.changed.connect(()=>{
+        this.post_box.chars_count_label.set_text((140-this.post_box.post_textview.buffer.get_char_count()).to_string());
+      });
+      
+      //combobox
+      this.post_box.account_cbox.changed.connect(()=>{
+        if(list_not_reloading){
+          GLib.Value val;
+          this.post_box.account_cbox.get_active_iter(out this.post_box.iter);
+          this.post_box.account_list_store.get_value(this.post_box.iter,0, out val);
+          select_account_num=(int)val;
+        }
       });
       
       //settings_windowの起動
@@ -68,6 +92,36 @@ namespace Capricorn{
         Twitter.post_tweet(post,account.api_proxy);
         post_textview.buffer.text="";
       }
+    }
+    
+    //comboboxのロード
+    public void load_combobox(GLib.Array<Account> account_array,string cache_dir,Sqlite.Database db){
+      list_not_reloading=false;
+      try{
+        Gdk.Pixbuf pixbuf=new Gdk.Pixbuf.from_file("icon/loading_icon.png");
+        for(int i=0;i<account_array.length;i++){
+          this.post_box.account_list_store.append(out this.post_box.iter);
+          this.post_box.account_list_store.set(this.post_box.iter,0,account_array.index(i).my_list_id,1,pixbuf,2,account_array.index(i).my_screen_name);
+          string icon_path=SqliteOpr.select_icon_path(account_array.index(i).my_id,db);
+          get_image(account_array.index(i).my_screen_name+"_icon",
+                     account_array.index(i).my_id,
+                     account_array.index(i).my_profile_image_url,
+                     icon_path,
+                     true,
+                     false,
+                     false,
+                     null,
+                     this.post_box.account_list_store,
+                     this.post_box.iter,
+                     cache_dir,
+                     db);
+        }
+      }catch(Error e){
+        print("%s\n",e.message);
+      }
+      list_not_reloading=true;
+      this.post_box.account_cbox.active=0;
+      select_account_num=0;
     }
     
     //tl_scrolled_arrayの追加と削除
@@ -134,16 +188,15 @@ namespace Capricorn{
       get_image(account.my_screen_name+"_icon",
                  account.my_id,
                  account.my_profile_image_url,
-                 null,
+                 icon_path,
                  true,
-                 false,
+                 true,
                  false,
                  home_tag_image,
                  null,
                  null,
                  cache_dir,
                  db);
-        print("%s\n",icon_path);
         get_image(account.my_screen_name+"_icon",
                  account.my_id,
                  account.my_profile_image_url,

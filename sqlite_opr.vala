@@ -239,7 +239,7 @@ namespace SqliteOpr{
     int ec;
     Sqlite.Statement stmt;
     
-    string prepared_query_str=SELECT_FROM_IMAGE_PATH;
+    string prepared_query_str=SELECT_FROM_ICON_PATH;
     ec=db.prepare_v2(prepared_query_str,prepared_query_str.length,out stmt);
     if(ec!=Sqlite.OK){
       print("Error:%d:%s\n",db.errcode(),db.errmsg());

@@ -53,7 +53,11 @@ namespace UI{
     private Gtk.ScrolledWindow pb_scrolled=new Gtk.ScrolledWindow(null,null);
     
     //アカウント関連
-    public Gtk.ListStore account_list_store=new Gtk.ListStore(1,typeof(string));
+    private Gtk.CellRendererPixbuf cell_pixbuf=new Gtk.CellRendererPixbuf();
+    private Gtk.CellRendererText cell_text=new Gtk.CellRendererText();
+
+    
+    public Gtk.ListStore account_list_store=new Gtk.ListStore(3,typeof(int),typeof(Gdk.Pixbuf),typeof(string));
     public Gtk.TreeIter iter;
     public Gtk.ComboBox account_cbox;
       
@@ -62,7 +66,14 @@ namespace UI{
       this.set_orientation(Gtk.Orientation.VERTICAL);
       this.set_spacing(2);
       
+      post_textview.set_wrap_mode(Gtk.WrapMode.WORD);
       account_cbox=new Gtk.ComboBox.with_model(account_list_store);
+      
+      account_cbox.pack_start(cell_pixbuf,true);
+      account_cbox.add_attribute(cell_pixbuf,"pixbuf",1);
+      account_cbox.pack_start(cell_text,true);
+      account_cbox.add_attribute(cell_text,"text",2);
+      
       //レイアウト
       pb_scrolled.add(post_textview);
       post_bbox.add(post_button);

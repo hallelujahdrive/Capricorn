@@ -75,7 +75,7 @@ namespace Settings{
         account_list_store.clear();
         for(int i=0;i<account_array.length;i++){
           try{
-            Gdk.Pixbuf pixbuf=new Gdk.Pixbuf.from_file("");
+            Gdk.Pixbuf pixbuf=new Gdk.Pixbuf.from_file("icon/loading_icon.png");
             this.account_list_store.append(out iter);
             this.account_list_store.set(iter,0,account_array.index(i).my_list_id,1,pixbuf,2,"@"+account_array.index(i).my_screen_name);
             string icon_path=SqliteOpr.select_icon_path(account_array.index(i).my_id,db);
