@@ -20,6 +20,7 @@ namespace Twitter{
   public static const string FUNCTION_USER="1.1/user.json";
 
   public static const string PARAM_STATUS="status";
+  public static const string PARAM_IN_REPLY_TO_STATUS_ID="in_reply_to_status_id";
   public static const string PARAM_DELIMITED="delimited";
   public static const string PARAM_COUNT="count";
   

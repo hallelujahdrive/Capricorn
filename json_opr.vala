@@ -17,7 +17,8 @@ namespace JsonOpr{
     public string text;
     public string source_label;
     public string source_url;
-    public int id;
+    public int user_id;
+    public string id_str;
     
     public string rt_name;
     public string rt_screen_name;
@@ -70,7 +71,7 @@ namespace JsonOpr{
                 Json.Object user_obj=json_main_obj.get_object_member("user");
                 foreach(string user_member in user_obj.get_members()){
                   switch(user_member){
-                    case "id": id=(int)user_obj.get_int_member("id");
+                    case "id": user_id=(int)user_obj.get_int_member("id");
                     break;
                     case "name": name=parse_name(user_obj.get_string_member("name"));
                     break;
@@ -86,6 +87,8 @@ namespace JsonOpr{
                 reply=text.contains(my_screen_name);
                 break;
                 case "source": parse_source(json_main_obj.get_string_member("source"));
+                break;
+                case "id_str": id_str=json_main_obj.get_string_member("id_str");
                 break;
               }
             }

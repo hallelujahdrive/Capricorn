@@ -66,7 +66,7 @@ namespace UI{
       this.set_orientation(Gtk.Orientation.VERTICAL);
       this.set_spacing(2);
       
-      post_textview.set_wrap_mode(Gtk.WrapMode.WORD);
+      post_textview.set_wrap_mode(Gtk.WrapMode.WORD_CHAR);
       account_cbox=new Gtk.ComboBox.with_model(account_list_store);
       
       account_cbox.pack_start(cell_pixbuf,true);

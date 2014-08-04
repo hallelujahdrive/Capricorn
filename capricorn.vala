@@ -242,12 +242,13 @@ namespace Capricorn{
       ParseJson parse_json=new ParseJson(json_str,account.my_screen_name,time_deff,db);
       //tlに追加
       if(parse_json.created_at!=null){
-        string image_path=SqliteOpr.select_image_path(parse_json.id,db);
+        string image_path=SqliteOpr.select_image_path(parse_json.user_id,db);
+        //string image_path="/home/chiharu/Documents/vala/cpr.png";
         //通常APIによる取得であれば
         if(!mention){
           TweetObj normal_tweet_obj=new TweetObj(parse_json,font_desk);
           get_image(parse_json.screen_name,
-                     parse_json.id,
+                     parse_json.user_id,
                      parse_json.profile_image_url,
                      image_path,
                      always_get,
@@ -264,7 +265,7 @@ namespace Capricorn{
         if(parse_json.reply){
           TweetObj reply_obj=new TweetObj(parse_json,font_desk);
           get_image(parse_json.screen_name,
-                     parse_json.id,
+                     parse_json.user_id,
                      parse_json.profile_image_url,
                      image_path,
                      always_get,

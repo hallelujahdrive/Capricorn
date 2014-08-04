@@ -12,3 +12,5 @@ valaで書かれた軽量Twitterクライアント
 7/1   UserStream実装
 
 7/14　マルチアカウントによるpostに対応
+
+8/4   CairoがStreamを食いつぶすのでアイコンの加工をオミット

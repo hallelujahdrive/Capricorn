@@ -42,7 +42,7 @@ namespace FileOpr{
       has_image=true;
     }
     //もしアイコンを持っていなければ取得
-    if(!has_image||always_get||!image_path.has_suffix("gif")){
+    if((!has_image||always_get)&&!profile_image_url.has_suffix("gif")){
       //image_pathの設定
       string new_image_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,cache_dir,file_name);
       var image=File.new_for_uri(profile_image_url);
@@ -50,10 +50,11 @@ namespace FileOpr{
         try{
           //streamからのpixbuf
           var image_stream=image.read_async.end(res);
-          Pixbuf stream_pixbuf=new Pixbuf.from_stream(image_stream,null);
+          Pixbuf stream_pixbuf=new Pixbuf.from_stream_at_scale(image_stream,size,size,true,null);
           stream_pixbuf.save(new_image_path,"png");
           image_stream.close();
-          //この辺Cairo
+           
+           /*//この辺Cairo
           Cairo.ImageSurface surface=new Cairo.ImageSurface(Cairo.Format.ARGB32,size,size);
           Cairo.Context context=new Cairo.Context(surface);
           //現状丸だけどそのうち角の丸い四角に変える
@@ -63,14 +64,13 @@ namespace FileOpr{
           context.scale(size/48.0,size/48.0);
           Cairo.ImageSurface img=new Cairo.ImageSurface.from_png(new_image_path);
           context.set_source_surface(img,0,0);
-          context.paint();
-          surface.write_to_png(new_image_path);
+          context.paint();*/
+          
           //imageに設定
           if(profile_image!=null){
-            profile_image.set_from_file(new_image_path);
+            profile_image.set_from_pixbuf(stream_pixbuf);
           }else{
-            Pixbuf pixbuf=new Pixbuf.from_file(new_image_path);
-            account_list_store.set(iter,1,pixbuf);
+            account_list_store.set(iter,1,stream_pixbuf);
           }
         }catch(Error e){
           print("Error:%s\n%s\n",e.message,file_name);
@@ -85,16 +85,19 @@ namespace FileOpr{
         }
       }
     }else{
-      //既に取得済みであれば問題なし
-      if(profile_image!=null){
-        profile_image.set_from_file(image_path);
-      }else{
-        try{
-          Pixbuf pixbuf=new Pixbuf.from_file(image_path);
+      try{
+        //既に取得済みであれば問題なし
+        var image=File.new_for_path(image_path);
+        var image_stream=image.read();
+        Pixbuf pixbuf=new Pixbuf.from_stream(image_stream,null);
+        image_stream.close();
+        if(profile_image!=null){
+          profile_image.set_from_pixbuf(pixbuf);
+        }else{
           account_list_store.set(iter,1,pixbuf);
-        }catch(Error e){
-          print("%s\n",e.message);
         }
+      }catch(Error e){
+        print("%s\n",e.message);
       }
         
             
@@ -103,7 +106,7 @@ namespace FileOpr{
         print("Cancelled\n");
         });
     }
-  }  
+  }
   //キャッシュの全削除
   public void clear_cache(string cache_dir_path){
     try{
