@@ -204,7 +204,7 @@ namespace SqliteOpr{
   
   //image_pathの読み出し
   public  string? select_image_path(int id,Sqlite.Database db){
-    //tableに存在しなかった場合cache_dirを返す
+    //tableに存在しなかった場合nullを返す
     string image_path=null;
     int ec;
     Sqlite.Statement stmt;

@@ -41,8 +41,10 @@ namespace FileOpr{
     if(image_path!=null){
       has_image=true;
     }
+    //gifは現状除外
+    if(!profile_image_url.has_suffix("gif")){
     //もしアイコンを持っていなければ取得
-    if((!has_image||always_get)&&!profile_image_url.has_suffix("gif")){
+    if(!has_image||always_get){
       //image_pathの設定
       string new_image_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,cache_dir,file_name);
       var image=File.new_for_uri(profile_image_url);
@@ -54,18 +56,6 @@ namespace FileOpr{
           stream_pixbuf.save(new_image_path,"png");
           image_stream.close();
            
-           /*//この辺Cairo
-          Cairo.ImageSurface surface=new Cairo.ImageSurface(Cairo.Format.ARGB32,size,size);
-          Cairo.Context context=new Cairo.Context(surface);
-          //現状丸だけどそのうち角の丸い四角に変える
-          context.arc(size/2,size/2,size/2,0,2*Math.PI);
-          context.clip();
-          context.new_path();
-          context.scale(size/48.0,size/48.0);
-          Cairo.ImageSurface img=new Cairo.ImageSurface.from_png(new_image_path);
-          context.set_source_surface(img,0,0);
-          context.paint();*/
-          
           //imageに設定
           if(profile_image!=null){
             profile_image.set_from_pixbuf(stream_pixbuf);
@@ -74,6 +64,7 @@ namespace FileOpr{
           }
         }catch(Error e){
           print("Error:%s\n%s\n",e.message,file_name);
+
         }
       });
       //insertされていなければ書き出す
@@ -99,13 +90,14 @@ namespace FileOpr{
       }catch(Error e){
         print("%s\n",e.message);
       }
+    }
+    }
         
             
-      //シグナルの処理
-      cancellable.cancelled.connect(()=>{
-        print("Cancelled\n");
-        });
-    }
+    //シグナルの処理
+    cancellable.cancelled.connect(()=>{
+      print("Cancelled\n");
+    });
   }
   //キャッシュの全削除
   public void clear_cache(string cache_dir_path){
