@@ -78,15 +78,12 @@ namespace Settings{
             Gdk.Pixbuf pixbuf=new Gdk.Pixbuf.from_file("icon/loading_icon.png");
             this.account_list_store.append(out iter);
             this.account_list_store.set(iter,0,account_array.index(i).my_list_id,1,pixbuf,2,"@"+account_array.index(i).my_screen_name);
-            string icon_path=SqliteOpr.select_icon_path(account_array.index(i).my_id,db);
-            get_image(account_array.index(i).my_screen_name+"_icon",
+            string icon_path=SqliteOpr.select_image_path(account_array.index(i).my_id,db);
+            set_image_for_liststore(account_array.index(i).my_screen_name,
                        account_array.index(i).my_id,
                        account_array.index(i).my_profile_image_url,
                        icon_path,
                        true,
-                       false,
-                       false,
-                       null,
                        account_list_store,
                        iter,
                        cache_dir,

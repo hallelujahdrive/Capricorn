@@ -23,6 +23,7 @@ namespace JsonOpr{
     public string rt_name;
     public string rt_screen_name;
     public string rt_profile_image_url;
+    public int rt_user_id;
       
     public bool reply=false;
     public ParseJson(string json_str,string my_screen_name,int[] time_deff,Sqlite.Database db){
@@ -46,6 +47,8 @@ namespace JsonOpr{
                 Json.Object rt_user_obj=json_obj.get_object_member("user");
                 foreach(string user_member in rt_user_obj.get_members()){
                   switch(user_member){
+                    case "id": rt_user_id=(int)rt_user_obj.get_int_member("id");
+                    break;
                     case "name": rt_name=parse_name(rt_user_obj.get_string_member("name"));
                     break;
                     case "screen_name": rt_screen_name=rt_user_obj.get_string_member("screen_name");

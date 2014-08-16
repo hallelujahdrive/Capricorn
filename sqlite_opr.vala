@@ -19,20 +19,12 @@ namespace SqliteOpr{
   id  INT PRIMARY KEY NOT NULL,
   path  TEXT NOT NULL
   );""";
-  private const string CREATE_TABLE_ICON_PATH_QUERY="""
-  CREATE TABLE ICON_PATH(
-  id  INT PRIMARY KEY NOT NULL,
-  path  TEXT NOT NULL
-  );""";
   private const string INSERT_ACCOUNT_QUERY="INSERT INTO ACCOUNT VALUES($LIST_ID,$ID,$TOKEN,$TOKEN_SECRET);";
   private const string INSERT_IMAGE_PATH_QUERY="INSERT INTO IMAGE_PATH VALUES($ID,$PATH);";
-  private const string INSERT_ICON_PATH_QUERY="INSERT INTO ICON_PATH VALUES($ID,$PATH);";
   private const string SELECT_FROM_ACCOUNT="SELECT * FROM ACCOUNT WHERE list_id=$LIST_ID;";
   private const string SELECT_FROM_IMAGE_PATH="SELECT * FROM IMAGE_PATH WHERE id=$ID;";
-  private const string SELECT_FROM_ICON_PATH="SELECT * FROM ICON_PATH WHERE id=$ID;";
   private const string DELETE_FROM_ACCOUNT="DELETE FROM ACCOUNT WHERE list_id=$LIST_ID;";
   private const string DELETE_ALL_RECORD_FROM_IMAGE_PATH="DELETE FROM IMAGE_PATH";
-  private const string DELETE_ALL_RECORD_FROM_ICON_PATH="DELETE FROM ICON_PATH";
   private const string UPDATE_ACCOUNT_ID="UPDATE ACCOUNT SET list_id=$NEW_LIST_ID WHERE list_id=$OLD_LIST_ID;";
   
   public bool create_tables(Sqlite.Database db){ //テーブルの作成
@@ -58,13 +50,11 @@ namespace SqliteOpr{
     }
     //tableが存在しなければ作る
     if(no_table){
-      for(int i=0;i<3;i++){
+      for(int i=0;i<2;i++){
         switch(i){
           case 0:query=CREATE_TABLE_ACCOUNT_QUERY;
           break;
           case 1:query=CREATE_TABLE_IMAGE_PATH_QUERY;
-          break;
-          case 2:query=CREATE_TABLE_ICON_PATH_QUERY;
           break;
         }
         ec=db.exec(query,null,out errmsg);
@@ -146,27 +136,6 @@ namespace SqliteOpr{
     stmt.reset();
   }
   
-  //iconのインサート
-  public void insert_icon_path(int id,string icon_path,Sqlite.Database db){
-    int ec;
-    Sqlite.Statement stmt;
-    
-    string prepared_query_str=INSERT_ICON_PATH_QUERY;
-    ec=db.prepare_v2(prepared_query_str,prepared_query_str.length,out stmt);
-    if(ec!=Sqlite.OK){
-      print("Error:%d:%s\n",db.errcode(),db.errmsg());
-    }
-    //パラメータの設定
-    int id_param_position=stmt.bind_parameter_index("$ID");
-    int path_param_position=stmt.bind_parameter_index("$PATH");
-    //インサート
-    stmt.bind_int(id_param_position,id);
-    stmt.bind_text(path_param_position,icon_path);
-    
-    while(stmt.step()!=Sqlite.DONE);
-    stmt.reset();
-  }
-  
   //accountの読み出し
   public void select_account(int id,Account account,Sqlite.Database db){
     int ec;
@@ -231,37 +200,7 @@ namespace SqliteOpr{
     
     return image_path;
   }
-  
-    //icon_pathの読み出し
-  public  string? select_icon_path(int id,Sqlite.Database db){
-    //tableに存在しなかった場合cache_dirを返す
-    string icon_path=null;
-    int ec;
-    Sqlite.Statement stmt;
-    
-    string prepared_query_str=SELECT_FROM_ICON_PATH;
-    ec=db.prepare_v2(prepared_query_str,prepared_query_str.length,out stmt);
-    if(ec!=Sqlite.OK){
-      print("Error:%d:%s\n",db.errcode(),db.errmsg());
-    }
-    
-    int id_param_position=stmt.bind_parameter_index("$ID");
-    stmt.bind_int(id_param_position,id);
-    
-    int cols=stmt.column_count();
-    while(stmt.step()==Sqlite.ROW){
-      for(int i=0;i<cols;i++){
-        switch(i){
-          case 1:icon_path=stmt.column_text(i);
-          break;
-        }
-      }
-    }
-    stmt.reset();
-    
-    return icon_path;
-  }
-  
+
   //pathの全削除
   public void delete_all(Sqlite.Database db){
     int ec;
@@ -274,14 +213,7 @@ namespace SqliteOpr{
     }
     
     while(stmt.step()!=Sqlite.DONE);
-    
-    prepared_query_str=DELETE_ALL_RECORD_FROM_ICON_PATH;
-    ec=db.prepare_v2(prepared_query_str,prepared_query_str.length,out stmt);
-    if(ec!=Sqlite.OK){
-      print("Error:%d:%s\n",db.errcode(),db.errmsg());
-    }
-    
-    while(stmt.step()!=Sqlite.DONE);
+
     stmt.reset();  
   }
   

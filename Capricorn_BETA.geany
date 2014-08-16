@@ -23,16 +23,16 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=10
+current_page=5
 FILE_NAME_0=1811;Vala;0;EUTF-8;0;1;0;%2Fhome%2Fchiharu%2Fgit%2FCapricorn_BETA%2Fmain.vala;0;2
 FILE_NAME_1=10;Vala;0;EUTF-8;0;1;0;%2Fhome%2Fchiharu%2Fgit%2FCapricorn_BETA%2Foauth.vala;0;2
 FILE_NAME_2=6901;Vala;0;EUTF-8;0;1;0;%2Fhome%2Fchiharu%2Fgit%2FCapricorn_BETA%2Fsqlite_opr.vala;0;2
 FILE_NAME_3=3596;Vala;0;EUTF-8;0;1;0;%2Fhome%2Fchiharu%2Fgit%2FCapricorn_BETA%2Ftwitter.vala;0;2
 FILE_NAME_4=282;Make;0;EUTF-8;1;1;0;%2Fhome%2Fchiharu%2Fgit%2FCapricorn_BETA%2FMakefile;0;2
-FILE_NAME_5=1289;Vala;0;EUTF-8;0;1;0;%2Fhome%2Fchiharu%2Fgit%2FCapricorn_BETA%2Ftl_object.vala;0;2
-FILE_NAME_6=41;Vala;0;EUTF-8;0;1;0;%2Fhome%2Fchiharu%2Fgit%2FCapricorn_BETA%2Fui.vala;0;2
-FILE_NAME_7=9202;Vala;0;EUTF-8;0;1;0;%2Fhome%2Fchiharu%2Fgit%2FCapricorn_BETA%2Fcapricorn.vala;0;2
+FILE_NAME_5=4706;Vala;0;EUTF-8;0;1;0;%2Fhome%2Fchiharu%2Fgit%2FCapricorn_BETA%2Ftl_object.vala;0;2
+FILE_NAME_6=5369;Vala;0;EUTF-8;0;1;0;%2Fhome%2Fchiharu%2Fgit%2FCapricorn_BETA%2Fui.vala;0;2
+FILE_NAME_7=9580;Vala;0;EUTF-8;0;1;0;%2Fhome%2Fchiharu%2Fgit%2FCapricorn_BETA%2Fcapricorn.vala;0;2
 FILE_NAME_8=471;Vala;0;EUTF-8;0;1;0;%2Fhome%2Fchiharu%2Fgit%2FCapricorn_BETA%2Fcontents_obj.vala;0;2
-FILE_NAME_9=3341;Vala;0;EUTF-8;0;1;0;%2Fhome%2Fchiharu%2Fgit%2FCapricorn_BETA%2Fsettings.vala;0;2
-FILE_NAME_10=2557;Vala;0;EUTF-8;0;1;0;%2Fhome%2Fchiharu%2Fgit%2FCapricorn_BETA%2Ffile_opr.vala;0;2
-FILE_NAME_11=3602;Vala;0;EUTF-8;0;1;0;%2Fhome%2Fchiharu%2Fgit%2FCapricorn_BETA%2Fjson_opr.vala;0;2
+FILE_NAME_9=3690;Vala;0;EUTF-8;0;1;0;%2Fhome%2Fchiharu%2Fgit%2FCapricorn_BETA%2Fsettings.vala;0;2
+FILE_NAME_10=4338;Vala;0;EUTF-8;0;1;0;%2Fhome%2Fchiharu%2Fgit%2FCapricorn_BETA%2Ffile_opr.vala;0;2
+FILE_NAME_11=580;Vala;0;EUTF-8;0;1;0;%2Fhome%2Fchiharu%2Fgit%2FCapricorn_BETA%2Fjson_opr.vala;0;2

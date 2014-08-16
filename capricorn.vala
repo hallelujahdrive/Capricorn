@@ -45,7 +45,7 @@ namespace Capricorn{
       
       //TLを作ろう!
       for(int i=0;i<account_array.length;i++){
-        TLScrolled tl_scrolled=new TLScrolled(account_array.index(i),get_tweet_max,cache_dir,time_deff,font_desk,db);
+        TLScrolled tl_scrolled=new TLScrolled(account_array.index(i),post_box,get_tweet_max,cache_dir,time_deff,font_desk,db);
         tl_scrolled_array.append_val(tl_scrolled);
         this.home_tl_note.append_page(tl_scrolled_array.index(i).home_tl_scrolled,tl_scrolled_array.index(i).home_tag_image);
         this.mention_note.append_page(tl_scrolled_array.index(i).mention_scrolled,tl_scrolled_array.index(i).mention_tag_image);
@@ -102,15 +102,12 @@ namespace Capricorn{
         for(int i=0;i<account_array.length;i++){
           this.post_box.account_list_store.append(out this.post_box.iter);
           this.post_box.account_list_store.set(this.post_box.iter,0,account_array.index(i).my_list_id,1,pixbuf,2,account_array.index(i).my_screen_name);
-          string icon_path=SqliteOpr.select_icon_path(account_array.index(i).my_id,db);
-          get_image(account_array.index(i).my_screen_name+"_icon",
+          string icon_path=SqliteOpr.select_image_path(account_array.index(i).my_id,db);
+          set_image_for_liststore(account_array.index(i).my_screen_name,
                      account_array.index(i).my_id,
                      account_array.index(i).my_profile_image_url,
                      icon_path,
                      true,
-                     false,
-                     false,
-                     null,
                      this.post_box.account_list_store,
                      this.post_box.iter,
                      cache_dir,
@@ -138,7 +135,7 @@ namespace Capricorn{
       }
       //追加
       for(int i=(int)tl_scrolled_array.length;i<account_array.length;i++){
-        TLScrolled tl_scrolled=new TLScrolled(account_array.index(i),get_tweet_max,cache_dir,time_deff,font_desk,db);
+        TLScrolled tl_scrolled=new TLScrolled(account_array.index(i),post_box,get_tweet_max,cache_dir,time_deff,font_desk,db);
         tl_scrolled_array.append_val(tl_scrolled);
         this.home_tl_note.append_page(tl_scrolled_array.index(i).home_tl_scrolled,tl_scrolled_array.index(i).home_tag_image);
         this.mention_note.append_page(tl_scrolled_array.index(i).mention_scrolled,tl_scrolled_array.index(i).mention_tag_image);
@@ -169,7 +166,7 @@ namespace Capricorn{
     private Account account;
     private Pango.FontDescription *font_desk;
     private Sqlite.Database *db;
-    public TLScrolled(Account account_param,int get_tweet_max_param,string cache_dir_param,int[] time_deff_param,Pango.FontDescription font_desk_param,Sqlite.Database db_param){
+    public TLScrolled(Account account_param,PostBox post_box,int get_tweet_max_param,string cache_dir_param,int[] time_deff_param,Pango.FontDescription font_desk_param,Sqlite.Database db_param){
       //もうポインタで呼べばいいんじゃねーの
       get_tweet_max=get_tweet_max_param;
       cache_dir=cache_dir_param;
@@ -183,30 +180,26 @@ namespace Capricorn{
         home_tl_scrolled=new TLScrolledObj(get_tweet_max);
       mention_scrolled=new TLScrolledObj(get_tweet_max);
       //tagのimage
-      //もらってくる(冗長に見えるがどのみちGtk.main();までpngは書き出されない)
-      string icon_path=SqliteOpr.select_icon_path(account.my_id,db);
-      get_image(account.my_screen_name+"_icon",
+      //もらってくる
+      string icon_path=SqliteOpr.select_image_path(account.my_id,db);
+      set_image_for_image(account.my_screen_name,
                  account.my_id,
                  account.my_profile_image_url,
                  icon_path,
+                 24,
                  true,
                  true,
-                 false,
                  home_tag_image,
-                 null,
-                 null,
                  cache_dir,
                  db);
-        get_image(account.my_screen_name+"_icon",
+        set_image_for_image(account.my_screen_name,
                  account.my_id,
                  account.my_profile_image_url,
                  icon_path,
+                 24,
                  true,
                  true,
-                 false,
                  mention_tag_image,
-                 null,
-                 null,
                  cache_dir,
                  db);
                  
@@ -243,37 +236,44 @@ namespace Capricorn{
       //tlに追加
       if(parse_json.created_at!=null){
         string image_path=SqliteOpr.select_image_path(parse_json.user_id,db);
-        //string image_path="/home/chiharu/Documents/vala/cpr.png";
         //通常APIによる取得であれば
         if(!mention){
           TweetObj normal_tweet_obj=new TweetObj(parse_json,font_desk);
-          get_image(parse_json.screen_name,
+          set_image_for_image(parse_json.screen_name,
                      parse_json.user_id,
                      parse_json.profile_image_url,
                      image_path,
+                     48,
                      always_get,
-                     false,
-                     true,
+                     always_get,
                      normal_tweet_obj.profile_image,
-                     null,
-                     null,
                      cache_dir,
                      db);
+            if(parse_json.retweet){
+              set_image_for_image(parse_json.screen_name,
+                      parse_json.rt_user_id,
+                      parse_json.rt_profile_image_url,
+                      null,
+                      24,
+                      always_get,
+                      true,
+                      normal_tweet_obj.rt_profile_image,
+                      cache_dir,
+                      db);
+          }
           home_tl_scrolled.add_tweet_obj(normal_tweet_obj,get_tweet_max,always_get);
         }
         //リプライを作るかもしれない
         if(parse_json.reply){
           TweetObj reply_obj=new TweetObj(parse_json,font_desk);
-          get_image(parse_json.screen_name,
+          set_image_for_image(parse_json.screen_name,
                      parse_json.user_id,
                      parse_json.profile_image_url,
                      image_path,
-                     always_get,
-                     !mention,
+                     48,
+                     always_get, 
                      true,
                      reply_obj.profile_image,
-                     null,
-                     null,
                      cache_dir,
                      db);
           //replyはmentionに追加する

@@ -132,11 +132,17 @@ namespace UI{
     public Gtk.Box name_box=new Gtk.Box(Gtk.Orientation.VERTICAL,0);
     public Gtk.Box text_box=new Gtk.Box(Gtk.Orientation.VERTICAL,0);
     public Gtk.Box created_at_box=new Gtk.Box(Gtk.Orientation.HORIZONTAL,0);
+    
+    public Gtk.Box rt_box=new Gtk.Box(Gtk.Orientation.HORIZONTAL,5);
 
     public Gtk.DrawingArea name_area=new Gtk.DrawingArea();
     public Gtk.DrawingArea text_area=new Gtk.DrawingArea();
     public Gtk.DrawingArea created_at_area=new Gtk.DrawingArea();
     public Gtk.DrawingArea source_area=new Gtk.DrawingArea();
+    
+    public Gtk.DrawingArea rt_mess_area=new Gtk.DrawingArea();
+    public Gtk.DrawingArea rt_name_area=new Gtk.DrawingArea();
+    public Gtk.Image rt_profile_image=new Gtk.Image();
     
     public Gtk.Image profile_image=new Gtk.Image();
     public TweetObjUI(){
@@ -147,6 +153,8 @@ namespace UI{
       text_box.set_hexpand(true);
       created_at_box.set_hexpand(true);
       source_ebox.set_hexpand(true);
+      
+      rt_box.set_hexpand(true);
       
       //レイアウト
       profile_image_ebox.add(profile_image);
@@ -160,8 +168,8 @@ namespace UI{
       tweet_obj_grid.attach(profile_image_box,0,0,1,2);
       tweet_obj_grid.attach(name_box,1,0,1,1);
       tweet_obj_grid.attach(text_box,1,1,1,1);
-      tweet_obj_grid.attach(created_at_box,1,2,1,1);
-      tweet_obj_grid.attach(source_ebox,1,3,1,1);
+      tweet_obj_grid.attach(created_at_box,1,3,1,1);
+      tweet_obj_grid.attach(source_ebox,1,4,1,1);
       
       tweet_obj_ebox.add(tweet_obj_grid);
       this.add(tweet_obj_ebox);
