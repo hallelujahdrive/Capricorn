@@ -47,7 +47,7 @@ namespace TLObject{
   //TweetObj
   class TweetObj:TweetObjUI{
     //コンストラクタ
-      public TweetObj(ParseJson parse_json,Pango.FontDescription font_desk){
+      public TweetObj(Capricorn.PostBox post_box,Account account,ParseJson parse_json,Pango.FontDescription font_desk){
       //profile_image_areaの描画
       profile_image.set_size_request(48,48);
       
@@ -162,8 +162,26 @@ namespace TLObject{
 
           return true;
         });
-
       }
+      
+      //シグナルの処理
+      //reply
+      reply_icon_ebox.button_press_event.connect(()=>{
+        post_box.reply_param(parse_json.screen_name,parse_json.tweet_id_str);
+        return true;
+      });
+      
+      //retweet
+      rt_icon_ebox.button_press_event.connect(()=>{
+        Twitter.retweet(parse_json.tweet_id_str,account.api_proxy);
+        return true;
+      });
+      
+      //☆
+      fav_icon_ebox.button_press_event.connect(()=>{
+        Twitter.favorite(parse_json.tweet_id_str,account.api_proxy);
+        return true;
+      });
     }
   }
 }

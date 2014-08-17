@@ -16,6 +16,7 @@ namespace Capricorn{
   //本体
   class CprWindow:AppWindow{
     //コンストラクタ
+    private PostBox post_box;
     //fontの設定
     private int font_size=10;
     private string font_family="VLGothic";
@@ -26,12 +27,7 @@ namespace Capricorn{
     private static int get_tweet_max=15;
     //時差
     private static int[] time_deff={9,0};
-    
-    //選択中のアカウント
-    private int select_account_num;
-    //アカウントリスト更新中のchangedシグナルの停止
-    private bool list_not_reloading=true;
-    
+
     //アカウント操作がされたかどうか
     private bool account_add_or_remove;
     
@@ -40,8 +36,12 @@ namespace Capricorn{
       font_desk.set_size((int)font_size*Pango.SCALE);
       font_desk.set_family(font_family);
       
+      //post_box;
+      post_box=new PostBox(account_array);
+      app_grid.attach(post_box,0,0,3,1);
+      
       //comboboxにアカウント入れて
-      load_combobox(account_array,cache_dir,db);
+      post_box.load_combobox(account_array,cache_dir,db);
       
       //TLを作ろう!
       for(int i=0;i<account_array.length;i++){
@@ -51,26 +51,7 @@ namespace Capricorn{
         this.mention_note.append_page(tl_scrolled_array.index(i).mention_scrolled,tl_scrolled_array.index(i).mention_tag_image);
       }
       
-      //シグナルのコネクト
-      this.post_box.post_button.clicked.connect(()=>{
-        post_button_clicked(this.post_box.post_textview,account_array.index(select_account_num));
-      });
-      
-      //文字数のカウントですよ
-      this.post_box.post_textview.buffer.changed.connect(()=>{
-        this.post_box.chars_count_label.set_text((140-this.post_box.post_textview.buffer.get_char_count()).to_string());
-      });
-      
-      //combobox
-      this.post_box.account_cbox.changed.connect(()=>{
-        if(list_not_reloading){
-          GLib.Value val;
-          this.post_box.account_cbox.get_active_iter(out this.post_box.iter);
-          this.post_box.account_list_store.get_value(this.post_box.iter,0, out val);
-          select_account_num=(int)val;
-        }
-      });
-      
+      //シグナルのコネクト      
       //settings_windowの起動
       this.settings_box.settings_button.clicked.connect(()=>{
         SettingsWindow settings_window=new SettingsWindow(account_array,cache_dir,&account_add_or_remove,db);
@@ -78,47 +59,11 @@ namespace Capricorn{
         //もしアカウントが操作されていれば,削除,追加
         settings_window.destroy.connect(()=>{
           if(account_add_or_remove){
+            post_box.load_combobox(account_array,cache_dir,db);
             add_or_remove_TLScrolled(account_array,cache_dir,db);
-          }else{
           }
         });
       });
-    }
-    
-    //ポスト
-    private void post_button_clicked(Gtk.TextView post_textview,Account account){
-      string post=post_textview.buffer.text;
-      if(post!=""){
-        Twitter.post_tweet(post,account.api_proxy);
-        post_textview.buffer.text="";
-      }
-    }
-    
-    //comboboxのロード
-    public void load_combobox(GLib.Array<Account> account_array,string cache_dir,Sqlite.Database db){
-      list_not_reloading=false;
-      try{
-        Gdk.Pixbuf pixbuf=new Gdk.Pixbuf.from_file("icon/loading_icon.png");
-        for(int i=0;i<account_array.length;i++){
-          this.post_box.account_list_store.append(out this.post_box.iter);
-          this.post_box.account_list_store.set(this.post_box.iter,0,account_array.index(i).my_list_id,1,pixbuf,2,account_array.index(i).my_screen_name);
-          string icon_path=SqliteOpr.select_image_path(account_array.index(i).my_id,db);
-          set_image_for_liststore(account_array.index(i).my_screen_name,
-                     account_array.index(i).my_id,
-                     account_array.index(i).my_profile_image_url,
-                     icon_path,
-                     true,
-                     this.post_box.account_list_store,
-                     this.post_box.iter,
-                     cache_dir,
-                     db);
-        }
-      }catch(Error e){
-        print("%s\n",e.message);
-      }
-      list_not_reloading=true;
-      this.post_box.account_cbox.active=0;
-      select_account_num=0;
     }
     
     //tl_scrolled_arrayの追加と削除
@@ -146,6 +91,77 @@ namespace Capricorn{
     }
   }
   
+  class PostBox:PostBoxUI{
+    //選択中のアカウント
+    private int select_account_num;
+    //replyするtweetのid
+    private string? tweet_id;
+    //アカウントリスト更新中のchangedシグナルの停止
+    private bool list_not_reloading=true;
+    
+    public PostBox(GLib.Array<Account> account_array){
+      //シグナルの処理
+      post_button.clicked.connect(()=>{
+        post_button_clicked(post_textview,account_array.index(select_account_num));
+      });
+      
+      //文字数のカウントですよ
+      post_textview.buffer.changed.connect(()=>{
+        chars_count_label.set_text((140-post_textview.buffer.get_char_count()).to_string());
+      });
+      
+      //combobox
+      account_cbox.changed.connect(()=>{
+        if(list_not_reloading){
+          GLib.Value val;
+          account_cbox.get_active_iter(out iter);
+          account_list_store.get_value(iter,0, out val);
+          select_account_num=(int)val;
+        }
+      });
+    }
+    //ポスト
+    private void post_button_clicked(Gtk.TextView post_textview,Account account){
+      string post=post_textview.buffer.text;
+      if(post!=""){
+        Twitter.post_tweet(post,tweet_id,account.api_proxy);
+        post_textview.buffer.text="";
+        tweet_id=null;
+      }
+    }
+    
+    //replyの設定
+    public void reply_param(string screen_name_param,string tweet_id_param){
+      post_textview.buffer.text="@"+screen_name_param+" ";
+      tweet_id=tweet_id_param;
+    }
+    
+    //comboboxのロード
+    public void load_combobox(GLib.Array<Account> account_array,string cache_dir,Sqlite.Database db){
+      list_not_reloading=false;
+      account_list_store.clear();
+      Gdk.Pixbuf pixbuf=get_pixbuf(LOADING_ICON_PATH,24);
+      for(int i=0;i<account_array.length;i++){
+        account_list_store.append(out iter);
+        account_list_store.set(iter,0,account_array.index(i).my_list_id,1,pixbuf,2,account_array.index(i).my_screen_name);
+        string icon_path=SqliteOpr.select_image_path(account_array.index(i).my_id,db);
+        set_image_for_liststore(account_array.index(i).my_screen_name,
+                    account_array.index(i).my_id,
+                    account_array.index(i).my_profile_image_url,
+                    icon_path,
+                    true,
+                    account_list_store,
+                    iter,
+                    cache_dir,
+                    db);
+      }
+      list_not_reloading=true;
+      account_cbox.active=0;
+      select_account_num=0;
+    
+    }
+  }
+  
   //TLScrolled
   class TLScrolled:GLib.Object{
     //コンストラクタ
@@ -164,14 +180,16 @@ namespace Capricorn{
     private string *cache_dir;
     private int[] time_deff;
     private Account account;
+    private PostBox post_box;
     private Pango.FontDescription *font_desk;
     private Sqlite.Database *db;
-    public TLScrolled(Account account_param,PostBox post_box,int get_tweet_max_param,string cache_dir_param,int[] time_deff_param,Pango.FontDescription font_desk_param,Sqlite.Database db_param){
+    public TLScrolled(Account account_param,PostBox post_box_param,int get_tweet_max_param,string cache_dir_param,int[] time_deff_param,Pango.FontDescription font_desk_param,Sqlite.Database db_param){
       //もうポインタで呼べばいいんじゃねーの
       get_tweet_max=get_tweet_max_param;
       cache_dir=cache_dir_param;
       time_deff=time_deff_param;
       account=account_param;
+      post_box=post_box_param;
       font_desk=font_desk_param;
       db=db_param;
       
@@ -206,9 +224,9 @@ namespace Capricorn{
       //TL初期化
       //通常apiによる取得
       //home
-      get_timeline(account,false,get_tweet_max,cache_dir,time_deff,font_desk,db);
+      get_timeline(false);
       //mention
-      get_timeline(account,true,get_tweet_max,cache_dir,time_deff,font_desk,db);
+      get_timeline(true);
       
       //StreamingAPI
       ProxyCall stream_call=account.stream_proxy.new_call();
@@ -222,7 +240,7 @@ namespace Capricorn{
     }
     
     //APIで取得
-    private void get_timeline(Account account,bool mention,int get_tweet_max,string cache_dir,int[] time_deff,Pango.FontDescription font_desk,Sqlite.Database db){
+    private void get_timeline(bool mention){
       //json用のstring[]
       string[] tl_json=Twitter.get_timeline_json(account.api_proxy,get_tweet_max,mention);
       for(int i=0;i<tl_json.length;i++){
@@ -238,7 +256,7 @@ namespace Capricorn{
         string image_path=SqliteOpr.select_image_path(parse_json.user_id,db);
         //通常APIによる取得であれば
         if(!mention){
-          TweetObj normal_tweet_obj=new TweetObj(parse_json,font_desk);
+          TweetObj normal_tweet_obj=new TweetObj(post_box,account,parse_json,font_desk);
           set_image_for_image(parse_json.screen_name,
                      parse_json.user_id,
                      parse_json.profile_image_url,
@@ -254,7 +272,7 @@ namespace Capricorn{
                       parse_json.rt_user_id,
                       parse_json.rt_profile_image_url,
                       null,
-                      24,
+                      16,
                       always_get,
                       true,
                       normal_tweet_obj.rt_profile_image,
@@ -265,7 +283,7 @@ namespace Capricorn{
         }
         //リプライを作るかもしれない
         if(parse_json.reply){
-          TweetObj reply_obj=new TweetObj(parse_json,font_desk);
+          TweetObj reply_obj=new TweetObj(post_box,account,parse_json,font_desk);
           set_image_for_image(parse_json.screen_name,
                      parse_json.user_id,
                      parse_json.profile_image_url,
@@ -276,6 +294,18 @@ namespace Capricorn{
                      reply_obj.profile_image,
                      cache_dir,
                      db);
+            if(parse_json.retweet){
+              set_image_for_image(parse_json.screen_name,
+                      parse_json.rt_user_id,
+                      parse_json.rt_profile_image_url,
+                      null,
+                      16,
+                      always_get,
+                      true,
+                      reply_obj.rt_profile_image,
+                      cache_dir,
+                      db);
+          }
           //replyはmentionに追加する
           mention_scrolled.add_tweet_obj(reply_obj,get_tweet_max,always_get);
         }

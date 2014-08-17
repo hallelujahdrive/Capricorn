@@ -18,7 +18,8 @@ namespace JsonOpr{
     public string source_label;
     public string source_url;
     public int user_id;
-    public string id_str;
+    public int tweet_id;
+    public string tweet_id_str;
     
     public string rt_name;
     public string rt_screen_name;
@@ -86,12 +87,14 @@ namespace JsonOpr{
                 }
                 break;
                 case "text":
-                text=json_main_obj.get_string_member("text");
+                text=parse_text(json_main_obj.get_string_member("text"));
                 reply=text.contains(my_screen_name);
                 break;
                 case "source": parse_source(json_main_obj.get_string_member("source"));
                 break;
-                case "id_str": id_str=json_main_obj.get_string_member("id_str");
+                case "id_str": tweet_id_str=json_main_obj.get_string_member("id_str");
+                break;
+                case "id": tweet_id=(int)json_main_obj.get_int_member("id");
                 break;
               }
             }
@@ -101,6 +104,28 @@ namespace JsonOpr{
       }catch(Error e){
         //print("%s\n",e.message);
       }
+    }
+    
+    //textのparse
+    private string parse_text(string get_text){
+      string parse_text=get_text;
+      GLib.MatchInfo match_info;
+      try{
+        var text_regex=new Regex("https?://[-_.!~*\'()a-zA-Z0-9;/?:@&=+$,%#]+");
+        if(text_regex.match(get_text,0,out match_info)){
+          do{
+            //urlをハイパーリンクに置換
+            var text_regex_replace=new Regex(match_info.fetch(0));
+            GLib.StringBuilder url_sb=new GLib.StringBuilder("<u>");
+            url_sb.append(match_info.fetch(0));
+            url_sb.append("</u>");
+            parse_text=text_regex_replace.replace(parse_text,-1,0,url_sb.str);
+          }while(match_info.next());
+        }
+      }catch(Error e){
+        print("%s\n",e.message);
+      }
+      return parse_text;
     }
     
     //created_atのparse

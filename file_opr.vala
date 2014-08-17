@@ -4,6 +4,12 @@ using ContentsObj;
 using JsonOpr;
 
 namespace FileOpr{
+  //文字列定数
+  const string LOADING_ICON_PATH="icon/loading_icon.png";
+  const string REPLY_ICON_PATH="icon/reply_icon.png";
+  const string RT_ICON_PATH="icon/rt_icon.png";
+  const string FAV_ICON_PATH="icon/fav_icon.png";
+  
   //ディレクトリの作成
   public bool mk_cpr_dir(string cpr_dir_path,string cache_dir_path){
     if(!GLib.FileUtils.test(cpr_dir_path,FileTest.IS_DIR)){
@@ -154,5 +160,19 @@ namespace FileOpr{
     }catch(Error e){
       print("%s\n",e.message);
     }
+  }
+  
+  public Pixbuf? get_pixbuf(string image_path,int size){
+    Pixbuf pixbuf=null;
+    try{
+      //既に取得済みであれば問題なし
+      var image=File.new_for_path(image_path);
+      var image_stream=image.read();
+      pixbuf=new Pixbuf.from_stream_at_scale(image_stream,size,size,true,null);
+      image_stream.close();
+    }catch(Error e){
+      print("%s\n",e.message);
+    }
+    return pixbuf;
   }
 }

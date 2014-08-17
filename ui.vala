@@ -1,12 +1,12 @@
 using Gtk;
 
+using FileOpr;
 namespace UI{
   //MainWindow
   class AppWindow:Gtk.Window{
     //コンストラクタ
-    private Gtk.Grid app_grid=new Gtk.Grid();
-    
-    public PostBox post_box=new PostBox();
+    public Gtk.Grid app_grid=new Gtk.Grid();
+
     public SettingsBox settings_box=new SettingsBox();
     
     public Gtk.Notebook home_tl_note=new Gtk.Notebook();
@@ -28,7 +28,6 @@ namespace UI{
       various_note.set_vexpand(true);
       
       //レイアウト
-      app_grid.attach(post_box,0,0,3,1);
       app_grid.attach(home_tl_note,0,1,1,1);
       app_grid.attach(mention_note,1,1,1,1);
       app_grid.attach(various_note,2,1,1,1);
@@ -39,7 +38,7 @@ namespace UI{
   }
   
   //PostBox
-  class PostBox:Gtk.Box{
+  class PostBoxUI:Gtk.Box{
     //コンストラクタ
     //box
     private Gtk.Box p_box=new Gtk.Box(Gtk.Orientation.HORIZONTAL,2);
@@ -61,7 +60,7 @@ namespace UI{
     public Gtk.TreeIter iter;
     public Gtk.ComboBox account_cbox;
       
-    public PostBox(){
+    public PostBoxUI(){
       //プロパティ
       this.set_orientation(Gtk.Orientation.VERTICAL);
       this.set_spacing(2);
@@ -128,11 +127,16 @@ namespace UI{
     public Gtk.EventBox profile_image_ebox=new Gtk.EventBox();
     public Gtk.EventBox source_ebox=new Gtk.EventBox();
     
-    public Gtk.Box profile_image_box=new Gtk.Box(Gtk.Orientation.VERTICAL,0);
+    private Gtk.Box profile_image_box=new Gtk.Box(Gtk.Orientation.VERTICAL,0);
     public Gtk.Box name_box=new Gtk.Box(Gtk.Orientation.VERTICAL,0);
     public Gtk.Box text_box=new Gtk.Box(Gtk.Orientation.VERTICAL,0);
     public Gtk.Box created_at_box=new Gtk.Box(Gtk.Orientation.HORIZONTAL,0);
     
+    public  Gtk.Box opr_box=new Gtk.Box(Gtk.Orientation.HORIZONTAL,5);
+    public Gtk.EventBox reply_icon_ebox=new Gtk.EventBox();
+    public Gtk.EventBox rt_icon_ebox=new Gtk.EventBox();
+    public Gtk.EventBox fav_icon_ebox=new Gtk.EventBox();
+
     public Gtk.Box rt_box=new Gtk.Box(Gtk.Orientation.HORIZONTAL,5);
 
     public Gtk.DrawingArea name_area=new Gtk.DrawingArea();
@@ -143,6 +147,11 @@ namespace UI{
     public Gtk.DrawingArea rt_mess_area=new Gtk.DrawingArea();
     public Gtk.DrawingArea rt_name_area=new Gtk.DrawingArea();
     public Gtk.Image rt_profile_image=new Gtk.Image();
+    
+    public Gtk.Image reply_icon_image=new Gtk.Image.from_pixbuf(get_pixbuf(REPLY_ICON_PATH,16));
+    public Gtk.Image rt_icon_image=new Gtk.Image.from_pixbuf(get_pixbuf(RT_ICON_PATH,16));
+    public Gtk.Image fav_icon_image=new Gtk.Image.from_pixbuf(get_pixbuf(FAV_ICON_PATH,16));
+
     
     public Gtk.Image profile_image=new Gtk.Image();
     public TweetObjUI(){
@@ -155,21 +164,28 @@ namespace UI{
       source_ebox.set_hexpand(true);
       
       rt_box.set_hexpand(true);
-      
+            
       //レイアウト
       profile_image_ebox.add(profile_image);
       name_box.pack_start(name_area);
       text_box.pack_start(text_area);
       created_at_box.pack_start(created_at_area,true,true,0);
       source_ebox.add(source_area);
+      reply_icon_ebox.add(reply_icon_image);
+      rt_icon_ebox.add(rt_icon_image);
+      fav_icon_ebox.add(fav_icon_image);
       
       profile_image_box.pack_start(profile_image_ebox,false,false,0);
+      opr_box.pack_end(fav_icon_ebox,false,false,0);
+      opr_box.pack_end(rt_icon_ebox,false,false,0);
+      opr_box.pack_end(reply_icon_ebox,false,false,0);
       
       tweet_obj_grid.attach(profile_image_box,0,0,1,2);
       tweet_obj_grid.attach(name_box,1,0,1,1);
       tweet_obj_grid.attach(text_box,1,1,1,1);
-      tweet_obj_grid.attach(created_at_box,1,3,1,1);
-      tweet_obj_grid.attach(source_ebox,1,4,1,1);
+      tweet_obj_grid.attach(opr_box,1,3,1,1);
+      tweet_obj_grid.attach(created_at_box,1,4,1,1);
+      tweet_obj_grid.attach(source_ebox,1,5,1,1);
       
       tweet_obj_ebox.add(tweet_obj_grid);
       this.add(tweet_obj_ebox);
