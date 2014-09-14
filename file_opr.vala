@@ -1,14 +1,17 @@
 using Gdk;
+using Soup;
 
 using ContentsObj;
 using JsonOpr;
 
 namespace FileOpr{
   //文字列定数
-  const string LOADING_ICON_PATH="icon/loading_icon.png";
-  const string REPLY_ICON_PATH="icon/reply_icon.png";
-  const string RT_ICON_PATH="icon/rt_icon.png";
-  const string FAV_ICON_PATH="icon/fav_icon.png";
+  static const string LOADING_ICON_PATH="icon/loading_icon.png";
+  static const string REPLY_ICON_PATH="icon/reply_icon.png";
+  static const string RT_ICON_PATH="icon/rt_icon.png";
+  static const string RT_ICON_F_PATH="icon/rt_icon_f.png";
+  static const string FAV_ICON_PATH="icon/fav_icon.png";
+  static const string FAV_ICON_F_PATH="icon/fav_icon_f.png";
   
   //ディレクトリの作成
   public bool mk_cpr_dir(string cpr_dir_path,string cache_dir_path){
@@ -30,65 +33,57 @@ namespace FileOpr{
   }
   
   //imageの読み出し
-  public void set_image_for_image(string file_name,int id,string profile_image_url,string? image_path,
-                           int size,bool always_get,bool never_save,
-                           Gtk.Image? profile_image,string cache_dir,Sqlite.Database db){
-    bool has_image=false;
+  public void set_image_for_image(string image_path,string profile_image_url,int size,Gtk.Image profile_image){
     GLib.Cancellable cancellable=new GLib.Cancellable();
     //image_pathが正常に取得できていればそのまま設定できる
-    if(image_path!=null){
-      has_image=true;
-    }
+    bool has_image=image_test(image_path);
     //gifは現状除外
     if(!profile_image_url.has_suffix("gif")){
     //もしアイコンを持っていなければ取得
-    if(!has_image||always_get){
-      //image_pathの設定
-      string new_image_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,cache_dir,file_name);
-      var image=File.new_for_uri(profile_image_url);
+    if(!has_image){
+      
+      Soup.Session session=new Soup.Session();
+      Soup.Message msg=new Soup.Message("GET",profile_image_url);
+      session.queue_message(msg,(s,_msg)=>{
+        try{
+          var memory_stream=new MemoryInputStream.from_data(_msg.response_body.data,null);
+          Pixbuf pixbuf=new Pixbuf.from_stream_at_scale(memory_stream,size,size,false);
+          profile_image.set_from_pixbuf(pixbuf);
+          memory_stream.close();
+        //image_pathの設定(
+      /*var image=File.new_for_uri(profile_image_url);
       image.read_async.begin(Priority.DEFAULT,cancellable,(obj,res)=>{
         try{
           //streamからのpixbuf
           var input_stream=image.read_async.end(res);
-          Pixbuf pixbuf=new Pixbuf.from_stream(input_stream,null);
+          var data_input_stream=new DataInputStream(input_stream);
+          Pixbuf pixbuf=new Pixbuf.from_stream(data_input_stream,null);
           
           //imageに設定
           Pixbuf scaled_pixbuf=pixbuf.scale_simple(size,size,Gdk.InterpType.BILINEAR);
           profile_image.set_from_pixbuf(scaled_pixbuf);
           
           input_stream.close();
+          data_input_stream.close();*/
           
           //書き出し
-          if(!never_save){
-            var output_image=File.new_for_path(new_image_path);
+          /*if(!image_test(image_path)){
+            var output_image=File.new_for_path(image_path);
             var output_stream=output_image.create(GLib.FileCreateFlags.REPLACE_DESTINATION,null);
             pixbuf.save_to_stream(output_stream,"png",cancellable);
             output_stream.close();
-          }
+          }*/
           
         }catch(Error e){
-          print("Error:%s\n%s\n",e.message,file_name);
-
+          print("Error:%s\n%s\n",e.message,image_path);
         }
       });
-      //insertされていなければ書き出す
-      if(!has_image&&!never_save){
-        SqliteOpr.insert_image_path(id,new_image_path,db);
-      }
     }else{
-      try{
-        //既に取得済みであれば問題なし
-        var image=File.new_for_path(image_path);
-        var image_stream=image.read();
-        Pixbuf pixbuf=new Pixbuf.from_stream_at_scale(image_stream,size,size,true,null);
-        profile_image.set_from_pixbuf(pixbuf);
-        image_stream.close();
-      }catch(Error e){
-        print("%s\n",e.message);
-      }
+      //既に取得済みであれば問題なし
+      Pixbuf pixbuf=get_pixbuf(image_path,size);
+      profile_image.set_from_pixbuf(pixbuf);
     }
     }
-        
             
     //シグナルの処理
     cancellable.cancelled.connect(()=>{
@@ -96,20 +91,14 @@ namespace FileOpr{
     });
   }
   
-  public void set_image_for_liststore(string file_name,int id,string profile_image_url,string? image_path,
-                           bool always_get,
-                           Gtk.ListStore? account_list_store,Gtk.TreeIter? iter,
-                           string cache_dir,Sqlite.Database db){
-    bool has_image=false;
+  public void set_image_for_liststore(string image_path,string profile_image_url,int size,Gtk.ListStore account_list_store,Gtk.TreeIter iter){
     GLib.Cancellable cancellable=new GLib.Cancellable();
     //image_pathが正常に取得できていればそのまま設定できる
-    if(image_path!=null){
-      has_image=true;
-    }
+    bool has_image=image_test(image_path);
     //gifは現状除外
     if(!profile_image_url.has_suffix("gif")){
     //もしアイコンを持っていなければ取得
-    if(!has_image||always_get){
+    if(!has_image){
       var image=File.new_for_uri(profile_image_url);
       image.read_async.begin(Priority.DEFAULT,cancellable,(obj,res)=>{
         try{
@@ -123,7 +112,7 @@ namespace FileOpr{
           account_list_store.set(iter,1,scaled_pixbuf);
           
         }catch(Error e){
-          print("Error:%s\n%s\n",e.message,file_name);
+          print("Error:%s\n\n",e.message);
 
         }
       });
@@ -141,12 +130,21 @@ namespace FileOpr{
     }
     }
         
-            
     //シグナルの処理
     cancellable.cancelled.connect(()=>{
       print("Cancelled\n");
     });
   }
+  
+  //アイコンの取得済みかどうか
+  public bool image_test(string image_path){
+    if(GLib.FileUtils.test(image_path,FileTest.IS_REGULAR)){
+      return true;
+    }else{
+      return false;
+    }
+  }
+  
   //キャッシュの全削除
   public void clear_cache(string cache_dir_path){
     try{

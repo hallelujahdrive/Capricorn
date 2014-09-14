@@ -51,7 +51,15 @@ namespace Capricorn{
         this.mention_note.append_page(tl_scrolled_array.index(i).mention_scrolled,tl_scrolled_array.index(i).mention_tag_image);
       }
       
-      //シグナルのコネクト      
+      //シグナルのコネクト
+      
+      //TLの取得
+      this.show.connect(()=>{
+        for(int i=0;i<tl_scrolled_array.length;i++){
+          tl_scrolled_array.index(i).timeline_init();
+        }
+      });
+      
       //settings_windowの起動
       this.settings_box.settings_button.clicked.connect(()=>{
         SettingsWindow settings_window=new SettingsWindow(account_array,cache_dir,&account_add_or_remove,db);
@@ -144,16 +152,8 @@ namespace Capricorn{
       for(int i=0;i<account_array.length;i++){
         account_list_store.append(out iter);
         account_list_store.set(iter,0,account_array.index(i).my_list_id,1,pixbuf,2,account_array.index(i).my_screen_name);
-        string icon_path=SqliteOpr.select_image_path(account_array.index(i).my_id,db);
-        set_image_for_liststore(account_array.index(i).my_screen_name,
-                    account_array.index(i).my_id,
-                    account_array.index(i).my_profile_image_url,
-                    icon_path,
-                    true,
-                    account_list_store,
-                    iter,
-                    cache_dir,
-                    db);
+        string icon_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,cache_dir,account_array.index(i).my_screen_name);
+        set_image_for_liststore(icon_path,account_array.index(i).my_profile_image_url,24,account_list_store,iter);
       }
       list_not_reloading=true;
       account_cbox.active=0;
@@ -195,38 +195,13 @@ namespace Capricorn{
       
       my_id=account.my_id;
       
-        home_tl_scrolled=new TLScrolledObj(get_tweet_max);
+      home_tl_scrolled=new TLScrolledObj(get_tweet_max);
       mention_scrolled=new TLScrolledObj(get_tweet_max);
       //tagのimage
       //もらってくる
-      string icon_path=SqliteOpr.select_image_path(account.my_id,db);
-      set_image_for_image(account.my_screen_name,
-                 account.my_id,
-                 account.my_profile_image_url,
-                 icon_path,
-                 24,
-                 true,
-                 true,
-                 home_tag_image,
-                 cache_dir,
-                 db);
-        set_image_for_image(account.my_screen_name,
-                 account.my_id,
-                 account.my_profile_image_url,
-                 icon_path,
-                 24,
-                 true,
-                 true,
-                 mention_tag_image,
-                 cache_dir,
-                 db);
-                 
-      //TL初期化
-      //通常apiによる取得
-      //home
-      get_timeline(false);
-      //mention
-      get_timeline(true);
+      string icon_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,cache_dir,account.my_screen_name);
+      set_image_for_image(icon_path,account.my_profile_image_url,24,home_tag_image);
+      set_image_for_image(icon_path,account.my_profile_image_url,24,mention_tag_image);
       
       //StreamingAPI
       ProxyCall stream_call=account.stream_proxy.new_call();
@@ -239,11 +214,21 @@ namespace Capricorn{
       }
     }
     
+    //TL初期化
+    public void timeline_init(){
+      //通常apiによる取得
+      //home
+      get_timeline(false);
+      //mention
+      get_timeline(true);
+    }
+      
     //APIで取得
     private void get_timeline(bool mention){
       //json用のstring[]
       string[] tl_json=Twitter.get_timeline_json(account.api_proxy,get_tweet_max,mention);
       for(int i=0;i<tl_json.length;i++){
+        //print("%s\n",tl_json[i]);
         make_and_add_tweet(tl_json[i],mention,true);
       }
     }
@@ -253,59 +238,27 @@ namespace Capricorn{
       ParseJson parse_json=new ParseJson(json_str,account.my_screen_name,time_deff,db);
       //tlに追加
       if(parse_json.created_at!=null){
-        string image_path=SqliteOpr.select_image_path(parse_json.user_id,db);
+        string image_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,cache_dir,parse_json.screen_name);
+        string rt_image_path=null;
+        if(parse_json.retweet){
+          rt_image_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,cache_dir,parse_json.rt_screen_name);
+        }
         //通常APIによる取得であれば
         if(!mention){
           TweetObj normal_tweet_obj=new TweetObj(post_box,account,parse_json,font_desk);
-          set_image_for_image(parse_json.screen_name,
-                     parse_json.user_id,
-                     parse_json.profile_image_url,
-                     image_path,
-                     48,
-                     always_get,
-                     always_get,
-                     normal_tweet_obj.profile_image,
-                     cache_dir,
-                     db);
-            if(parse_json.retweet){
-              set_image_for_image(parse_json.screen_name,
-                      parse_json.rt_user_id,
-                      parse_json.rt_profile_image_url,
-                      null,
-                      16,
-                      always_get,
-                      true,
-                      normal_tweet_obj.rt_profile_image,
-                      cache_dir,
-                      db);
+          set_image_for_image(image_path,parse_json.profile_image_url,48,normal_tweet_obj.profile_image);
+          if(parse_json.retweet){
+            set_image_for_image(rt_image_path,parse_json.rt_profile_image_url,16,normal_tweet_obj.rt_profile_image);
           }
           home_tl_scrolled.add_tweet_obj(normal_tweet_obj,get_tweet_max,always_get);
         }
         //リプライを作るかもしれない
         if(parse_json.reply){
           TweetObj reply_obj=new TweetObj(post_box,account,parse_json,font_desk);
-          set_image_for_image(parse_json.screen_name,
-                     parse_json.user_id,
-                     parse_json.profile_image_url,
-                     image_path,
-                     48,
-                     always_get, 
-                     true,
-                     reply_obj.profile_image,
-                     cache_dir,
-                     db);
+          set_image_for_image(image_path,parse_json.profile_image_url,48,reply_obj.profile_image);
             if(parse_json.retweet){
-              set_image_for_image(parse_json.screen_name,
-                      parse_json.rt_user_id,
-                      parse_json.rt_profile_image_url,
-                      null,
-                      16,
-                      always_get,
-                      true,
-                      reply_obj.rt_profile_image,
-                      cache_dir,
-                      db);
-          }
+              set_image_for_image(rt_image_path,parse_json.rt_profile_image_url,16,reply_obj.rt_profile_image);
+            }
           //replyはmentionに追加する
           mention_scrolled.add_tweet_obj(reply_obj,get_tweet_max,always_get);
         }

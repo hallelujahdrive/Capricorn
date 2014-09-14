@@ -165,8 +165,8 @@ namespace Twitter{
       tl_call.run();
       tl_json=tl_call.get_payload();
       string tl_json_slice=tl_json.slice(1,tl_json.length-1);
-      var tl_regex_replace=new Regex("(},{)");
-      string tl_regex=tl_regex_replace.replace(tl_json_slice,-1,0,"}\n{");
+      var tl_regex_replace=new Regex("(},{\"created_at\")");
+      string tl_regex=tl_regex_replace.replace(tl_json_slice,-1,0,"}\n{\"created_at\"");
       tl_json_split=tl_regex.split("\n");
     }catch(Error e){
       print("%s\n",e.message);

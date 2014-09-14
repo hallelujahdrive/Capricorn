@@ -111,7 +111,7 @@ namespace JsonOpr{
       string parse_text=get_text;
       GLib.MatchInfo match_info;
       try{
-        var text_regex=new Regex("https?://[-_.!~*\'()a-zA-Z0-9;/?:@&=+$,%#]+");
+        var text_regex=new Regex("https?://[-_.!~*\'a-zA-Z0-9;/?:@&=+$,%#]+");
         if(text_regex.match(get_text,0,out match_info)){
           do{
             //urlをハイパーリンクに置換

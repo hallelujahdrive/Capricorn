@@ -78,16 +78,8 @@ namespace Settings{
             Gdk.Pixbuf pixbuf=new Gdk.Pixbuf.from_file("icon/loading_icon.png");
             this.account_list_store.append(out iter);
             this.account_list_store.set(iter,0,account_array.index(i).my_list_id,1,pixbuf,2,"@"+account_array.index(i).my_screen_name);
-            string icon_path=SqliteOpr.select_image_path(account_array.index(i).my_id,db);
-            set_image_for_liststore(account_array.index(i).my_screen_name,
-                       account_array.index(i).my_id,
-                       account_array.index(i).my_profile_image_url,
-                       icon_path,
-                       true,
-                       account_list_store,
-                       iter,
-                       cache_dir,
-                       db);
+            string icon_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,cache_dir,account_array.index(i).my_screen_name);
+            set_image_for_liststore(icon_path,account_array.index(i).my_profile_image_url,24,account_list_store,iter);
           }catch(Error e){
             print("%s\n",e.message);
           }

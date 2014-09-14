@@ -8,6 +8,7 @@ all:
 	--pkg pango \
 	--pkg cairo \
 	--pkg sqlite3 \
+	--pkg libsoup-2.4 \
 	main.vala \
 	capricorn.vala	\
 	twitter.vala \

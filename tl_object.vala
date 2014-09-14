@@ -22,8 +22,8 @@ namespace TLObject{
       array_val=get_tweet_max;
       tweet_obj_array=new TweetObj[get_tweet_max];
     }
-    public void add_tweet_obj(TweetObj tweet_obj,int get_tweet_max,bool always_get){
-      if(!always_get){
+    public void add_tweet_obj(TweetObj tweet_obj,int get_tweet_max,bool never_save){
+      if(!never_save){
         //オブジェクト削除
         if(tweet_obj_array[array_val]!=null){
           tweet_obj_array[array_val].destroy();
@@ -153,7 +153,7 @@ namespace TLObject{
           int w,h;
           Pango.Layout rt_name_layout=Pango.cairo_create_layout(context);
           rt_name_layout.set_font_description(font_desk);
-          rt_name_layout.set_markup("@"+parse_json.screen_name,-1);
+          rt_name_layout.set_markup("@"+parse_json.rt_screen_name,-1);
           rt_name_layout.set_width(-1);
           context.move_to(0,0);
           Pango.cairo_show_layout(context,rt_name_layout);
@@ -173,13 +173,17 @@ namespace TLObject{
       
       //retweet
       rt_icon_ebox.button_press_event.connect(()=>{
-        Twitter.retweet(parse_json.tweet_id_str,account.api_proxy);
+        if(Twitter.retweet(parse_json.tweet_id_str,account.api_proxy)){
+          rt_icon_image.set_from_pixbuf(get_pixbuf(RT_ICON_F_PATH,16));
+        }
         return true;
       });
       
       //☆
       fav_icon_ebox.button_press_event.connect(()=>{
-        Twitter.favorite(parse_json.tweet_id_str,account.api_proxy);
+        if(Twitter.favorite(parse_json.tweet_id_str,account.api_proxy)){
+          fav_icon_image.set_from_pixbuf(get_pixbuf(FAV_ICON_F_PATH,16));
+        }
         return true;
       });
     }
