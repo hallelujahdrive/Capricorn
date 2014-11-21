@@ -47,6 +47,7 @@ namespace TwitterUtils{
   
   //user_stream
   class UserStream{
+    private OAuthProxy stream_proxy_;
     
     private string json_frg;
     private StringBuilder json_sb=new StringBuilder();
@@ -54,18 +55,19 @@ namespace TwitterUtils{
     private ProxyCall stream_call;
     
     public UserStream(OAuthProxy stream_proxy){
-      //proxy_callの設定
-      stream_call=stream_proxy.new_call();
-      stream_call.set_function(FUNCTION_USER);
-      stream_call.set_method("GET");
+      stream_proxy_=stream_proxy;
     }
   
     public void run(){
+      //proxy_callの設定
+      stream_call=stream_proxy_.new_call();
+      stream_call.set_function(FUNCTION_USER);
+      stream_call.set_method("GET");
       try{
         stream_call.continuous(user_stream_cb,stream_call);
       }catch(Error e){
         print("%s\n",e.message);
-      }  
+      }
     }
   
     //user_streamのcallback
