@@ -1,5 +1,5 @@
 capricorn
-main.vala
+/main.vala
 *.a
 *.c
 *.h
