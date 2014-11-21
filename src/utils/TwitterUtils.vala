@@ -1,13 +1,13 @@
 using Rest;
 
-using ContentsObj;
+using JsonUtils;
 
-namespace Twitter{
+namespace TwitterUtils{
   //ConsumerKey,URL,Function
-  public static const string CONSUMER_KEY="RLPSuCTCq0xfXeSRF6KVu1c5v";
-  public static const string CONSUMER_SECRET="iVnFROxYtG4prUS0tx6u7d348yANTfzhC3T5IghBVceSZPcZzm";
-  public static const string API_URL="https://api.twitter.com";
-  public static const string STREAM_URL="https://userstream.twitter.com";
+  private static const string CONSUMER_KEY="RLPSuCTCq0xfXeSRF6KVu1c5v";
+  private static const string CONSUMER_SECRET="iVnFROxYtG4prUS0tx6u7d348yANTfzhC3T5IghBVceSZPcZzm";
+  private static const string API_URL="https://api.twitter.com";
+  private static const string STREAM_URL="https://userstream.twitter.com";
 
   //Function
   private static const string FUNCTION_REQUEST_TOKEN="oauth/request_token";
@@ -18,10 +18,11 @@ namespace Twitter{
   private static const string FUNCTION_STATUSES_HOME_TIMELINE="1.1/statuses/home_timeline.json";
   private static const string FUNCTION_STATUSES_MENTIONS_TIMELINE="1.1/statuses/mentions_timeline.json";
   private static const string FUNCTION_STATUSES_RETWEET="1.1/statuses/retweet/";
+  private static const string FUNCTION_STATUSES_SHOW="1.1/statuses/show.json";
   private static const string FUNCTION_FAVORITES_CREATE="1.1/favorites/create.json";
   private static const string FUNCTION_USER="1.1/user.json";
 
-  public static const string PARAM_STATUS="status";
+  private static const string PARAM_STATUS="status";
   private static const string PARAM_IN_REPLY_TO_STATUS_ID="in_reply_to_status_id";
   private static const string PARAM_DELIMITED="delimited";
   private static const string PARAM_COUNT="count";
@@ -42,6 +43,54 @@ namespace Twitter{
       print("Could not get token_url:%s\n",e.message);
       return null;
     }
+  }
+  
+  //user_stream
+  class UserStream{
+    
+    private string json_frg;
+    private StringBuilder json_sb=new StringBuilder();
+    
+    private ProxyCall stream_call;
+    
+    public UserStream(OAuthProxy stream_proxy){
+      //proxy_callの設定
+      stream_call=stream_proxy.new_call();
+      stream_call.set_function(FUNCTION_USER);
+      stream_call.set_method("GET");
+    }
+  
+    public void run(){
+      try{
+        stream_call.continuous(user_stream_cb,stream_call);
+      }catch(Error e){
+        print("%s\n",e.message);
+      }  
+    }
+  
+    //user_streamのcallback
+    private void user_stream_cb(ProxyCall call,string? buf,size_t len,Error? err){
+      //エラー処理
+      if(err!=null){
+        callback_error(err.message);
+      }
+      if(buf!=null){
+        json_frg=buf.substring(0,(int)len);  
+        if(json_frg!="\n"){
+          json_sb.append(json_frg);
+          if(json_frg.has_suffix("\r\n")||json_frg.has_suffix("\r")){
+            get_json_str(json_sb.str);
+            json_sb.erase();
+          }
+          //json_sbの初期化
+        }
+      }
+    }
+    
+    //シグナル
+    public signal void get_json_str(string json_str);
+    
+    public signal void callback_error(string err);
   }
   
   //PINコードの送信
@@ -69,48 +118,35 @@ namespace Twitter{
     profile_call.set_method("GET");
     try{
       profile_call.run();
-      
-      //jsonの取得
       string profile_json=profile_call.get_payload();
-      Json.Parser profile_parser=new Json.Parser();
-      profile_parser.load_from_data(profile_json);
-      Json.Node profile_node=profile_parser.get_root();
-      Json.Object profile_object=profile_node.get_object();
-      
-      //jsonの解析
-      foreach(string member in profile_object.get_members()){
-        switch(member){
-          case "screen_name": account.my_screen_name=profile_object.get_string_member("screen_name");
-          break;
-          case "id": account.my_id=(int)profile_object.get_int_member("id");
-          break;
-          case "profile_image_url": account.my_profile_image_url=profile_object.get_string_member("profile_image_url");
-          break;
-        }
-      }
+      parse_profile_json(profile_json,account);
       return true;
     }catch(Error e){
       print("%s\n",e.message);
       return false;
     }
   }
-    
+  
   //tweetのpost
-  public bool post_tweet(string post,string? tweet_id,OAuthProxy api_proxy){
+  async bool post_tweet(string post,string? tweet_id,OAuthProxy api_proxy){
+    bool result=false;
     ProxyCall post_call=api_proxy.new_call();
     post_call.set_function(FUNCTION_STATUSES_UPDATE);
     post_call.set_method("POST");
     post_call.add_param(PARAM_STATUS,post);
+    //リプライならtweet_idのパラメータを設定
     if(tweet_id!=null){
       post_call.add_param(PARAM_IN_REPLY_TO_STATUS_ID,tweet_id);
     }
     try{
-      post_call.sync();
-      return true;
+      if(post_call.sync()){
+        result=true;
+      }
     }catch(Error e){
       print("%s\n",e.message);
-      return false;
+      result=false;
     }
+    return result;
   }
   
   //retweet
@@ -143,6 +179,22 @@ namespace Twitter{
       print("%s\n",e.message);
       return false;
     }
+  }
+  
+  //単一ツイートの取得
+  public string? get_tweet_json(OAuthProxy api_proxy,string id_str){
+    string json_str=null;
+    ProxyCall get_call=api_proxy.new_call();
+    get_call.set_function(FUNCTION_STATUSES_SHOW);
+    get_call.set_method("GET");
+    get_call.add_param(PARAM_ID,id_str);
+    try{
+      get_call.run();
+      json_str=get_call.get_payload();
+    }catch(Error e){
+      print("%s\n",e.message);
+    }
+    return json_str;
   }
   
   //通常apiによるjsonの取得

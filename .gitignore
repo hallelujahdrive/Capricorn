@@ -1,2 +1,9 @@
 #.gitignore
-Capricorn_BETA
+capricorn
+main.vala
+*.a
+*.c
+*.h
+*.o
+*.vapi
+*.geany
