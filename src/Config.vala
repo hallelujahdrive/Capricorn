@@ -15,6 +15,8 @@ public class Config{
   public string favorite_hover_icon_path="icon/fav_hover_icon.png";
   public string favorite_on_icon_path="icon/fav_on_icon.png";
   
+  public string protected_icon_path="icon/protected_icon.png";
+  
   public string loading_icon_path="icon/loading_icon.png";
   public string post_icon_path="icon/post_icon.png";
   //データベース

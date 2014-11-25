@@ -14,6 +14,7 @@ SRC = \
 			src/NameDrawingBox.vala \
 			src/OAuth.vala \
 			src/PostPage.vala \
+			src/ProfileImageDrawingBox.vala \
 			src/RetweetDrawingBox.vala \
 			src/SettingsWindow.vala \
 			src/SignalPipe.vala \
@@ -45,6 +46,7 @@ OBJECT = \
 				NameDrawingBox.vala.o \
 				OAuth.vala.o \
 				PostPage.vala.o \
+				ProfileImageDrawingBox.vala.o \
 				RetweetDrawingBox.vala.o \
 				SettingsWindow.vala.o \
 				SignalPipe.vala.o \

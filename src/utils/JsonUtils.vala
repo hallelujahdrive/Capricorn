@@ -40,6 +40,8 @@ namespace JsonUtils{
     public string name;
     public string screen_name;
     public string profile_image_url;
+    public bool account_is_protected;
+    
     public string text;
     public string source_label;
     public string source_url;
@@ -148,6 +150,8 @@ namespace JsonUtils{
                     }
                     break;
                     case "profile_image_url":profile_image_url=user_obj.get_string_member(user_member);
+                    break;
+                    case "protected":account_is_protected=user_obj.get_boolean_member(user_member);
                     break;
                   }
                 }
