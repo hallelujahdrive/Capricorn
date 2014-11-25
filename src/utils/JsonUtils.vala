@@ -96,13 +96,15 @@ namespace JsonUtils{
             //retweetedではなかった場合,json_objそのものがjson_main_objになる
             json_main_obj=json_obj;
           }
-          if(json_main_obj.has_member("text")){
+          if(json_main_obj.has_member("id_str")){
             //jsonの解析
             foreach(string member in json_main_obj.get_members()){
               switch(member){
                 case "created_at":parse_created_at(json_main_obj.get_string_member(member));
                 break;
-                case "id_str":tweet_id_str=json_main_obj.get_string_member(member);
+                case "id_str":
+                tweet_id_str=json_main_obj.get_string_member(member);
+                is_tweet=true;
                 break;
                 case "in_reply_to_status_id_str":in_reply_to_status_id=json_main_obj.get_string_member(member);
                 break;
@@ -124,7 +126,6 @@ namespace JsonUtils{
                 break;
                 case "text":
                 text=json_main_obj.get_string_member(member);
-                is_tweet=true;
                 if(my_screen_name!=null){
                   is_reply=text.contains(my_screen_name);
                 }

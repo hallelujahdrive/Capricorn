@@ -104,8 +104,7 @@ class AccountSettingsPage:Frame{
     for(int i=0;i<account_array.length;i++){
       int my_list_id=account_array.index(i).my_list_id;
       string my_screen_name=account_array.index(i).my_screen_name;
-      string profile_image_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,config.cache_dir_path,my_screen_name+".png");
-      get_pixbuf_async.begin(profile_image_path,account_array.index(i).my_profile_image_url,16,(obj,res)=>{
+      get_pixbuf_async.begin(config.cache_dir_path,my_screen_name,account_array.index(i).my_profile_image_url,16,config.profile_image_hash_table,(obj,res)=>{
         Pixbuf pixbuf=get_pixbuf_from_path(config.loading_icon_path,16);
         account_list_store.append(out iter);
         account_list_store.set(iter,0,my_list_id,1,pixbuf,2,my_screen_name);

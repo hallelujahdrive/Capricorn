@@ -14,9 +14,7 @@ class TweetNode:Grid{
   private OAuthProxy api_proxy_;
   private Config config_;
   private SignalPipe signal_pipe_;
-  
-  private string profile_image_path;
-  
+    
   private NameDrawingBox name_d_box;
   private TextDrawingBox text_d_box;
   private FooterDrawingBox footer_d_box;
@@ -132,9 +130,7 @@ class TweetNode:Grid{
     this.attach(name_d_box,1,0,1,1);
     this.attach(text_d_box,1,1,1,1);
     this.attach(footer_d_box,1,3,1,1);
-    
-    profile_image_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,config_.cache_dir_path,parsed_json_obj_.screen_name+".png");
-    
+        
     //背景色の設定
     profile_image_ebox.override_background_color(StateFlags.NORMAL,config_.clear);
 
@@ -150,7 +146,7 @@ class TweetNode:Grid{
     favorite_icon.set_from_pixbuf(get_pixbuf_from_path(config_.favorite_icon_path,16));
     
     //profile_imageのset
-    get_pixbuf_async.begin(profile_image_path,parsed_json_obj_.profile_image_url,48,(obj,res)=>{
+    get_pixbuf_async.begin(config_.cache_dir_path,parsed_json_obj_.screen_name,parsed_json_obj_.profile_image_url,48,config.profile_image_hash_table,(obj,res)=>{
       set_profile_image(get_pixbuf_async.end(res));
     });
     

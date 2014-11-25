@@ -6,4 +6,4 @@ capricorn
 *.o
 *.vapi
 *.geany
-*~
+ui/*\~

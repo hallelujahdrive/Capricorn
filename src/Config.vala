@@ -19,6 +19,8 @@ public class Config{
   public string post_icon_path="icon/post_icon.png";
   //データベース
   public Database db;
+  //アイコンのHashTable
+  public HashTable<string,string?> profile_image_hash_table=new HashTable<string,string?>(str_hash,str_equal);
   //signal_pipe
   private SignalPipe signal_pipe_;
   //font  

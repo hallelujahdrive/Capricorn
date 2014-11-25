@@ -42,8 +42,7 @@ class TLNode{
     Pixbuf pixbuf=get_pixbuf_from_path(config_.loading_icon_path,24);
     home_tab.set_from_pixbuf(pixbuf);
     mention_tab.set_from_pixbuf(pixbuf);
-    string image_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,config_.cache_dir_path,account_.my_screen_name+".png");
-    get_pixbuf_async.begin(image_path,account_.my_profile_image_url,24,(obj,res)=>{
+    get_pixbuf_async.begin(config_.cache_dir_path,account_.my_screen_name,account_.my_profile_image_url,24,config.profile_image_hash_table,(obj,res)=>{
       pixbuf=get_pixbuf_async.end(res);
       home_tab.set_from_pixbuf(pixbuf);
       mention_tab.set_from_pixbuf(pixbuf);

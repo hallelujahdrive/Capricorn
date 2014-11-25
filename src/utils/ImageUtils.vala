@@ -6,16 +6,20 @@ using FileUtils;
 
 namespace ImageUtils{
   //URLからのPixbufの取得
-  async Pixbuf get_pixbuf_async(string image_path,string image_url,int size){
+  async Pixbuf get_pixbuf_async(string image_path_root,string screen_name,string image_url,int size,HashTable<string,string?> profile_image_hash_table){
+    //imageのpath
+    string image_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,image_path_root,screen_name+".png");
     //戻り値のPixbuf
     Pixbuf pixbuf=null;
     //gifは現状除外
     if(!image_url.has_suffix("gif")){
-    //画像が取得されていなければ取得
-    if(is_image(image_path)){
+    string? image_url_from_hash=profile_image_hash_table.get(screen_name);
+    //hashtableから取得したurlと一致すれば取得
+    if(image_url_from_hash!=null&&image_url_from_hash==image_url){
       return get_pixbuf_from_path(image_path,size);
     }else{
-      //Soup
+      //画像が取得されていなければ取得
+      //Soupconfig_.cache_dir_path
       Session session=new Session();
       Message msg=new Message("GET",image_url);
       session.queue_message(msg,(_sess,_msg)=>{
@@ -35,12 +39,15 @@ namespace ImageUtils{
           context.paint();
           
           pixbuf=pixbuf_get_from_surface(surface,0,0,48,48);
+          //保存
           pixbuf.save(image_path,"png");
+          //HashTableへの追加
+          profile_image_hash_table.insert(screen_name,image_url);
           
           memory_stream.close();
           get_pixbuf_async.callback();
         }catch(Error e){
-          print("Error:%s\n%s\n",e.message,image_path);
+          print("Error:%s\n",e.message);
         }
       });
     }

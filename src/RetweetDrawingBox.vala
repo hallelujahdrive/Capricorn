@@ -59,8 +59,7 @@ class RetweetDrawingBox:DrawingBox{
     
     //rt_profile_imageの取得
     rt_profile_image_pixbuf=get_pixbuf_from_path(config_.loading_icon_path,16);
-    string icon_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,config_.cache_dir_path,rt_screen_name+".png");
-    get_pixbuf_async.begin(icon_path,rt_profile_image_url,16,(obj,res)=>{
+    get_pixbuf_async.begin(config.cache_dir_path,rt_screen_name,rt_profile_image_url,16,config.profile_image_hash_table,(obj,res)=>{
       rt_profile_image_pixbuf=get_pixbuf_async.end(res);
       //再描画
       drawing_area.hide();
