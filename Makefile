@@ -9,12 +9,11 @@ SRC = \
 			src/DrawingBox.vala \
 			src/FontProfile.vala \
 			src/FooterDrawingBox.vala \
+			src/HeaderDrawingBox.vala \
 			src/InReplyDrawingBox.vala \
 			src/MainWindow.vala \
-			src/NameDrawingBox.vala \
 			src/OAuth.vala \
 			src/PostPage.vala \
-			src/ProfileImageDrawingBox.vala \
 			src/RetweetDrawingBox.vala \
 			src/SettingsWindow.vala \
 			src/SignalPipe.vala \
@@ -42,11 +41,10 @@ OBJECT = \
 				FontProfile.vala.o \
 				FooterDrawingBox.vala.o \
 				InReplyDrawingBox.vala.o \
+				HeaderDrawingBox.vala.o \
 				MainWindow.vala.o \
-				NameDrawingBox.vala.o \
 				OAuth.vala.o \
 				PostPage.vala.o \
-				ProfileImageDrawingBox.vala.o \
 				RetweetDrawingBox.vala.o \
 				SettingsWindow.vala.o \
 				SignalPipe.vala.o \
