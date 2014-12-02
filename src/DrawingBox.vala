@@ -17,9 +17,9 @@ class DrawingBox:EventBox{
   [GtkChild]
   protected unowned DrawingArea drawing_area;
   
-  //button_press_eventのCallback(子クラスでoverrideする)
+  //button_release_eventのCallback(子クラスでoverrideする)
   [GtkCallback]
-  protected virtual bool drawing_box_button_press_event_cb(EventButton event_button){
+  protected virtual bool button_release_event_cb(EventButton event_button){
     return true;
   }
   

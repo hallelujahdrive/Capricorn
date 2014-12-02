@@ -12,9 +12,9 @@ class TextDrawingBox:DrawingBox{
   private string text_;
   private string parsed_text;
   
-  //button_press_eventのcallback(override)
-  protected override bool drawing_box_button_press_event_cb(EventButton event_button){
-    base.drawing_box_button_press_event_cb(event_button);
+  //button_release_eventのcallback(override)
+  protected override bool button_release_event_cb(EventButton event_button){
+    base.button_release_event_cb(event_button);
     
     int index_,trailing;
     layout.xy_to_index((int)event_button.x*Pango.SCALE,(int)event_button.y*Pango.SCALE,out index_,out trailing);

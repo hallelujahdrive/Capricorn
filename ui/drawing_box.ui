@@ -6,7 +6,7 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="hexpand">True</property>
-    <signal name="button-press-event" handler="drawing_box_button_press_event_cb" swapped="no"/>
+    <signal name="button-release-event" handler="button_release_event_cb" swapped="no"/>
     <child>
       <object class="GtkDrawingArea" id="drawing_area">
         <property name="visible">True</property>

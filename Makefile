@@ -7,14 +7,18 @@ SRC = \
 			src/Config.vala\
 			src/DisplaySettingsPage.vala \
 			src/DrawingBox.vala \
+			src/FavoriteImageButton.vala \
 			src/FontProfile.vala \
 			src/FooterDrawingBox.vala \
 			src/HeaderDrawingBox.vala \
+			src/ImageButton.vala \
 			src/InReplyDrawingBox.vala \
 			src/MainWindow.vala \
 			src/OAuth.vala \
 			src/PostPage.vala \
+			src/ReplyImageButton.vala \
 			src/RetweetDrawingBox.vala \
+			src/RetweetImageButton.vala \
 			src/SettingsWindow.vala \
 			src/SignalPipe.vala \
 			src/TextDrawingBox.vala \
@@ -38,14 +42,18 @@ OBJECT = \
 				Config.vala.o \
 				DisplaySettingsPage.vala.o \
 				DrawingBox.vala.o \
+				FavoriteImageButton.vala.o \
 				FontProfile.vala.o \
 				FooterDrawingBox.vala.o \
+				ImageButton.vala.o \
 				InReplyDrawingBox.vala.o \
 				HeaderDrawingBox.vala.o \
 				MainWindow.vala.o \
 				OAuth.vala.o \
 				PostPage.vala.o \
+				ReplyImageButton.vala.o \
 				RetweetDrawingBox.vala.o \
+				RetweetImageButton.vala.o \
 				SettingsWindow.vala.o \
 				SignalPipe.vala.o \
 				TextDrawingBox.vala.o \
@@ -67,6 +75,7 @@ UI = \
 		 ui/account_settings_page.ui \
 		 ui/display_settings_page.ui \
 		 ui/drawing_box.ui \
+		 ui/image_button.ui \
 		 ui/main_window.ui \
 		 ui/oauth_window.ui \
 		 ui/post_page.ui \

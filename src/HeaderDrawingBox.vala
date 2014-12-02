@@ -37,7 +37,8 @@ class HeaderDrawingBox:DrawingBox{
       context.paint();
     
     }
-    h=!account_is_protected_||(h/=layout.get_line_count())>16?h:16;
+    h/=layout.get_line_count();
+    h=!account_is_protected_||h>16?h:16;
     layout.set_height(h);
     this.set_size_request(-1,h);
     return true;

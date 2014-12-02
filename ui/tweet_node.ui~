@@ -9,6 +9,32 @@
     <property name="column_spacing">5</property>
     <property name="baseline_row">2</property>
     <child>
+      <object class="GtkEventBox" id="profile_image_ebox">
+        <property name="width_request">48</property>
+        <property name="height_request">48</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="hexpand">False</property>
+        <property name="vexpand">True</property>
+        <child>
+          <object class="GtkImage" id="profile_image_image">
+            <property name="width_request">48</property>
+            <property name="height_request">48</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="hexpand">False</property>
+            <property name="vexpand">False</property>
+            <property name="yalign">0</property>
+          </object>
+        </child>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">0</property>
+        <property name="height">2</property>
+      </packing>
+    </child>
+    <child>
       <object class="GtkBox" id="action_box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -58,35 +84,13 @@
           </packing>
         </child>
         <child>
-          <object class="GtkEventBox" id="reply_ebox">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <signal name="button-press-event" handler="reply_ebox_button_press_event_cb" swapped="no"/>
-            <signal name="enter-notify-event" handler="reply_ebox_enter_notify_event_cb" swapped="no"/>
-            <signal name="leave-notify-event" handler="reply_ebox_leave_notify_event_cb" swapped="no"/>
-            <child>
-              <object class="GtkImage" id="reply_icon">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="stock">gtk-missing-image</property>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="pack_type">end</property>
-            <property name="position">2</property>
-          </packing>
+          <placeholder/>
         </child>
       </object>
       <packing>
         <property name="left_attach">1</property>
         <property name="top_attach">2</property>
       </packing>
-    </child>
-    <child>
-      <placeholder/>
     </child>
     <child>
       <placeholder/>

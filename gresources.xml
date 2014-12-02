@@ -4,11 +4,12 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/account_settings_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/display_settings_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/drawing_box.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/image_button.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/main_window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/oauth_window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/post_page.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/tl_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/settings_window.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/tl_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/tweet_node.ui</file>
   </gresource>
 </gresources>

@@ -56,6 +56,9 @@ namespace JsonUtils{
     
     public string? in_reply_to_status_id;
     
+    public bool retweeted;
+    public bool favorited;
+    
     public bool is_tweet=false;
     public bool is_reply=false;
     public bool is_retweet=false;
@@ -85,7 +88,10 @@ namespace JsonUtils{
                   switch(user_member){
                     case "name":rt_name=parse_name(rt_user_obj.get_string_member("name"));
                     break;
-                    case "screen_name":rt_screen_name=rt_user_obj.get_string_member("screen_name");
+                    case "screen_name":
+                    if((rt_screen_name=rt_user_obj.get_string_member("screen_name"))==my_screen_name){
+                      retweeted=true;
+                    }
                     break;
                     case "profile_image_url":rt_profile_image_url=rt_user_obj.get_string_member("profile_image_url");
                     break;
@@ -104,13 +110,15 @@ namespace JsonUtils{
               switch(member){
                 case "created_at":parse_created_at(json_main_obj.get_string_member(member));
                 break;
+                case "favorited":favorited=json_main_obj.get_boolean_member(member);
+                break;
                 case "id_str":
                 tweet_id_str=json_main_obj.get_string_member(member);
                 is_tweet=true;
                 break;
                 case "in_reply_to_status_id_str":in_reply_to_status_id=json_main_obj.get_string_member(member);
                 break;
-                case "retweeted":
+                case "retweeted":retweeted=json_main_obj.get_boolean_member(member);
                 break;
                 case "source":parse_source(json_main_obj.get_string_member(member));
                 break;

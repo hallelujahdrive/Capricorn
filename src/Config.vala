@@ -2,23 +2,36 @@ using Gdk;
 using Pango;
 using Sqlite;
 
+using ImageUtils;
+
 public class Config{
   //キャッシュのパス
   public string cache_dir_path;
   //アイコンのパス
-  public string reply_icon_path="icon/reply_icon.png";
-  public string reply_hover_icon_path="icon/reply_hover_icon.png";
-  public string retweet_icon_path="icon/rt_icon.png";
-  public string retweet_hover_icon_path="icon/rt_hover_icon.png";
-  public string retweet_on_icon_path="icon/rt_on_icon.png";
-  public string favorite_icon_path="icon/fav_icon.png";
-  public string favorite_hover_icon_path="icon/fav_hover_icon.png";
-  public string favorite_on_icon_path="icon/fav_on_icon.png";
+  private string reply_icon_path="icon/reply_icon.png";
+  private string reply_hover_icon_path="icon/reply_hover_icon.png";
+  private string retweet_icon_path="icon/rt_icon.png";
+  private string retweet_hover_icon_path="icon/rt_hover_icon.png";
+  private string retweet_on_icon_path="icon/rt_on_icon.png";
+  private string favorite_icon_path="icon/fav_icon.png";
+  private string favorite_hover_icon_path="icon/fav_hover_icon.png";
+  private string favorite_on_icon_path="icon/fav_on_icon.png";
   
   public string protected_icon_path="icon/protected_icon.png";
   
   public string loading_icon_path="icon/loading_icon.png";
   public string post_icon_path="icon/post_icon.png";
+  
+  //Pixbuf
+  public Pixbuf reply_icon_pixbuf;
+  public Pixbuf reply_hover_icon_pixbuf;
+  public Pixbuf retweet_icon_pixbuf;
+  public Pixbuf retweet_hover_icon_pixbuf;
+  public Pixbuf retweet_on_icon_pixbuf;
+  public Pixbuf favorite_icon_pixbuf;
+  public Pixbuf favorite_hover_icon_pixbuf;
+  public Pixbuf favorite_on_icon_pixbuf;
+  
   //データベース
   public Database db;
   //アイコンのHashTable
@@ -56,6 +69,14 @@ public class Config{
     retweet_bg_rgba.alpha=1;
     mine_bg_rgba.alpha=1;
     
+    reply_icon_pixbuf=get_pixbuf_from_path(reply_icon_path,16);
+    reply_hover_icon_pixbuf=get_pixbuf_from_path(reply_hover_icon_path,16);
+    retweet_icon_pixbuf=get_pixbuf_from_path(retweet_icon_path,16);
+    retweet_hover_icon_pixbuf=get_pixbuf_from_path(retweet_hover_icon_path,16);
+    retweet_on_icon_pixbuf=get_pixbuf_from_path(retweet_on_icon_path,16);
+    favorite_icon_pixbuf=get_pixbuf_from_path(favorite_icon_path,16);
+    favorite_hover_icon_pixbuf=get_pixbuf_from_path(favorite_hover_icon_path,16);
+    favorite_on_icon_pixbuf=get_pixbuf_from_path(favorite_on_icon_path,16);
   }
   
   //defaultのcolor
