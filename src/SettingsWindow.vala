@@ -46,7 +46,7 @@ class SettingsWindow:Dialog{
       //保存
       update_color(0,config_);
       //シグナルの発行
-      signal_pipe_.color_change();
+      signal_pipe_.color_change_event();
     }
     
     //fontの読み込み
@@ -55,7 +55,7 @@ class SettingsWindow:Dialog{
       //保存
       update_font(0,config_.font_profile,config_.db);
       //シグナルの発行
-      signal_pipe_.color_change();
+      signal_pipe_.color_change_event();
     }
     this.destroy();
   }
@@ -65,7 +65,7 @@ class SettingsWindow:Dialog{
   private void cancel_button_clicked_cb(Button cancel_button){
     //account_arrayの復帰
     if(account_is_changed){
-      account_array_=new GLib.Array<Account>();
+      account_array_.remove_range(0,account_array_.length);
       int account_record_count=record_count(config_.db,"ACCOUNT");
       for(int i=0;i<account_record_count;i++){
         Account account=new Account();
@@ -74,6 +74,7 @@ class SettingsWindow:Dialog{
         get_account_info(account_array_.index(i));
       }
     }
+    account_is_changed=false;
     this.destroy();
   }
   

@@ -118,7 +118,7 @@ class PostPage:Frame{
     load_account_combobox();
     
     //signalhandler
-    signal_pipe.reply_request.connect((tweet_id_str,screen_name)=>{
+    signal_pipe.reply_request_event.connect((tweet_id_str,screen_name)=>{
       to_reply_tweet_id_str=tweet_id_str;
       buffer.text="@"+screen_name+" ";
     });

@@ -19,6 +19,7 @@ SRC = \
 			src/ReplyImageButton.vala \
 			src/RetweetDrawingBox.vala \
 			src/RetweetImageButton.vala \
+			src/SettingsImageButton.vala \
 			src/SettingsWindow.vala \
 			src/SignalPipe.vala \
 			src/TextDrawingBox.vala \
@@ -55,6 +56,7 @@ OBJECT = \
 				RetweetDrawingBox.vala.o \
 				RetweetImageButton.vala.o \
 				SettingsWindow.vala.o \
+				SettingsImageButton.vala.o \
 				SignalPipe.vala.o \
 				TextDrawingBox.vala.o \
 				TLNode.vala.o \

@@ -77,7 +77,7 @@ class TweetNode:Grid{
     }
 
     //背景色設定のシグナル
-    signal_pipe.color_change.connect(()=>{
+    signal_pipe.color_change_event.connect(()=>{
       set_bg_color();
       this.hide();
       this.show();
