@@ -2,7 +2,7 @@ using Gdk;
 using Gtk;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/image_button.ui")]
-class ImageButton:EventBox{
+public class ImageButton:EventBox{
   protected unowned Config config_;
   protected unowned SignalPipe signal_pipe_;
   

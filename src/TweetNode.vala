@@ -3,7 +3,6 @@ using Gdk;
 using Gtk;
 using Rest;
 
-using ImageUtils;
 using JsonUtils;
 using TwitterUtils;
 using UriUtils;
@@ -19,18 +18,16 @@ class TweetNode:Grid{
   private TextDrawingBox text_d_box;
   private FooterDrawingBox footer_d_box;
   
+  private ProfileImageButton profile_image_button;
   private ReplyImageButton reply_image_button;
   private RetweetImageButton retweet_image_button;
   private FavoriteImageButton favorite_image_button;
   
   [GtkChild]
-  private Box action_box;
+  private Box profile_image_box;
   
   [GtkChild]
-  private EventBox profile_image_ebox;
-
-  [GtkChild]
-  private Image profile_image_image;
+  private Box action_box;
   
   public TweetNode(ParsedJsonObj parsed_json_obj,OAuthProxy api_proxy,Config config,SignalPipe signal_pipe){
     parsed_json_obj_=parsed_json_obj;
@@ -42,6 +39,7 @@ class TweetNode:Grid{
     text_d_box=new TextDrawingBox(parsed_json_obj_.text,parsed_json_obj_.media_array,parsed_json_obj_.urls_array,config_,signal_pipe_);
     footer_d_box=new FooterDrawingBox(parsed_json_obj_.created_at,parsed_json_obj_.source_label,parsed_json_obj_.source_url,config_,signal_pipe_);
     
+    profile_image_button=new ProfileImageButton(parsed_json_obj_.screen_name,parsed_json_obj_.profile_image_url,config_,signal_pipe_);
     reply_image_button=new ReplyImageButton(parsed_json_obj_.tweet_id_str,parsed_json_obj_.screen_name,config_,signal_pipe_);
     retweet_image_button=new RetweetImageButton(parsed_json_obj_.tweet_id_str,api_proxy_,parsed_json_obj_.retweeted,config_);
     favorite_image_button=new FavoriteImageButton(parsed_json_obj_.tweet_id_str,api_proxy_,parsed_json_obj_.favorited,config_);
@@ -50,19 +48,14 @@ class TweetNode:Grid{
     this.attach(text_d_box,1,1,1,1);
     this.attach(footer_d_box,1,3,1,1);
     
+    profile_image_box.pack_start(profile_image_button,false,false,0);
+    
     action_box.pack_end(favorite_image_button,false,false,0);
     action_box.pack_end(retweet_image_button,false,false,0);
     action_box.pack_end(reply_image_button,false,false,0);
         
     //背景色の設定
-    profile_image_ebox.override_background_color(StateFlags.NORMAL,config_.clear);
-
     set_bg_color();
-
-    //profile_imageのset
-    get_pixbuf_async.begin(config_.cache_dir_path,parsed_json_obj_.screen_name,parsed_json_obj_.profile_image_url,48,config.profile_image_hash_table,(obj,res)=>{
-      set_profile_image(get_pixbuf_async.end(res));
-    });
     
     //rt_d_boxの追加
     if(parsed_json_obj_.is_retweet){
@@ -95,10 +88,5 @@ class TweetNode:Grid{
     }else{
       this.override_background_color(StateFlags.NORMAL,config_.default_bg_rgba);
     }
-  }
-  
-  //pixbufのset
-  public void set_profile_image(Pixbuf pixbuf){
-    profile_image_image.set_from_pixbuf(pixbuf);
   }
 }

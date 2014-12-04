@@ -1,13 +1,13 @@
 using Gdk;
 using Gtk;
 
-class SettingsImageButton:ImageButton{
+public class SettingsImageButton:ImageButton{
     
   //button_release_eventのCallback(override)
   protected override bool button_release_event_cb(EventButton event_button){
     base.button_release_event_cb(event_button);
     
-    signal_pipe_.settings_button_click_event();
+    signal_pipe_.settings_button_click_event(this);
     return true;
   }
   

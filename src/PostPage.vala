@@ -31,6 +31,9 @@ class PostPage:Frame{
   private Label chars_count_label;
   
   [GtkChild]
+  private TextView tweet_text_view;
+  
+  [GtkChild]
   private TextBuffer buffer;
   
   [GtkChild]
@@ -57,9 +60,9 @@ class PostPage:Frame{
     chars_count_label.set_text(chars_count.to_string());
     //post_buttonのプロパティ
     if(chars_count==140||chars_count<0){
-      post_button.sensitive=false;
+      post_button.set_sensitive(false);
     }else{
-      post_button.sensitive=true;
+      post_button.set_sensitive(true);
     }
   }
   
@@ -121,6 +124,7 @@ class PostPage:Frame{
     signal_pipe.reply_request_event.connect((tweet_id_str,screen_name)=>{
       to_reply_tweet_id_str=tweet_id_str;
       buffer.text="@"+screen_name+" ";
+      tweet_text_view.grab_focus();
     });
   }
   

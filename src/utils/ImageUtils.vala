@@ -11,8 +11,6 @@ namespace ImageUtils{
     string image_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,image_path_root,screen_name+".png");
     //戻り値のPixbuf
     Pixbuf pixbuf=null;
-    //gifは現状除外
-    if(!image_url.has_suffix("gif")){
     string? image_url_from_hash=profile_image_hash_table.get(screen_name);
     //hashtableから取得したurlと一致すれば取得
     if(image_url_from_hash!=null&&image_url_from_hash==image_url){
@@ -51,11 +49,11 @@ namespace ImageUtils{
         }
       });
     }
-    }
     yield;
     return pixbuf.scale_simple(size,size,InterpType.BILINEAR);
   }
   
+  //pathからのpixbufの生成
   public Pixbuf get_pixbuf_from_path(string image_path,int size){
     Pixbuf pixbuf=null;
     try{
@@ -67,5 +65,19 @@ namespace ImageUtils{
       print("%s\n",e.message);
     }
     return pixbuf;
+  }
+  
+  //pathからのpixbuf_animationの生成
+  public PixbufAnimation get_pixbuf_animation_from_path(string image_path){
+    PixbufAnimation pixbuf_animation=null;
+    try{
+      var image=File.new_for_path(image_path);
+      var image_stream=image.read();
+      pixbuf_animation=new PixbufAnimation.from_stream(image_stream,null);
+      image_stream.close();
+    }catch(Error e){
+      print("%s\n",e.message);
+    }
+    return pixbuf_animation;
   }
 }

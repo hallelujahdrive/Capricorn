@@ -84,11 +84,11 @@ class DisplaySettingsPage:Frame{
   private void enable_font_detail_cbutton_toggled_cb(){
     font_is_changed=true;
     if(enable_font_detail_cbutton.active){
-      default_font_box.sensitive=false;
+      default_font_box.set_sensitive(false);
       font_detail_grid.show();
       config_.font_profile.use_default=false;
     }else{
-      default_font_box.sensitive=true;
+      default_font_box.set_sensitive(true);
       font_detail_grid.hide();
       config_.font_profile.use_default=true;
     }

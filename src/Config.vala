@@ -23,6 +23,8 @@ public class Config{
   public string post_icon_path="icon/post_icon.png";
   private string settings_icon_path="icon/settings_icon.png";
   
+  private string loading_animation_icon_path="icon/loading_icon.gif";
+  
   //Pixbuf
   public Pixbuf reply_icon_pixbuf;
   public Pixbuf reply_hover_icon_pixbuf;
@@ -34,6 +36,8 @@ public class Config{
   public Pixbuf favorite_on_icon_pixbuf;
   
   public Pixbuf settings_icon_pixbuf;
+  
+  public PixbufAnimation loading_animation_icon_pixbuf;
   
   //データベース
   public Database db;
@@ -82,6 +86,8 @@ public class Config{
     favorite_on_icon_pixbuf=get_pixbuf_from_path(favorite_on_icon_path,16);
     
     settings_icon_pixbuf=get_pixbuf_from_path(settings_icon_path,24);
+    
+    loading_animation_icon_pixbuf=get_pixbuf_animation_from_path(loading_animation_icon_path);
   }
   
   //defaultのcolor

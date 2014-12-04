@@ -1,14 +1,4 @@
-//using Soup;
-
 namespace FileUtils{
-  //文字列定数
-  /*private static const string LOADING_ICON_PATH="icon/loading_icon.png";
-  private static const string REPLY_ICON_PATH="icon/reply_icon.png";
-  private static const string RT_ICON_PATH="icon/rt_icon.png";
-  private static const string RT_ICON_F_PATH="icon/rt_icon_f.png";
-  private static const string FAV_ICON_PATH="icon/fav_icon.png";
-  private static const string FAV_ICON_F_PATH="icon/fav_icon_f.png";*/
-  
   //ディレクトリの作成
   public bool mk_cpr_dir(string cpr_dir_path,string cache_dir_path){
     if(!GLib.FileUtils.test(cpr_dir_path,FileTest.IS_DIR)){

@@ -56,7 +56,9 @@ public class MainWindow:ApplicationWindow{
     });
     
     //SettingsWindowを開く
-    signal_pipe.settings_button_click_event.connect(()=>{
+    signal_pipe.settings_button_click_event.connect((settings_image_button)=>{
+      settings_image_button.set_sensitive(false);
+      
       settings_window=new SettingsWindow(account_array,config,signal_pipe);
       settings_window.set_transient_for(this);
       settings_window.show_all();
@@ -84,6 +86,7 @@ public class MainWindow:ApplicationWindow{
           //account_cboxの再読み込み
           post_page.load_account_combobox();
         }
+        settings_image_button.set_sensitive(true);
       });
     });
   }

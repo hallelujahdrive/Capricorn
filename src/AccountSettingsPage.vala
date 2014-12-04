@@ -50,7 +50,7 @@ class AccountSettingsPage:Frame{
     });
     
     if(account_array_.length==1){
-      account_remove_button.sensitive=false;
+      account_remove_button.set_sensitive(false);
     }
   }
   
@@ -72,7 +72,7 @@ class AccountSettingsPage:Frame{
     }
     
     if(account_array_.length==1){
-     account_remove_button.sensitive=false;
+     account_remove_button.set_sensitive(false);
     }
    
     settings_window_.account_is_changed=true;
@@ -95,7 +95,7 @@ class AccountSettingsPage:Frame{
     account_selection=account_tree_view.get_selection();
     //remove_buttonのロック
     if(account_array.length==1){
-      account_remove_button.sensitive=false;
+      account_remove_button.set_sensitive(false);
     }
   }
   //TreeViewのload

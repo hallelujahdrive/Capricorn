@@ -16,6 +16,7 @@ SRC = \
 			src/MainWindow.vala \
 			src/OAuth.vala \
 			src/PostPage.vala \
+			src/ProfileImageButton.vala \
 			src/ReplyImageButton.vala \
 			src/RetweetDrawingBox.vala \
 			src/RetweetImageButton.vala \
@@ -52,6 +53,7 @@ OBJECT = \
 				MainWindow.vala.o \
 				OAuth.vala.o \
 				PostPage.vala.o \
+				ProfileImageButton.vala.o \
 				ReplyImageButton.vala.o \
 				RetweetDrawingBox.vala.o \
 				RetweetImageButton.vala.o \
