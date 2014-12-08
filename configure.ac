@@ -14,7 +14,7 @@ AC_PROG_CC
 AC_PROG_CC_STDC
 AM_PROG_VALAC([0.26])
 AC_PROG_INSTALL
-IT_PROG_INTLTOOL([0.50])
+#IT_PROG_INTLTOOL([0.50])
 
 # Checks for libraries.
 pkg_modules="
