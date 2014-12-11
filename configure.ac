@@ -50,15 +50,25 @@ CPR_VALA_FLAGS=" \
 	--target-glib=2.38 \
 	--gresources=\$(top_srcdir)/gresources.xml
 "
+pkgdatadir=${prefix}/share/capricorn
+prefix=${prefix}/local
 
 AC_SUBST(CPR_CFLAGS)
 AC_SUBST(CPR_LIBS)
 AC_SUBST(CPR_VALA_FLAGS)
+AC_SUBST(pkgdatadir)
 
 AC_CONFIG_FILES([Makefile
+								 icons/Makefile
                  src/Makefile
-                 ui/Makefile])
+                 ui/Makefile
+                 src/utils/DirPath.vala])
 
 AC_PATH_PROG(GLIB_COMPILE_RESOURCES,glib-compile-resources)
 
 AC_OUTPUT
+
+echo "
+Prefix: ${prefix}
+PkgDataDir: ${pkgdatadir}
+"

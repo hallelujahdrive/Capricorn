@@ -8,22 +8,22 @@ public class Config{
   //キャッシュのパス
   public string cache_dir_path;
   //アイコンのパス
-  private string reply_icon_path="icon/reply_icon.png";
-  private string reply_hover_icon_path="icon/reply_hover_icon.png";
-  private string retweet_icon_path="icon/rt_icon.png";
-  private string retweet_hover_icon_path="icon/rt_hover_icon.png";
-  private string retweet_on_icon_path="icon/rt_on_icon.png";
-  private string favorite_icon_path="icon/fav_icon.png";
-  private string favorite_hover_icon_path="icon/fav_hover_icon.png";
-  private string favorite_on_icon_path="icon/fav_on_icon.png";
+  private string reply_icon_path=ICON_DIR_PATH+"reply_icon.png";
+  private string reply_hover_icon_path=ICON_DIR_PATH+"reply_hover_icon.png";
+  private string retweet_icon_path=ICON_DIR_PATH+"rt_icon.png";
+  private string retweet_hover_icon_path=ICON_DIR_PATH+"rt_hover_icon.png";
+  private string retweet_on_icon_path=ICON_DIR_PATH+"rt_on_icon.png";
+  private string favorite_icon_path=ICON_DIR_PATH+"fav_icon.png";
+  private string favorite_hover_icon_path=ICON_DIR_PATH+"fav_hover_icon.png";
+  private string favorite_on_icon_path=ICON_DIR_PATH+"fav_on_icon.png";
   
-  public string protected_icon_path="icon/protected_icon.png";
+  public string protected_icon_path=ICON_DIR_PATH+"protected_icon.png";
   
-  public string loading_icon_path="icon/loading_icon.png";
-  public string post_icon_path="icon/post_icon.png";
-  private string settings_icon_path="icon/settings_icon.png";
+  public string loading_icon_path=ICON_DIR_PATH+"loading_icon.png";
+  public string post_icon_path=ICON_DIR_PATH+"post_icon.png";
+  private string settings_icon_path=ICON_DIR_PATH+"settings_icon.png";
   
-  private string loading_animation_icon_path="icon/loading_icon.gif";
+  private string loading_animation_icon_path=ICON_DIR_PATH+"loading_icon.gif";
   
   //Pixbuf
   public Pixbuf reply_icon_pixbuf;

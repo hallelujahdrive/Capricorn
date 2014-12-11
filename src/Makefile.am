@@ -35,6 +35,7 @@ sources = \
 			TLPage.vala \
 			TweetNode.vala \
 			utils/DateTimeUtils.vala \
+			utils/DirPath.vala \
 			utils/FileUtils.vala \
 			utils/ImageUtils.vala \
 			utils/JsonUtils.vala \
