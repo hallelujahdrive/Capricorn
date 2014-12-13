@@ -50,19 +50,18 @@ CPR_VALA_FLAGS=" \
 	--target-glib=2.38 \
 	--gresources=\$(top_srcdir)/gresources.xml
 "
-pkgdatadir=${prefix}/share/capricorn
-iconsdir=${prefix}/share/icons/hicolor
+datadir=${prefix}/share
 prefix=${prefix}/local
 
 AC_SUBST(CPR_CFLAGS)
 AC_SUBST(CPR_LIBS)
 AC_SUBST(CPR_VALA_FLAGS)
-AC_SUBST(pkgdatadir)
-AC_SUBST(iconsdir)
+AC_SUBST(datadir)
 
 AC_CHECK_FUNCS([atexit memchr memset setlocale strstr])
 
 AC_CONFIG_FILES([Makefile
+								 data/Makefile
                  icons/128x128/Makefile
                  icons/16x16/Makefile
                  icons/22x22/Makefile
@@ -74,14 +73,9 @@ AC_CONFIG_FILES([Makefile
                  icons/Makefile
                  src/Makefile
                  ui/Makefile
+								 data/capricorn.desktop
 								 src/utils/DirPath.vala])
 
 AC_PATH_PROG(GLIB_COMPILE_RESOURCES,glib-compile-resources)
 
 AC_OUTPUT
-
-echo "
-Prefix: ${prefix}
-PkgDataDir: ${pkgdatadir}
-IconsDir: ${iconsdir}
-"

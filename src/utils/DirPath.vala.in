@@ -1,1 +1,1 @@
-public const string ICON_DIR_PATH="@pkgdatadir@/icons/";
+public const string ICON_DIR_PATH="@datadir@/capricorn/icons/";

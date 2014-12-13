@@ -1,6 +1,6 @@
 SUBDIRS = 16x16 22x22 24x24 32x32 48x48 64x64 128x128 256x256
 
-icondir = @pkgdatadir@/icons
+icondir = @datadir@/capricorn/icons
 icon_DATA = \
 						reply_icon.png \
 						reply_hover_icon.png \

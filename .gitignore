@@ -26,5 +26,7 @@ autoscan.log
 autom4te.cache/
 m4/
 po/
+data/capricorn.desktop
+src/utils/DirPath.vala
 ui/*.ui~
 

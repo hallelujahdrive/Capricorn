@@ -1,13 +1,13 @@
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 
-SUBDIRS = src ui icons
+SUBDIRS = data icons src ui
 
 EXTRA_DIST = gresources.xml
 
 AUTOMAKE_OPTIONS = subdir-objects
 
 install-data-hook:
-	gtk-update-icon-cache @iconsdir@
+	gtk-update-icon-cache @datadir@/icons/hicolor
 
 uninstall-hook:
 	gtk-update-icon-cache @iconsdir@

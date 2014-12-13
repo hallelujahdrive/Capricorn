@@ -1,3 +1,3 @@
-icondir=@iconsdir@/32x32/apps
+icondir=@datadir@/icons/hicolor/32x32/apps
 icon_DATA=capricorn.png
 
