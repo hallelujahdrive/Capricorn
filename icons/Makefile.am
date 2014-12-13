@@ -1,3 +1,5 @@
+SUBDIRS = 16x16 22x22 24x24 32x32 48x48 64x64 128x128 256x256
+
 icondir = @pkgdatadir@/icons
 icon_DATA = \
 						reply_icon.png \
@@ -13,5 +15,3 @@ icon_DATA = \
 						post_icon.png \
 						settings_icon.png \
 						loading_icon.gif
-
-

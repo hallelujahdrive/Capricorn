@@ -63,6 +63,6 @@ resources.c : $(resources_deps)
 	$(GLIB_COMPILE_RESOURCES) $(top_srcdir)/gresources.xml --target=$@ --generate-source --sourcedir=$(top_srcdir)
 
 
-CLEANFILES = *.h *.c *.o *.stamp libcapricorn.la capricorn.vapi capricorn.h
+CLEANFILES = *.h *.c *.o *.stamp libcapricorn.la capricorn.vapi capricorn.h utils/*.c
 EXTRA_DIST = $(sources) \
 						 capricorn.h

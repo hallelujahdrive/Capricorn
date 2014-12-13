@@ -16,11 +16,13 @@ capricorn
 compile
 config.*
 configure
+configure.scan
 install-sh
 libtool
 ltmain.sh
 missing
 aclocal.m4
+autoscan.log
 autom4te.cache/
 m4/
 po/
