@@ -73,7 +73,8 @@ public class Capricorn:Gtk.Application{
     }
   }
 
-  public override void activate(){
+  public override void startup(){
+    base.startup();
     
     //Accountが0なら,認証windowを開く
     if(account_count==0){
@@ -104,6 +105,8 @@ public class Capricorn:Gtk.Application{
     });
     
     window=new MainWindow(this);
+  }
+  public override void activate(){
     window.present();
-  }  
+  }
 }
