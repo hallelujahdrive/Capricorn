@@ -13,6 +13,7 @@ class SettingsWindow:Dialog{
   
   private AccountSettingsPage account_s_page;
   private DisplaySettingsPage display_s_page;
+  private TLSettingsPage tl_s_page;
   
   public bool account_is_changed=false;
   
@@ -40,23 +41,33 @@ class SettingsWindow:Dialog{
         insert_account(account_array_.index(i),config_.db);
       }
     }
-    //colorの読み込み
+    //colorの更新
     if(display_s_page.color_is_changed){
       display_s_page.set_color();
-      //保存
+      //アップデート
       update_color(0,config_);
       //シグナルの発行
       signal_pipe_.color_change_event();
     }
     
-    //fontの読み込み
+    //fontの更新
     if(display_s_page.font_is_changed){
       display_s_page.set_font_desc();
-      //保存
+      //アップデート
       update_font(0,config_.font_profile,config_.db);
       //シグナルの発行
       signal_pipe_.color_change_event();
     }
+    
+    //ツイートの取得数の更新
+    if(tl_s_page.node_max_is_changed){
+      tl_s_page.set_timeline_nodes();
+      //アップデート
+      update_timeline_nodes(config_.get_tweet_nodes,config_.tweet_node_max,config_.db);
+      //シグナルの発行
+      signal_pipe_.timeline_nodes_is_changed();
+    }
+    
     this.destroy();
   }
   
@@ -85,8 +96,15 @@ class SettingsWindow:Dialog{
     
     account_s_page=new AccountSettingsPage(account_array_,config_,this);
     display_s_page=new DisplaySettingsPage(config_);
+    tl_s_page=new TLSettingsPage(config_);
     
     settings_notebook.append_page(account_s_page,account_s_page.tab);
     settings_notebook.append_page(display_s_page,display_s_page.tab);
+    settings_notebook.append_page(tl_s_page,tl_s_page.tab);
+    
+    //シグナルハンドラ
+    this.destroy.connect(()=>{
+      signal_pipe_.settings_window_destroy_event();
+    });
   }
 }

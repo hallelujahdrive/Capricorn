@@ -46,9 +46,13 @@ public class MainWindow:ApplicationWindow{
     various_notebook.append_page(post_page,post_page.post_tab);
     button_box.pack_end(settings_image_button,false,false,0);
     
-    load_notebooks();
-    
     //シグナルハンドラ
+    
+    //表示に時間かかるからあとから読み込み
+    this.show.connect(()=>{
+      load_notebooks();
+    });
+    
     //アクティブなTLとPostアカウントの同期
     post_page.tl_link.connect((selected_account_num)=>{
       home_tl_notebook.set_current_page(selected_account_num);
@@ -56,39 +60,45 @@ public class MainWindow:ApplicationWindow{
     });
     
     //SettingsWindowを開く
-    signal_pipe.settings_button_click_event.connect((settings_image_button)=>{
-      settings_image_button.set_sensitive(false);
+    signal_pipe.settings_button_click_event.connect(()=>{
+      settings_image_button.sensitive=false;
       
       settings_window=new SettingsWindow(account_array,config,signal_pipe);
       settings_window.set_transient_for(this);
       settings_window.show_all();
-      
-      //SettingsWindowを閉じた時の処理(別に外に書いてもいいけどWaring出るのがうるさいから)
-      settings_window.destroy.connect(()=>{
-        //TLNotebookの削除
-        if(settings_window.account_is_changed){
-          for(int i=0;i<tl_node_array.length;){
-            if(tl_node_array.index(i).my_id!=account_array.index(i).my_id){
-              tl_node_array.remove_index(i);
-              home_tl_notebook.remove_page(i);
-              mention_tl_notebook.remove_page(i);
-            }else{
-              i++;
-            }
-          }
-          //追加
-          for(uint i=tl_node_array.length;i<account_array.length;i++){
-            TLNode tl_node=new TLNode(account_array.index(i),config,signal_pipe);
-            tl_node_array.append_val(tl_node);
-            home_tl_notebook.append_page(tl_node_array.index(i).home_tl_page,tl_node_array.index(i).home_tab);
-            mention_tl_notebook.append_page(tl_node_array.index(i).mention_tl_page,tl_node_array.index(i).mention_tab);
-          }
-          //account_cboxの再読み込み
-          post_page.load_account_combobox();
-        }
-        settings_image_button.set_sensitive(true);
-      });
     });
+    
+    //SettingsWindowを閉じる
+    signal_pipe.settings_window_destroy_event.connect(()=>{
+      reload_settings();
+      settings_image_button.sensitive=true;
+    });
+  }
+  
+  //設定の再読み込み
+  private void reload_settings(){
+    //TLNotebookの削除
+    if(settings_window.account_is_changed){
+      for(int i=0;i<tl_node_array.length;){
+        if(tl_node_array.index(i).my_id!=account_array.index(i).my_id){
+          tl_node_array.remove_index(i);
+          home_tl_notebook.remove_page(i);
+          mention_tl_notebook.remove_page(i);
+        }else{
+          i++;
+        }
+      }
+      //追加
+      for(uint i=tl_node_array.length;i<account_array.length;i++){
+        TLNode tl_node=new TLNode(account_array.index(i),config,signal_pipe);
+        tl_node_array.append_val(tl_node);
+        home_tl_notebook.append_page(tl_node_array.index(i).home_tl_page,tl_node_array.index(i).home_tab);
+        mention_tl_notebook.append_page(tl_node_array.index(i).mention_tl_page,tl_node_array.index(i).mention_tab);
+      }
+      //account_cboxの再読み込み
+      post_page.load_account_combobox();
+    }
+    settings_image_button.set_sensitive(true);
   }
   
   private void load_notebooks(){

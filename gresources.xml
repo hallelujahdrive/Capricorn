@@ -10,6 +10,7 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/post_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/settings_window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/tl_page.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/tl_settings_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/tweet_node.ui</file>
   </gresource>
 </gresources>

@@ -57,6 +57,10 @@ public class Config{
   public RGBA clear=RGBA();
   public RGBA white=RGBA();
   
+  //ツイートの取得数
+  public int get_tweet_nodes;
+  public int tweet_node_max;
+  
   //時差
   public string datetime_format="%I:%M%P - %e %b %g";
   public int time_deff_hour=9;
@@ -96,5 +100,8 @@ public class Config{
     reply_bg_rgba.parse("rgb(204,255,128)");
     retweet_bg_rgba.parse("rgb(255,217,82)");
     mine_bg_rgba.parse("rgb(193,209,255)");
+    
+    get_tweet_nodes=10;
+    tweet_node_max=50;
   }
 }

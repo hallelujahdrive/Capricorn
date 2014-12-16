@@ -45,21 +45,23 @@ public class Capricorn:Gtk.Application{
     }
     //テーブルの作成
     if(create_tables(config.db)){
-      //テーブルが新規に作成されたら,configのdefaultをinsert
+      //テーブルが新規に作成されたら
       //configの初期化
       config.init();
       config.font_profile.init();
-            
+      
+      //insert
       insert_color(0,config);
       insert_font(0,config.font_profile,config.db);
+      insert_timeline_nodes(config.get_tweet_nodes,config.tweet_node_max,config.db);
     }else{
       //テーブルが存在したら
       //colorの読み出し
       select_color(0,config);
-      
       //フォントの読み出し
       select_font(0,config.font_profile,config.db);
-      
+      //ツイート取得数の読み出し
+      select_timeline_nodes(ref config.get_tweet_nodes,ref config.tweet_node_max,config.db);
       //Account情報の読み出し
       account_count=record_count(config.db,"ACCOUNT");
       for(int i=0;i<account_count;i++){

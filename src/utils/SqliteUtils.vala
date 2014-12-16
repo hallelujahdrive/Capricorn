@@ -32,6 +32,11 @@ namespace SqliteUtils{
   in_reply_font_desc TEXT NOT NULL,
   in_reply_font_rgba TEXT NOT NULL
   );""";
+  private const string CREATE_TABLE_TIMELINE_NODES_QUERY="""
+  CREATE TABLE TIMELINE_NODES(
+  get_tweet_nodes INT NOT NULL,
+  tweet_node_max INT NOT NULL
+  );""";
   private const string INSERT_ACCOUNT_QUERY="INSERT INTO ACCOUNT VALUES($LIST_ID,$ID,$TOKEN,$TOKEN_SECRET);";
   private const string INSERT_COLOR_QUERY="INSERT INTO COLOR VALUES($ID,$DEFAULT_BG,$REPLY_BG,$RETWEET_BG,$MINE_BG);";
   private const string INSERT_FONT_QUERY="""
@@ -47,11 +52,12 @@ namespace SqliteUtils{
   $IN_REPLY_FD,
   $IN_REPLY_FR
   );""";
+  private const string INSERT_TIMELINE_NODES_QUERY="INSERT INTO TIMELINE_NODES VALUES($GET_TWEET_NODES,$TWEET_NODE_MAX);";
   private const string SELECT_FROM_ACCOUNT_QUERY="SELECT * FROM ACCOUNT WHERE list_id=$LIST_ID;";
   private const string SELECT_FROM_COLOR_QUERY="SELECT * FROM COLOR WHERE id=$ID;";
   private const string SELECT_FROM_FONT_QUERY="SELECT * FROM FONT WHERE id=$ID;";
+  private const string SELECT_FROM_TIMELINE_NODES_QUERY="SELECT * FROM TIMELINE_NODES;";
   private const string DELETE_FROM_ACCOUNT_QUERY="DELETE FROM ACCOUNT WHERE list_id=$LIST_ID;";
-  private const string DELETE_ALL_RECORD_FROM_IMAGE_PATH_QUERY="DELETE FROM IMAGE_PATH";
   private const string UPDATE_ACCOUNT_ID_QUERY="UPDATE ACCOUNT SET list_id=$NEW_LIST_ID WHERE list_id=$OLD_LIST_ID;";
   private const string UPDATE_COLOR_QUERY="UPDATE COLOR SET default_bg=$DEFAULT_BG,reply_bg=$REPLY_BG,retweet_bg=$RETWEET_BG,mine_bg=$MINE_BG WHERE id=$ID;";
   private const string UPDATE_FONT_QUERY="""
@@ -67,7 +73,9 @@ namespace SqliteUtils{
   in_reply_font_rgba=$IN_REPLY_FR 
   WHERE id=$ID;
   """;
+  private const string UPDATE_TIMELINE_NODES_QUERY="UPDATE TIMELINE_NODES SET get_tweet_nodes=$GET_TWEET_NODES,tweet_node_max=$TWEET_NODE_MAX;";
   private const string SELECT_ID_FORM_ACCOUNT_QUERY="SELECT id FROM ACCOUNT WHERE list_id=$LIST_ID;";
+ 
   //テーブルの作成
   public bool create_tables(Database db){
     //テーブルが作成されたか
@@ -92,13 +100,15 @@ namespace SqliteUtils{
     }
     //tableが存在しなければ作る
     if(res){
-      for(int i=0;i<3;i++){
+      for(int i=0;i<4;i++){
         switch(i){
           case 0:query=CREATE_TABLE_ACCOUNT_QUERY;
           break;
           case 1:query=CREATE_TABLE_COLOR_QUERY;
           break;
           case 2:query=CREATE_TABLE_FONT_QUERY;
+          break;
+          case 3:query=CREATE_TABLE_TIMELINE_NODES_QUERY;
           break;
         }
         ec=db.exec(query,null,out errmsg);
@@ -227,6 +237,28 @@ namespace SqliteUtils{
     stmt.reset();
   }
   
+  //timeline_nodesのinsert
+  public void insert_timeline_nodes(int get_tweet_nodes,int tweet_node_max,Database db){
+    int ec;
+    Sqlite.Statement stmt;
+    
+    string prepared_query_str=INSERT_TIMELINE_NODES_QUERY;
+    ec=db.prepare_v2(prepared_query_str,prepared_query_str.length,out stmt);
+    if(ec!=Sqlite.OK){
+      print("Error:%d:%s\n",db.errcode(),db.errmsg());
+    }
+    
+    int get_tweet_nodes_param_position=stmt.bind_parameter_index("$GET_TWEET_NODES");
+    int tweet_node_max_param_position=stmt.bind_parameter_index("$TWEET_NODE_MAX");
+    
+    //インサート
+    stmt.bind_int(get_tweet_nodes_param_position,get_tweet_nodes);
+    stmt.bind_int(tweet_node_max_param_position,tweet_node_max);
+
+    while(stmt.step()!=Sqlite.DONE);
+    stmt.reset();
+  }
+  
   //accountの読み出し
   public void select_account(int id,Account account,Database db){
     int ec;
@@ -338,6 +370,31 @@ namespace SqliteUtils{
     stmt.reset();
   }
   
+  //timeline_nodesのselect
+  public void select_timeline_nodes(ref int get_tweet_nodes,ref int tweet_node_max,Database db){
+    int ec;
+    Statement stmt;
+    
+    string prepared_query_str=SELECT_FROM_TIMELINE_NODES_QUERY;
+    ec=db.prepare_v2(prepared_query_str,prepared_query_str.length,out stmt);
+    if(ec!=Sqlite.OK){
+      print("Error:%d:%s\n",db.errcode(),db.errmsg());
+    }
+    
+    int cols=stmt.column_count();
+    while(stmt.step()==Sqlite.ROW){
+      for(int i=0;i<cols;i++){
+        switch(i){
+          case 0:get_tweet_nodes=stmt.column_int(i);
+          break;
+          case 1:tweet_node_max=stmt.column_int(i);
+          break;
+        }
+      }
+    }
+    stmt.reset();
+  }
+  
   //アカウントの削除
   public void delete_account(int list_id,Database db){
     int ec;
@@ -406,7 +463,7 @@ namespace SqliteUtils{
     stmt.reset();
   }
   
-  //fontのupdate
+  //fontの更新
   public void update_font(int id,FontProfile font_profile,Database db){
     int ec;
     Sqlite.Statement stmt;
@@ -439,6 +496,28 @@ namespace SqliteUtils{
     stmt.bind_text(footer_fr_param_position,font_profile.footer_font_rgba.to_string());
     stmt.bind_text(in_reply_fd_param_position,font_profile.in_reply_font_desc.to_string());
     stmt.bind_text(in_reply_fr_param_position,font_profile.in_reply_font_rgba.to_string());
+    
+    while(stmt.step()!=Sqlite.DONE);
+    stmt.reset();
+  }
+  
+  //timeline_nodesの更新
+  public void update_timeline_nodes(int get_tweet_nodes,int tweet_node_max,Database db){
+        int ec;
+    Sqlite.Statement stmt;
+    
+    string prepared_query_str=UPDATE_TIMELINE_NODES_QUERY;
+    ec=db.prepare_v2(prepared_query_str,prepared_query_str.length,out stmt);
+    if(ec!=Sqlite.OK){
+      print("Error:%d:%s\n",db.errcode(),db.errmsg());
+    }
+    //パラメータの設定
+    int get_tweet_nodes_param_position=stmt.bind_parameter_index("$GET_TWEET_NODES");
+    int tweet_node_max_param_position=stmt.bind_parameter_index("$TWEET_NODE_MAX");
+    
+    //インサート
+    stmt.bind_int(get_tweet_nodes_param_position,get_tweet_nodes);
+    stmt.bind_int(tweet_node_max_param_position,tweet_node_max);
     
     while(stmt.step()!=Sqlite.DONE);
     stmt.reset();

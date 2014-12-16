@@ -33,6 +33,7 @@ sources = \
 			TextDrawingBox.vala \
 			TLNode.vala \
 			TLPage.vala \
+			TLSettingsPage.vala \
 			TweetNode.vala \
 			utils/DateTimeUtils.vala \
 			utils/DirPath.vala \

@@ -329,9 +329,9 @@
      id="namedview5247"
      showgrid="false"
      inkscape:object-nodes="true"
-     inkscape:zoom="0.2"
-     inkscape:cx="14.9064"
-     inkscape:cy="886.51213"
+     inkscape:zoom="0.053588673"
+     inkscape:cx="729.06738"
+     inkscape:cy="686.51213"
      inkscape:window-x="0"
      inkscape:window-y="25"
      inkscape:window-maximized="1"
@@ -343,22 +343,6 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0" />
-  <g
-     transform="translate(-176.27499,-30.441655)"
-     style="display:inline"
-     inkscape:label="シャドウ"
-     id="g4591"
-     inkscape:groupmode="layer">
-    <rect
-       rx="376.41925"
-       ry="376.41925"
-       y="85.416664"
-       x="231.25"
-       height="1527.0836"
-       width="1527.0836"
-       id="rect4593"
-       style="fill:#000000;fill-opacity:1;stroke:none;filter:url(#filter4615)" />
-  </g>
   <g
      inkscape:groupmode="layer"
      id="layer4"
@@ -535,6 +519,6 @@
        height="1527.0836"
        width="1527.0836"
        id="rect4621"
-       style="fill:none;stroke:#282828;stroke-width:30;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+       style="fill:none;stroke:#5a5a5a;stroke-width:30;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
   </g>
 </svg>

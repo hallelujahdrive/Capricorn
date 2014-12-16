@@ -34,8 +34,8 @@ class TLNode{
     my_id=account.my_id;
         
     //TLPage
-    home_tl_page=new TLPage(config_);
-    mention_tl_page=new TLPage(config_);
+    home_tl_page=new TLPage(config_,signal_pipe_);
+    mention_tl_page=new TLPage(config_,signal_pipe_);
     //UserStream
     user_stream=new UserStream(account_.stream_proxy);
     //tab 
@@ -48,9 +48,9 @@ class TLNode{
       mention_tab.set_from_pixbuf(pixbuf);
     });
     //home
-    get_tweet_by_api(10,false);
+    get_tweet_by_api(config_.get_tweet_nodes,false);
     //mention
-    get_tweet_by_api(10,true);
+    get_tweet_by_api(config_.get_tweet_nodes,true);
     //user_streamの開始
     user_stream.run();
     
