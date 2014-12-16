@@ -24,13 +24,14 @@ class AccountSettingsPage:Frame{
   [GtkChild]
   private Button account_remove_button;
   
+  [GtkChild]
+  public Image tab;
+  
   private TreeSelection account_selection;
   private TreeIter iter;
   
   private SettingsWindow settings_window_;
-  
-  public Label tab=new Label("Account");
-  
+    
   //Callback
   [GtkCallback]
   private void account_add_button_clicked_cb(Button account_add_button){
@@ -84,6 +85,9 @@ class AccountSettingsPage:Frame{
     account_array_=account_array;
     config_=config;
     settings_window_=settings_window;
+    
+    //tabのicon
+    tab.set_from_pixbuf(config_.account_icon_pixbuf);
     
     //TreeViewのload
     account_tree_view.insert_column_with_attributes(-1,"",cell_pixbuf,"pixbuf",1);

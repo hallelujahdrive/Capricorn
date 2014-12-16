@@ -423,4 +423,9 @@
       <widget name="in_reply_font_label"/>
     </widgets>
   </object>
+  <object class="GtkImage" id="tab">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-missing-image</property>
+  </object>
 </interface>

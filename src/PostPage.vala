@@ -6,14 +6,12 @@ using TwitterUtils;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/post_page.ui")]
 class PostPage:Frame{
-  //タブ
+  private GLib.Array<Account> account_array_;
+  private Config config_;
+  private SignalPipe signal_pipe_;
+  
+  //tab
   public Image post_tab=new Image();
-  
-  private GLib.Array<Account> account_array;
-
-  private Config config;
-  
-  private SignalPipe signal_pipe;
   
   //tweet_text_view内の文字数
   private static int chars_count=140;
@@ -69,7 +67,7 @@ class PostPage:Frame{
   //post
   [GtkCallback]
   private void post_button_clicked_cb(Button post_button){
-    post_tweet.begin(buffer.text,to_reply_tweet_id_str,account_array.index(selected_account_num).api_proxy,(obj,res)=>{
+    post_tweet.begin(buffer.text,to_reply_tweet_id_str,account_array_.index(selected_account_num).api_proxy,(obj,res)=>{
       bool result=post_tweet.end(res);
       if(result){
         buffer.text="";
@@ -101,10 +99,10 @@ class PostPage:Frame{
     }
   }
   
-  public PostPage(GLib.Array<Account> account_array_arg,Config config_arg,SignalPipe signal_pipe_arg){
-    account_array=account_array_arg;
-    config=config_arg;
-    signal_pipe=signal_pipe_arg;
+  public PostPage(GLib.Array<Account> account_array,Config config,SignalPipe signal_pipe){
+    account_array_=account_array;
+    config_=config;
+    signal_pipe_=signal_pipe;
     
     //プロパティ
     post_button.sensitive=false;
@@ -116,7 +114,7 @@ class PostPage:Frame{
     
     account_list_store.set_sort_column_id(0,SortType.ASCENDING);
     
-    post_tab.set_from_pixbuf(get_pixbuf_from_path(config.post_icon_path,24));
+    post_tab.set_from_pixbuf(config_.post_icon_pixbuf);
     //load
     load_account_combobox();
     
@@ -131,17 +129,17 @@ class PostPage:Frame{
   //account_comboboxの読み込み
   public void load_account_combobox(){
     account_list_store.clear();
-    for(int i=0;i<account_array.length;i++){
-      int my_list_id=account_array.index(i).my_list_id;
-      string my_screen_name=account_array.index(i).my_screen_name;
-      get_pixbuf_async.begin(config.cache_dir_path,my_screen_name,account_array.index(i).my_profile_image_url,16,config.profile_image_hash_table,(obj,res)=>{
-        Pixbuf pixbuf=get_pixbuf_from_path(config.loading_icon_path,16);
+    for(int i=0;i<account_array_.length;i++){
+      int my_list_id=account_array_.index(i).my_list_id;
+      string my_screen_name=account_array_.index(i).my_screen_name;
+      get_pixbuf_async.begin(config_.cache_dir_path,my_screen_name,account_array_.index(i).my_profile_image_url,16,config_.profile_image_hash_table,(obj,res)=>{
+        Pixbuf pixbuf=get_pixbuf_from_path(config_.loading_icon_path,16);
         account_list_store.append(out iter);
         account_list_store.set(iter,0,my_list_id,1,pixbuf,2,my_screen_name);
         //profile_imageの取得
         pixbuf=get_pixbuf_async.end(res);
         account_list_store.set(iter,1,pixbuf);
-        if(i==account_array.length){
+        if(i==account_array_.length){
           //デフォで0のアカウントを表示
           account_cbox.active=0;
         }

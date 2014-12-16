@@ -3,14 +3,11 @@ using Gtk;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/display_settings_page.ui")]
 class DisplaySettingsPage:Frame{
-  //tab
-  public Label tab=new Label("Display");
-  
+  private Config config_;
+
   public bool color_is_changed=false;
   public bool font_is_changed=false;
   
-  private Config config_;
-
   //widget
   [GtkChild]
   private ColorButton default_bg_color_button;
@@ -63,6 +60,9 @@ class DisplaySettingsPage:Frame{
   [GtkChild]
   private FontButton in_reply_font_button;
   
+  [GtkChild]
+  public Image tab;
+  
   //callback
   [GtkCallback]
   private void color_button_color_set_cb(ColorButton color_button){
@@ -97,6 +97,10 @@ class DisplaySettingsPage:Frame{
   public DisplaySettingsPage(Config config){
     config_=config;
     
+    //tabのアイコンの設定
+    tab.set_from_pixbuf(config_.display_icon_pixbuf);
+    
+    //fontbuttonの設定
     enable_font_detail_cbutton.set_active(!config.font_profile.use_default);
     if(config_.font_profile.use_default){
       font_detail_grid.hide();
