@@ -8,6 +8,8 @@ class DisplaySettingsPage:Frame{
   public bool color_is_changed=false;
   public bool font_is_changed=false;
   
+  public bool use_default_font;
+  
   //widget
   [GtkChild]
   private ColorButton default_bg_color_button;
@@ -86,23 +88,24 @@ class DisplaySettingsPage:Frame{
     if(enable_font_detail_cbutton.active){
       default_font_box.set_sensitive(false);
       font_detail_grid.show();
-      config_.font_profile.use_default=false;
+      use_default_font=false;
     }else{
       default_font_box.set_sensitive(true);
       font_detail_grid.hide();
-      config_.font_profile.use_default=true;
+      use_default_font=true;
     }
   }
   
   public DisplaySettingsPage(Config config){
     config_=config;
+    use_default_font=config_.font_profile.use_default;
     
     //tabのアイコンの設定
     tab.set_from_pixbuf(config_.display_icon_pixbuf);
     
     //fontbuttonの設定
     enable_font_detail_cbutton.set_active(!config.font_profile.use_default);
-    if(config_.font_profile.use_default){
+    if(use_default_font){
       font_detail_grid.hide();
     }
     
@@ -148,5 +151,7 @@ class DisplaySettingsPage:Frame{
     config_.font_profile.text_font_desc=text_font_button.get_font_desc();
     config_.font_profile.footer_font_desc=footer_font_button.get_font_desc();
     config_.font_profile.in_reply_font_desc=in_reply_font_button.get_font_desc();
+    
+    config_.font_profile.use_default=use_default_font;
   }
 }
