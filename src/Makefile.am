@@ -35,13 +35,20 @@ sources = \
 			TLPage.vala \
 			TLSettingsPage.vala \
 			TweetNode.vala \
+			sqlite/Account.vala \
+			sqlite/Color.vala \
+			sqlite/Font.vala \
+			sqlite/GeneralPurpose.vala \
+			sqlite/Query.vala \
+			sqlite/Timeline.vala \
+			utils/BitlyJsonUtils.vala \
+			utils/BitlyUtils.vala \
 			utils/DateTimeUtils.vala \
 			utils/DirPath.vala \
 			utils/FileUtils.vala \
 			utils/ImageUtils.vala \
-			utils/JsonUtils.vala \
-			utils/SqliteUtils.vala \
 			utils/StringUtils.vala \
+			utils/TwitterJsonUtils.vala \
 			utils/TwitterUtils.vala \
 			utils/UriUtils.vala
 

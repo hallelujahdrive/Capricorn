@@ -9,6 +9,7 @@ AM_INIT_AUTOMAKE([foreign])
 
 
 # Checks for programs.
+LT_PREREQ([2.4.4])
 LT_INIT
 AC_PROG_CC
 AC_PROG_CC_STDC

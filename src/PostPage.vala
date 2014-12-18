@@ -2,6 +2,7 @@ using Gdk;
 using Gtk;
 
 using ImageUtils;
+using StringUtils;
 using TwitterUtils;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/post_page.ui")]
@@ -74,6 +75,14 @@ class PostPage:Frame{
       }
     });
     to_reply_tweet_id_str=null;
+  }
+  
+  [GtkCallback]
+  private void url_shorten_button_clicked_cb(Button url_shorten_button){
+    if(buffer.text!=""){
+      string parsed_text=parse_post_text(buffer.text);
+      buffer.text=parsed_text;      
+    }
   }
   
   //accountの選択
