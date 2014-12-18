@@ -47,21 +47,24 @@ namespace StringUtils{
   
   //urlの短縮
   public string parse_post_text(string old_text){
-    string parse_text=old_text;
+    string parsed_text=old_text;
     MatchInfo match_info;
     try{
       var text_regex=new Regex("https?://[-_.!~*\'a-zA-Z0-9;/?:@&=+$,%#]+");
       if(text_regex.match(old_text,0,out match_info)){
+        //URL中に"?"が入っていると正常に置換できないのでどうにかする
+        var sign_regex=new Regex("[?]");
+        parsed_text=sign_regex.replace(parsed_text,-1,0,"");
+        //ひたすら置換
         do{
-          //urlを抽出
           var text_regex_replace=new Regex(match_info.fetch(0));
           string url=shorting_url(match_info.fetch(0));
-          parse_text=text_regex_replace.replace(parse_text,-1,0,url);
+          parsed_text=text_regex_replace.replace(parsed_text,-1,0,url);
         }while(match_info.next());
       }
     }catch(Error e){
       print("%s\n",e.message);
     }
-    return parse_text;
+    return parsed_text;
   }
 }
