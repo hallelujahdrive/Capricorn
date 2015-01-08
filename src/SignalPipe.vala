@@ -1,3 +1,5 @@
+using UriUtils;
+
 public class SignalPipe{
   //colorが変更された
   public signal void color_change_event();
@@ -19,4 +21,7 @@ public class SignalPipe{
   
   //SettingsWindowを閉じる
   public signal void settings_window_destroy_event();
+  
+  //media_url
+  public signal void media_url_click_event(media[] media_array);
 }

@@ -53,6 +53,26 @@ namespace ImageUtils{
     return pixbuf.scale_simple(size,size,InterpType.BILINEAR);
   }
   
+  //URLからのpixbufの取得(media)
+  async Pixbuf get_media_pixbuf_async(string image_url){
+    //戻り値のPixbuf
+    Pixbuf pixbuf=null;
+    Session session=new Session();
+    Message msg=new Message("GET",image_url);
+    session.queue_message(msg,(_sess,_msg)=>{
+      try{
+        var memory_stream=new MemoryInputStream.from_data(_msg.response_body.data,null);
+        pixbuf=new Pixbuf.from_stream(memory_stream);
+        memory_stream.close();
+        get_media_pixbuf_async.callback();
+      }catch(Error e){
+        print("Error:%s\n",e.message);
+      }
+    });
+    yield;
+    return pixbuf;
+  }
+  
   //pathからのpixbufの生成
   public Pixbuf get_pixbuf_from_path(string image_path,int size){
     Pixbuf pixbuf=null;

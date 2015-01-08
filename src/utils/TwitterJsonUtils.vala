@@ -128,6 +128,7 @@ namespace JsonUtils{
                 foreach(string entities_member in entities_obj.get_members()){
                   switch(entities_member){
                     case "media":parse_media(entities_obj.get_array_member(entities_member));
+                    //print("%s\n",json_str);
                     break;
                     case "urls":parse_urls(entities_obj.get_array_member(entities_member));
                     break;

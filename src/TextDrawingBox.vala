@@ -21,7 +21,8 @@ class TextDrawingBox:DrawingBox{
     //media_arrayから検索
     for(int i=0;i<media_array_.length;i++){
       if(index_>=media_array_[i].start_indices&&index_<media_array_[i].end_indices){
-        open_url(media_array_[i].expanded_url);
+        //open_url(media_array_[i].expanded_url);
+        signal_pipe_.media_url_click_event(media_array_);
         break;
       }
     }

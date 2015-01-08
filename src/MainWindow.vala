@@ -73,6 +73,13 @@ public class MainWindow:ApplicationWindow{
       reload_settings();
       settings_button.sensitive=true;
     });
+    
+    //Mediasのopen
+    signal_pipe.media_url_click_event.connect((media_array)=>{
+      MediasPage medias_page=new MediasPage(media_array,config);
+      various_notebook.append_page(medias_page,medias_page.tab);
+      various_notebook.set_current_page(various_notebook.page_num(medias_page));
+    });
   }
   
   //設定の再読み込み

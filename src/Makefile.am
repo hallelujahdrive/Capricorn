@@ -21,6 +21,7 @@ sources = \
 			ImageButton.vala \
 			InReplyDrawingBox.vala \
 			MainWindow.vala \
+			MediasPage.vala \
 			OAuth.vala \
 			PostButton.vala \
 			PostPage.vala \
