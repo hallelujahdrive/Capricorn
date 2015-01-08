@@ -3,7 +3,7 @@ using Gdk;
 
 using ImageUtils;
 
-class ReplyImageButton:ImageButton{
+class ReplyButton:ImageButton{
   private string tweet_id_str_;
   private string screen_name_;
   
@@ -34,7 +34,7 @@ class ReplyImageButton:ImageButton{
     return true;
   }
   
-  public ReplyImageButton(string tweet_id_str,string screen_name,Config config,SignalPipe signal_pipe){
+  public ReplyButton(string tweet_id_str,string screen_name,Config config,SignalPipe signal_pipe){
     tweet_id_str_=tweet_id_str;
     screen_name_=screen_name;
     

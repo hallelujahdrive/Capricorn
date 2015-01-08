@@ -51,7 +51,7 @@ class InReplyDrawingBox:DrawingBox{
       in_reply_parsed_json_obj=new ParsedJsonObj(json_str,null);
       
       //profile_image_pixbufの取得
-      in_reply_profile_image_pixbuf=get_pixbuf_from_path(config.loading_icon_path,24);
+      in_reply_profile_image_pixbuf=config_.loading_icon_pixbuf_24px;
       get_pixbuf_async.begin(config.cache_dir_path,in_reply_parsed_json_obj.screen_name,in_reply_parsed_json_obj.profile_image_url,24,config.profile_image_hash_table,(obj,res)=>{
         in_reply_profile_image_pixbuf=get_pixbuf_async.end(res);
         //再描画

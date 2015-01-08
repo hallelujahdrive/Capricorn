@@ -52,14 +52,17 @@ namespace StringUtils{
     try{
       var text_regex=new Regex("https?://[-_.!~*\'a-zA-Z0-9;/?:@&=+$,%#]+");
       if(text_regex.match(old_text,0,out match_info)){
-        //URL中に"?"が入っていると正常に置換できないのでどうにかする
-        var sign_regex=new Regex("\\?");
-        parsed_text=sign_regex.replace(parsed_text,-1,0,"?");
         //ひたすら置換
         do{
-          var text_regex_replace=new Regex(match_info.fetch(0));
+          //URL中に"?"が入っていると正常に置換できないのでどうにかする
+          var sign_regex=new Regex("\\?");
+          string long_url=sign_regex.replace(match_info.fetch(0),-1,0,"\\\\?");
+          //URL中に"+"が入っていると正常に置換できないのでどうにかする
+          sign_regex=new Regex("\\+");
+          long_url=sign_regex.replace(long_url,-1,0,"\\\\+");
+          var text_regex_replace=new Regex(long_url,RegexCompileFlags.UNGREEDY,0);
           string url=shorting_url(match_info.fetch(0));
-          parsed_text=parsed_text.replace(match_info.fetch(0),url);
+          parsed_text=text_regex_replace.replace_literal(parsed_text,-1,0,url);
         }while(match_info.next());
       }
     }catch(Error e){

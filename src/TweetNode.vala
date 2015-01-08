@@ -19,9 +19,9 @@ class TweetNode:Grid{
   private FooterDrawingBox footer_d_box;
   
   private ProfileImageButton profile_image_button;
-  private ReplyImageButton reply_image_button;
-  private RetweetImageButton retweet_image_button;
-  private FavoriteImageButton favorite_image_button;
+  private ReplyButton reply_button;
+  private RetweetButton retweet_button;
+  private FavoriteButton favorite_button;
   
   [GtkChild]
   private Box profile_image_box;
@@ -40,9 +40,9 @@ class TweetNode:Grid{
     footer_d_box=new FooterDrawingBox(parsed_json_obj_.created_at,parsed_json_obj_.source_label,parsed_json_obj_.source_url,config_,signal_pipe_);
     
     profile_image_button=new ProfileImageButton(parsed_json_obj_.screen_name,parsed_json_obj_.profile_image_url,config_,signal_pipe_);
-    reply_image_button=new ReplyImageButton(parsed_json_obj_.tweet_id_str,parsed_json_obj_.screen_name,config_,signal_pipe_);
-    retweet_image_button=new RetweetImageButton(parsed_json_obj_.tweet_id_str,api_proxy_,parsed_json_obj_.retweeted,config_);
-    favorite_image_button=new FavoriteImageButton(parsed_json_obj_.tweet_id_str,api_proxy_,parsed_json_obj_.favorited,config_);
+    reply_button=new ReplyButton(parsed_json_obj_.tweet_id_str,parsed_json_obj_.screen_name,config_,signal_pipe_);
+    retweet_button=new RetweetButton(parsed_json_obj_.tweet_id_str,api_proxy_,parsed_json_obj_.retweeted,config_);
+    favorite_button=new FavoriteButton(parsed_json_obj_.tweet_id_str,api_proxy_,parsed_json_obj_.favorited,config_);
     
     this.attach(header_d_box,1,0,1,1);
     this.attach(text_d_box,1,1,1,1);
@@ -50,9 +50,9 @@ class TweetNode:Grid{
     
     profile_image_box.pack_start(profile_image_button,false,false,0);
     
-    action_box.pack_end(favorite_image_button,false,false,0);
-    action_box.pack_end(retweet_image_button,false,false,0);
-    action_box.pack_end(reply_image_button,false,false,0);
+    action_box.pack_end(favorite_button,false,false,0);
+    action_box.pack_end(retweet_button,false,false,0);
+    action_box.pack_end(reply_button,false,false,0);
         
     //背景色の設定
     set_bg_color();

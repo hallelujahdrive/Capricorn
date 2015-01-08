@@ -58,7 +58,7 @@ class RetweetDrawingBox:DrawingBox{
     rt_screen_name_sb.append(rt_screen_name);
     
     //rt_profile_imageの取得
-    rt_profile_image_pixbuf=get_pixbuf_from_path(config_.loading_icon_path,16);
+    rt_profile_image_pixbuf=config_.loading_icon_pixbuf_16px;
     get_pixbuf_async.begin(config.cache_dir_path,rt_screen_name,rt_profile_image_url,16,config.profile_image_hash_table,(obj,res)=>{
       rt_profile_image_pixbuf=get_pixbuf_async.end(res);
       //再描画

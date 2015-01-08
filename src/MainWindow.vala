@@ -17,7 +17,7 @@ public class MainWindow:ApplicationWindow{
   private GLib.Array<TLNode> tl_node_array=new GLib.Array<TLNode>();
   
   private PostPage post_page;
-  private SettingsImageButton settings_image_button;
+  private SettingsButton settings_button;
   private SettingsWindow settings_window;
   
   [GtkChild]
@@ -40,11 +40,11 @@ public class MainWindow:ApplicationWindow{
     account_array=capricorn.account_array;
     
     post_page=new PostPage(account_array,config,signal_pipe);
-    settings_image_button=new SettingsImageButton(config,signal_pipe);
+    settings_button=new SettingsButton(config,signal_pipe);
         
     //load
     various_notebook.append_page(post_page,post_page.post_tab);
-    button_box.pack_end(settings_image_button,false,false,0);
+    button_box.pack_end(settings_button,false,false,0);
     
     //シグナルハンドラ
     
@@ -61,7 +61,7 @@ public class MainWindow:ApplicationWindow{
     
     //SettingsWindowを開く
     signal_pipe.settings_button_click_event.connect(()=>{
-      settings_image_button.sensitive=false;
+      settings_button.sensitive=false;
       
       settings_window=new SettingsWindow(account_array,config,signal_pipe);
       settings_window.set_transient_for(this);
@@ -71,7 +71,7 @@ public class MainWindow:ApplicationWindow{
     //SettingsWindowを閉じる
     signal_pipe.settings_window_destroy_event.connect(()=>{
       reload_settings();
-      settings_image_button.sensitive=true;
+      settings_button.sensitive=true;
     });
   }
   
@@ -98,7 +98,7 @@ public class MainWindow:ApplicationWindow{
       //account_cboxの再読み込み
       post_page.load_account_combobox();
     }
-    settings_image_button.set_sensitive(true);
+    settings_button.set_sensitive(true);
   }
   
   private void load_notebooks(){

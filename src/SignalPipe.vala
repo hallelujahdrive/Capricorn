@@ -8,6 +8,12 @@ public class SignalPipe{
   //リプライの要求
   public signal void reply_request_event(string tweet_id_str,string screen_name);
   
+  //post
+  public signal void post_button_click_event();
+  
+  //url_shorting
+  public signal void url_shorting_button_click_event();
+  
   //SettingsWindowを開く
   public signal void settings_button_click_event();
   

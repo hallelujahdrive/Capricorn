@@ -1,7 +1,7 @@
 using Gdk;
 using Gtk;
 
-public class SettingsImageButton:ImageButton{
+public class SettingsButton:ImageButton{
     
   //button_release_eventのCallback(override)
   protected override bool button_release_event_cb(EventButton event_button){
@@ -25,7 +25,7 @@ public class SettingsImageButton:ImageButton{
     return true;
   }
   
-  public SettingsImageButton(Config config,SignalPipe signal_pipe){
+  public SettingsButton(Config config,SignalPipe signal_pipe){
     config_=config;
     signal_pipe_=signal_pipe;
     

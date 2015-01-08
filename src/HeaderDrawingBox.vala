@@ -57,7 +57,7 @@ class HeaderDrawingBox:DrawingBox{
     
     //protected_icon_pixbufの取得
     if(account_is_protected_){
-      protected_icon_pixbuf=get_pixbuf_from_path(config_.protected_icon_path,16);
+      protected_icon_pixbuf=config_.protected_icon_pixbuf;
     }
   }
   

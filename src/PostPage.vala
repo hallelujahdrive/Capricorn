@@ -11,6 +11,9 @@ class PostPage:Frame{
   private Config config_;
   private SignalPipe signal_pipe_;
   
+  private PostButton post_button;
+  private URLShortoingButton url_shorting_button;
+  
   //tab
   public Image post_tab=new Image();
   
@@ -35,11 +38,11 @@ class PostPage:Frame{
   [GtkChild]
   private TextBuffer buffer;
   
-  [GtkChild]
-  private Button post_button;
-  
   private CellRendererPixbuf cell_pixbuf=new CellRendererPixbuf();
   private CellRendererText cell_text=new CellRendererText();
+  
+  [GtkChild]
+  private Box bbox;
   
   [GtkChild]
   private ComboBox account_cbox;
@@ -62,26 +65,6 @@ class PostPage:Frame{
       post_button.set_sensitive(false);
     }else{
       post_button.set_sensitive(true);
-    }
-  }
-  
-  //post
-  [GtkCallback]
-  private void post_button_clicked_cb(Button post_button){
-    post_tweet.begin(buffer.text,to_reply_tweet_id_str,account_array_.index(selected_account_num).api_proxy,(obj,res)=>{
-      bool result=post_tweet.end(res);
-      if(result){
-        buffer.text="";
-      }
-    });
-    to_reply_tweet_id_str=null;
-  }
-  
-  [GtkCallback]
-  private void url_shorten_button_clicked_cb(Button url_shorten_button){
-    if(buffer.text!=""){
-      string parsed_text=parse_post_text(buffer.text);
-      buffer.text=parsed_text;      
     }
   }
   
@@ -113,6 +96,12 @@ class PostPage:Frame{
     config_=config;
     signal_pipe_=signal_pipe;
     
+    post_button=new PostButton(config_,signal_pipe_);
+    url_shorting_button=new URLShortoingButton(config_,signal_pipe_);
+    
+    bbox.add(post_button);
+    bbox.add(url_shorting_button);
+    
     //プロパティ
     post_button.sensitive=false;
     
@@ -123,11 +112,28 @@ class PostPage:Frame{
     
     account_list_store.set_sort_column_id(0,SortType.ASCENDING);
     
-    post_tab.set_from_pixbuf(config_.post_icon_pixbuf);
+    post_tab.set_from_pixbuf(config_.twitter_icon_pixbuf);
     //load
     load_account_combobox();
     
     //signalhandler
+    signal_pipe_.post_button_click_event.connect(()=>{
+      post_tweet.begin(buffer.text,to_reply_tweet_id_str,account_array_.index(selected_account_num).api_proxy,(obj,res)=>{
+        bool result=post_tweet.end(res);
+        if(result){
+          buffer.text="";
+        }
+      });
+    to_reply_tweet_id_str=null;
+    });
+    
+    signal_pipe_.url_shorting_button_click_event.connect(()=>{
+      if(buffer.text!=""){
+        string parsed_text=parse_post_text(buffer.text);
+        buffer.text=parsed_text;      
+      }
+    });
+    
     signal_pipe.reply_request_event.connect((tweet_id_str,screen_name)=>{
       to_reply_tweet_id_str=tweet_id_str;
       buffer.text="@"+screen_name+" ";
@@ -142,7 +148,7 @@ class PostPage:Frame{
       int my_list_id=account_array_.index(i).my_list_id;
       string my_screen_name=account_array_.index(i).my_screen_name;
       get_pixbuf_async.begin(config_.cache_dir_path,my_screen_name,account_array_.index(i).my_profile_image_url,16,config_.profile_image_hash_table,(obj,res)=>{
-        Pixbuf pixbuf=get_pixbuf_from_path(config_.loading_icon_path,16);
+        Pixbuf pixbuf=config_.loading_icon_pixbuf_16px;
         account_list_store.append(out iter);
         account_list_store.set(iter,0,my_list_id,1,pixbuf,2,my_screen_name);
         //profile_imageの取得

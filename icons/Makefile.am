@@ -17,4 +17,6 @@ icon_DATA = \
 						rt_on_icon.png \
 						settings_icon.png \
 						timeline.png \
+						twitter.png \
+						url_shorting.png \
 						loading_icon.gif

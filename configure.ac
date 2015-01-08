@@ -9,7 +9,7 @@ AM_INIT_AUTOMAKE([foreign])
 
 
 # Checks for programs.
-LT_PREREQ([2.4.4])
+LT_PREREQ([2.4.2])
 LT_INIT
 AC_PROG_CC
 AC_PROG_CC_STDC
@@ -30,7 +30,11 @@ pkg_modules="
 	sqlite3
 	"
 
-PKG_CHECK_MODULES(CPR,[$pkg_modules])
+pkg_version="
+	gtk>=3.10
+"
+
+PKG_CHECK_MODULES(CPR,[$pkg_modules],[$pkg_version])
 
 # Checks for header files.
 

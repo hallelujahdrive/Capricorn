@@ -5,30 +5,29 @@ using Rest;
 using ImageUtils;
 using TwitterUtils;
 
-class FavoriteImageButton:ImageButton{
-  private bool favorited_;
-  
+class RetweetButton:ImageButton{
   private string tweet_id_str_;
   private OAuthProxy api_proxy_;
-  
+  private bool retweeted_;
+    
   //button_release_eventのCallback(override)
   protected override bool button_release_event_cb(EventButton event_button){
     base.button_release_event_cb(event_button);
     
-    if(favorited_){
-    }else if(favorited_=favorite(tweet_id_str_,api_proxy_)){
-      image.set_from_pixbuf(config_.favorite_on_icon_pixbuf);
+    if(retweeted_){
+    }else if(retweeted_=retweet(tweet_id_str_,api_proxy_)){
+      image.set_from_pixbuf(config_.retweet_on_icon_pixbuf);
     }
     
-    return favorited_;
+    return retweeted_;
   }
   
   //enetr_notify_eventのCallback(override)
   protected override bool enter_notify_event_cb(EventCrossing event){
     base.enter_notify_event_cb(event);
     
-    if(!favorited_){
-      image.set_from_pixbuf(config_.favorite_hover_icon_pixbuf);
+    if(!retweeted_){
+      image.set_from_pixbuf(config_.retweet_hover_icon_pixbuf);
     }
     
     return true;
@@ -38,26 +37,24 @@ class FavoriteImageButton:ImageButton{
   protected override bool leave_notify_event_cb(EventCrossing event){
     base.leave_notify_event_cb(event);
     
-    if(!favorited_){
-      image.set_from_pixbuf(config_.favorite_icon_pixbuf);
+    if(!retweeted_){
+      image.set_from_pixbuf(config_.retweet_icon_pixbuf);
     }
         
     return true;
   }
   
-  public FavoriteImageButton(string tweet_id_str,OAuthProxy api_proxy,bool favorited,Config config){
-    favorited_=favorited;
-    
+  public RetweetButton(string tweet_id_str,OAuthProxy api_proxy,bool retweeted,Config config){
     tweet_id_str_=tweet_id_str;
     api_proxy_=api_proxy;
-    
+    retweeted_=retweeted;    
     config_=config;
     
     //defaultのiconのset
-    if(favorited_){
-      image.set_from_pixbuf(config_.favorite_on_icon_pixbuf);
+    if(retweeted_){
+      image.set_from_pixbuf(config_.retweet_on_icon_pixbuf);
     }else{
-      image.set_from_pixbuf(config_.favorite_icon_pixbuf);
+      image.set_from_pixbuf(config_.retweet_icon_pixbuf);
     }
   }
 }

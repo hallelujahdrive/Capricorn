@@ -7,30 +7,8 @@ using ImageUtils;
 public class Config{
   //キャッシュのパス
   public string cache_dir_path;
-  //アイコンのパス
-  private string reply_icon_path=ICON_DIR_PATH+"reply_icon.png";
-  private string reply_hover_icon_path=ICON_DIR_PATH+"reply_hover_icon.png";
-  private string retweet_icon_path=ICON_DIR_PATH+"rt_icon.png";
-  private string retweet_hover_icon_path=ICON_DIR_PATH+"rt_hover_icon.png";
-  private string retweet_on_icon_path=ICON_DIR_PATH+"rt_on_icon.png";
-  private string favorite_icon_path=ICON_DIR_PATH+"fav_icon.png";
-  private string favorite_hover_icon_path=ICON_DIR_PATH+"fav_hover_icon.png";
-  private string favorite_on_icon_path=ICON_DIR_PATH+"fav_on_icon.png";
-  
-  public string protected_icon_path=ICON_DIR_PATH+"protected_icon.png";
-  
-  public string loading_icon_path=ICON_DIR_PATH+"loading_icon.png";
-  private string post_icon_path=ICON_DIR_PATH+"post.png";
-  private string settings_icon_path=ICON_DIR_PATH+"settings_icon.png";
-  private string account_icon_path=ICON_DIR_PATH+"account.png";
-  private string display_icon_path=ICON_DIR_PATH+"display.png";
-  private string tl_icon_path=ICON_DIR_PATH+"timeline.png";
-  
-  private string loading_animation_icon_path=ICON_DIR_PATH+"loading_icon.gif";
-  
+    
   //Pixbuf
-  public Pixbuf post_icon_pixbuf;
-  
   public Pixbuf reply_icon_pixbuf;
   public Pixbuf reply_hover_icon_pixbuf;
   public Pixbuf retweet_icon_pixbuf;
@@ -40,11 +18,19 @@ public class Config{
   public Pixbuf favorite_hover_icon_pixbuf;
   public Pixbuf favorite_on_icon_pixbuf;
   
+  public Pixbuf protected_icon_pixbuf;
+  
+  public Pixbuf twitter_icon_pixbuf;
+  public Pixbuf post_icon_pixbuf;
+  public Pixbuf url_shorting_icon_pixbuf;
+  
   public Pixbuf settings_icon_pixbuf;
   public Pixbuf account_icon_pixbuf;
   public Pixbuf display_icon_pixbuf;
   public Pixbuf tl_icon_pixbuf;
   
+  public Pixbuf loading_icon_pixbuf_24px;
+  public Pixbuf loading_icon_pixbuf_16px;
   public PixbufAnimation loading_animation_icon_pixbuf;
   
   //データベース
@@ -87,24 +73,30 @@ public class Config{
     reply_bg_rgba.alpha=1;
     retweet_bg_rgba.alpha=1;
     mine_bg_rgba.alpha=1;
+        
+    reply_icon_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"reply_icon.png",16);
+    reply_hover_icon_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"reply_hover_icon.png",16);
+    retweet_icon_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"rt_icon.png",16);
+    retweet_hover_icon_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"rt_hover_icon.png",16);
+    retweet_on_icon_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"rt_on_icon.png",16);
+    favorite_icon_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"fav_icon.png",16);
+    favorite_hover_icon_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"fav_hover_icon.png",16);
+    favorite_on_icon_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"fav_on_icon.png",16);
     
-    post_icon_pixbuf=get_pixbuf_from_path(post_icon_path,24);
+    protected_icon_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"protected_icon.png",16);
     
-    reply_icon_pixbuf=get_pixbuf_from_path(reply_icon_path,16);
-    reply_hover_icon_pixbuf=get_pixbuf_from_path(reply_hover_icon_path,16);
-    retweet_icon_pixbuf=get_pixbuf_from_path(retweet_icon_path,16);
-    retweet_hover_icon_pixbuf=get_pixbuf_from_path(retweet_hover_icon_path,16);
-    retweet_on_icon_pixbuf=get_pixbuf_from_path(retweet_on_icon_path,16);
-    favorite_icon_pixbuf=get_pixbuf_from_path(favorite_icon_path,16);
-    favorite_hover_icon_pixbuf=get_pixbuf_from_path(favorite_hover_icon_path,16);
-    favorite_on_icon_pixbuf=get_pixbuf_from_path(favorite_on_icon_path,16);
+    twitter_icon_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"twitter.png",24);
+    post_icon_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"post.png",24);
+    url_shorting_icon_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"url_shorting.png",24);
     
-    settings_icon_pixbuf=get_pixbuf_from_path(settings_icon_path,24);
-    account_icon_pixbuf=get_pixbuf_from_path(account_icon_path,24);
-    display_icon_pixbuf=get_pixbuf_from_path(display_icon_path,24);
-    tl_icon_pixbuf=get_pixbuf_from_path(tl_icon_path,24);
+    settings_icon_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"settings_icon.png",24);
+    account_icon_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"account.png",24);
+    display_icon_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"display.png",24);
+    tl_icon_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"timeline.png",24);
     
-    loading_animation_icon_pixbuf=get_pixbuf_animation_from_path(loading_animation_icon_path);
+    loading_icon_pixbuf_24px=get_pixbuf_from_path(ICON_DIR_PATH+"loading_icon.png",24);
+    loading_icon_pixbuf_16px=get_pixbuf_from_path(ICON_DIR_PATH+"loading_icon.png",16);
+    loading_animation_icon_pixbuf=get_pixbuf_animation_from_path(ICON_DIR_PATH+"loading_icon.gif");
   }
   
   //defaultのcolor
