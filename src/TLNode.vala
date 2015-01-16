@@ -63,7 +63,7 @@ class TLNode{
         home_tl_page.prepend_node(tweet_node);
         //replyの作成
         if(parsed_json_obj.is_reply){
-          TweetNode reply_node=new TweetNode(parsed_json_obj,account_.api_proxy,config_,signal_pipe_);
+          TweetNode reply_node=tweet_node.clone();
           mention_tl_page.prepend_node(reply_node);
         }
       }

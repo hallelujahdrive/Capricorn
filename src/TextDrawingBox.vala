@@ -21,8 +21,9 @@ class TextDrawingBox:DrawingBox{
     //media_arrayから検索
     for(int i=0;i<media_array_.length;i++){
       if(index_>=media_array_[i].start_indices&&index_<media_array_[i].end_indices){
-        //open_url(media_array_[i].expanded_url);
-        signal_pipe_.media_url_click_event(media_array_);
+        TweetNode parent_node=(TweetNode)this.get_parent();
+        TweetNode clone_node=parent_node.clone();
+        signal_pipe_.media_url_click_event(media_array_,clone_node);
         break;
       }
     }
@@ -64,7 +65,7 @@ class TextDrawingBox:DrawingBox{
     
     media_array_=media_array;
     urls_array_=urls_array;
-    
+        
     text_=text;
     //縦に広がるようにする
     this.vexpand=true;

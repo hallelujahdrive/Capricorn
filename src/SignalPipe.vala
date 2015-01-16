@@ -23,5 +23,5 @@ public class SignalPipe{
   public signal void settings_window_destroy_event();
   
   //media_url
-  public signal void media_url_click_event(media[] media_array);
+  public signal void media_url_click_event(media[] media_array,TweetNode tweet_node);
 }

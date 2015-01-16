@@ -6,8 +6,20 @@ using UriUtils;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/medias_page.ui")]
 class MediasPage:Frame{
+  private media[] media_array_;
+  
   [GtkChild]
   private Grid medias_grid;
+  
+  [GtkChild]
+  private Box tweet_node_box;
+  
+  [GtkCallback]
+  private void open_url_button_clicked_cb(Button open_url_button){
+    for(int i=0;i<media_array_.length;i++){
+      open_url(media_array_[i].expanded_url);
+    }
+  }
   
   [GtkCallback]
   private void close_button_clicked_cb(Button close_button){
@@ -15,17 +27,13 @@ class MediasPage:Frame{
   }
   
   public Label tab=new Label("Medias");
-  public MediasPage(media[] media_array,Config config){
-    for(int i=0;i<media_array.length;i++){
-      Image image=new Image.from_animation(config.loading_animation_icon_pixbuf);
-      medias_grid.attach(image,0,i,1,1);
-      print("media_url:%s\n",media_array[i].media_url);
-      get_media_pixbuf_async(media_array[i].media_url,(obj,res)=>{
-        Pixbuf pixbuf=get_media_pixbuf_async.end(res);
-        //pixbuf.save("/home/chiharu/debug.png","png");
-        image.set_from_pixbuf(pixbuf);
-      });
+  public MediasPage(media[] media_array,TweetNode tweet_node,Config config){
+    media_array_=media_array;
+    tweet_node_box.add(tweet_node);
+    
+    for(int i=0;i<media_array_.length;i++){
+      PhotoBox photo_box=new PhotoBox(media_array_[i]);
+      medias_grid.attach(photo_box,i%2,i/2,1,1);
     }
-    medias_grid.show_all();
   }
 }

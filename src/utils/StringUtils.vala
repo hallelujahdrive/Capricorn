@@ -60,7 +60,7 @@ namespace StringUtils{
           //URL中に"+"が入っていると正常に置換できないのでどうにかする
           sign_regex=new Regex("\\+");
           long_url=sign_regex.replace(long_url,-1,0,"\\\\+");
-          var text_regex_replace=new Regex(long_url,RegexCompileFlags.UNGREEDY,0);
+          var text_regex_replace=new Regex(long_url,0,0);
           string url=shorting_url(match_info.fetch(0));
           parsed_text=text_regex_replace.replace_literal(parsed_text,-1,0,url);
         }while(match_info.next());

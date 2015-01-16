@@ -23,6 +23,7 @@ sources = \
 			MainWindow.vala \
 			MediasPage.vala \
 			OAuth.vala \
+			PhotoBox.vala \
 			PostButton.vala \
 			PostPage.vala \
 			ProfileImageButton.vala \

@@ -8,7 +8,7 @@ using TwitterUtils;
 using UriUtils;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/tweet_node.ui")]
-class TweetNode:Grid{
+public class TweetNode:Grid{
   private ParsedJsonObj parsed_json_obj_;
   private OAuthProxy api_proxy_;
   private Config config_;
@@ -88,5 +88,11 @@ class TweetNode:Grid{
     }else{
       this.override_background_color(StateFlags.NORMAL,config_.default_bg_rgba);
     }
+  }
+  
+  //Clone
+  public TweetNode clone(){
+    TweetNode clone_node=new TweetNode(parsed_json_obj_,api_proxy_,config_,signal_pipe_);
+    return clone_node;
   }
 }

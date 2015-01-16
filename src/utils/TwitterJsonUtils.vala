@@ -123,6 +123,7 @@ namespace JsonUtils{
                 case "source":parse_source(json_main_obj.get_string_member(member));
                 break;
                 case "entities":
+                case "extended_entities":
                 //entitiesの解析
                 Json.Object entities_obj=json_main_obj.get_object_member(member);
                 foreach(string entities_member in entities_obj.get_members()){

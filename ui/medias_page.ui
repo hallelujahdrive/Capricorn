@@ -12,6 +12,7 @@
       <object class="GtkBox" id="medias_box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
+        <property name="margin_top">1</property>
         <property name="border_width">5</property>
         <property name="orientation">vertical</property>
         <property name="spacing">5</property>
@@ -30,8 +31,26 @@
                   <object class="GtkGrid" id="medias_grid">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="vexpand">False</property>
+                    <property name="border_width">5</property>
+                    <property name="orientation">vertical</property>
                     <property name="row_spacing">5</property>
                     <property name="column_spacing">5</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
                     <child>
                       <placeholder/>
                     </child>
@@ -56,6 +75,21 @@
           </packing>
         </child>
         <child>
+          <object class="GtkBox" id="tweet_node_box">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkButtonBox" id="bbox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -67,6 +101,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <signal name="clicked" handler="open_url_button_clicked_cb" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -92,7 +127,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">1</property>
+            <property name="position">2</property>
           </packing>
         </child>
       </object>

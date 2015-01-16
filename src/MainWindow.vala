@@ -75,8 +75,8 @@ public class MainWindow:ApplicationWindow{
     });
     
     //Mediasのopen
-    signal_pipe.media_url_click_event.connect((media_array)=>{
-      MediasPage medias_page=new MediasPage(media_array,config);
+    signal_pipe.media_url_click_event.connect((media_array,clone_node)=>{
+      MediasPage medias_page=new MediasPage(media_array,clone_node,config);
       various_notebook.append_page(medias_page,medias_page.tab);
       various_notebook.set_current_page(various_notebook.page_num(medias_page));
     });

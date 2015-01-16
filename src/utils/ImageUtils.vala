@@ -73,6 +73,21 @@ namespace ImageUtils{
     return pixbuf;
   }
   
+  
+  //pixbufのリサイズ
+  public Pixbuf resize_pixbuf(int width,int? height,Pixbuf pixbuf){
+    if(pixbuf.width>width){
+      int h;
+      if(height==null){
+        h=(int)((double)width/pixbuf.width*pixbuf.height);
+      }else{
+        h=height;
+      }
+      return pixbuf.scale_simple(width,h,InterpType.BILINEAR);
+    }
+    return pixbuf;
+  }
+  
   //pathからのpixbufの生成
   public Pixbuf get_pixbuf_from_path(string image_path,int size){
     Pixbuf pixbuf=null;
