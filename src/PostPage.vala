@@ -11,11 +11,8 @@ class PostPage:Frame{
   private Config config_;
   private SignalPipe signal_pipe_;
   
-  private PostButton post_button;
-  private URLShortoingButton url_shorting_button;
-  
-  //tab
-  public Image post_tab=new Image();
+  private IconButton post_button;
+  private IconButton url_shorting_button;
   
   //tweet_text_view内の文字数
   private static int chars_count=140;
@@ -29,6 +26,9 @@ class PostPage:Frame{
   private bool tl_is_linked=false;
   
   //Widget
+  [GtkChild]
+  public Image tab;
+  
   [GtkChild]
   private Label chars_count_label;
   
@@ -96,8 +96,8 @@ class PostPage:Frame{
     config_=config;
     signal_pipe_=signal_pipe;
     
-    post_button=new PostButton(config_,signal_pipe_);
-    url_shorting_button=new URLShortoingButton(config_,signal_pipe_);
+    post_button=new IconButton(config_.post_pixbuf,null,null);
+    url_shorting_button=new IconButton(config_.url_shorting_pixbuf,null,null);
     
     bbox.add(post_button);
     bbox.add(url_shorting_button);
@@ -112,33 +112,39 @@ class PostPage:Frame{
     
     account_list_store.set_sort_column_id(0,SortType.ASCENDING);
     
-    post_tab.set_from_pixbuf(config_.twitter_icon_pixbuf);
+    //tabの画像のセット
+    tab.set_from_pixbuf(config_.twitter_pixbuf);
     //load
     load_account_combobox();
     
     //signalhandler
-    signal_pipe_.post_button_click_event.connect(()=>{
+    //post
+    post_button.clicked.connect((already)=>{
       post_tweet.begin(buffer.text,to_reply_tweet_id_str,account_array_.index(selected_account_num).api_proxy,(obj,res)=>{
-        bool result=post_tweet.end(res);
-        if(result){
-          buffer.text="";
+      if(post_tweet.end(res)){
+        buffer.text="";
         }
       });
-    to_reply_tweet_id_str=null;
+      to_reply_tweet_id_str=null;
+      return true;
     });
     
-    signal_pipe_.url_shorting_button_click_event.connect(()=>{
+    //URLの短縮
+    url_shorting_button.clicked.connect((already)=>{
       if(buffer.text!=""){
         string parsed_text=parse_post_text(buffer.text);
         buffer.text=parsed_text;      
       }
+      return true;
     });
     
+    //リプライのリクエスト
     signal_pipe.reply_request_event.connect((tweet_id_str,screen_name)=>{
       to_reply_tweet_id_str=tweet_id_str;
       buffer.text="@"+screen_name+" ";
       tweet_text_view.grab_focus();
     });
+    
   }
   
   //account_comboboxの読み込み
@@ -148,7 +154,7 @@ class PostPage:Frame{
       int my_list_id=account_array_.index(i).my_list_id;
       string my_screen_name=account_array_.index(i).my_screen_name;
       get_pixbuf_async.begin(config_.cache_dir_path,my_screen_name,account_array_.index(i).my_profile_image_url,16,config_.profile_image_hash_table,(obj,res)=>{
-        Pixbuf pixbuf=config_.loading_icon_pixbuf_16px;
+        Pixbuf pixbuf=config_.loading_pixbuf_16px;
         account_list_store.append(out iter);
         account_list_store.set(iter,0,my_list_id,1,pixbuf,2,my_screen_name);
         //profile_imageの取得

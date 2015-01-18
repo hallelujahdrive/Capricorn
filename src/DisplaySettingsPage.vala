@@ -101,7 +101,7 @@ class DisplaySettingsPage:Frame{
     use_default_font=config_.font_profile.use_default;
     
     //tabのアイコンの設定
-    tab.set_from_pixbuf(config_.display_icon_pixbuf);
+    tab.set_from_pixbuf(config_.display_pixbuf);
     
     //fontbuttonの設定
     enable_font_detail_cbutton.set_active(!config.font_profile.use_default);

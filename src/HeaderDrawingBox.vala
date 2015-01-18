@@ -9,7 +9,6 @@ class HeaderDrawingBox:DrawingBox{
   
   private StringBuilder name_sb=new StringBuilder();
   
-  private Pixbuf protected_icon_pixbuf;
   private Surface image_surface;
   
   //アイコンの描画位置
@@ -31,7 +30,7 @@ class HeaderDrawingBox:DrawingBox{
     
     //protected_icon_pixbufの描画
     if(account_is_protected_){
-      image_surface=cairo_surface_create_from_pixbuf(protected_icon_pixbuf,1,null);
+      image_surface=cairo_surface_create_from_pixbuf(config_.protected_pixbuf,1,null);
       //描画位置の調整(spacer(5px))
       context.set_source_surface(image_surface,icon_pos+5,0);
       context.paint();
@@ -54,11 +53,6 @@ class HeaderDrawingBox:DrawingBox{
     name_sb.append(screen_name);
     name_sb.append("</b> ");
     name_sb.append(name);
-    
-    //protected_icon_pixbufの取得
-    if(account_is_protected_){
-      protected_icon_pixbuf=config_.protected_icon_pixbuf;
-    }
   }
   
   //color,descriptionの設定

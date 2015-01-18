@@ -39,7 +39,7 @@ class TLNode{
     //UserStream
     user_stream=new UserStream(account_.stream_proxy);
     //tab 
-    Pixbuf pixbuf=config_.loading_icon_pixbuf_24px;
+    Pixbuf pixbuf=config_.loading_pixbuf_24px;
     home_tab.set_from_pixbuf(pixbuf);
     mention_tab.set_from_pixbuf(pixbuf);
     get_pixbuf_async.begin(config_.cache_dir_path,account_.my_screen_name,account_.my_profile_image_url,24,config.profile_image_hash_table,(obj,res)=>{

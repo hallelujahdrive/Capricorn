@@ -89,7 +89,7 @@ class SettingsWindow:Dialog{
     this.destroy();
   }
   
-  public SettingsWindow(GLib.Array<Account> account_array,Config config,SignalPipe signal_pipe){
+  public SettingsWindow(GLib.Array<Account> account_array,Func func,Config config,SignalPipe signal_pipe){
     account_array_=account_array;
     config_=config;
     signal_pipe_=signal_pipe;
@@ -101,10 +101,10 @@ class SettingsWindow:Dialog{
     settings_notebook.append_page(account_s_page,account_s_page.tab);
     settings_notebook.append_page(display_s_page,display_s_page.tab);
     settings_notebook.append_page(tl_s_page,tl_s_page.tab);
-    
+        
     //シグナルハンドラ
     this.destroy.connect(()=>{
-      signal_pipe_.settings_window_destroy_event();
+      func(null);
     });
   }
 }

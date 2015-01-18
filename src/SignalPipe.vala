@@ -15,13 +15,7 @@ public class SignalPipe{
   
   //url_shorting
   public signal void url_shorting_button_click_event();
-  
-  //SettingsWindowを開く
-  public signal void settings_button_click_event();
-  
-  //SettingsWindowを閉じる
-  public signal void settings_window_destroy_event();
-  
+
   //media_url
   public signal void media_url_click_event(media[] media_array,TweetNode tweet_node);
 }

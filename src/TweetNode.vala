@@ -19,9 +19,9 @@ public class TweetNode:Grid{
   private FooterDrawingBox footer_d_box;
   
   private ProfileImageButton profile_image_button;
-  private ReplyButton reply_button;
-  private RetweetButton retweet_button;
-  private FavoriteButton favorite_button;
+  private IconButton reply_button;
+  private IconButton retweet_button;
+  private IconButton favorite_button;
   
   [GtkChild]
   private Box profile_image_box;
@@ -40,9 +40,9 @@ public class TweetNode:Grid{
     footer_d_box=new FooterDrawingBox(parsed_json_obj_.created_at,parsed_json_obj_.source_label,parsed_json_obj_.source_url,config_,signal_pipe_);
     
     profile_image_button=new ProfileImageButton(parsed_json_obj_.screen_name,parsed_json_obj_.profile_image_url,config_,signal_pipe_);
-    reply_button=new ReplyButton(parsed_json_obj_.tweet_id_str,parsed_json_obj_.screen_name,config_,signal_pipe_);
-    retweet_button=new RetweetButton(parsed_json_obj_.tweet_id_str,api_proxy_,parsed_json_obj_.retweeted,config_);
-    favorite_button=new FavoriteButton(parsed_json_obj_.tweet_id_str,api_proxy_,parsed_json_obj_.favorited,config_);
+    reply_button=new IconButton(config_.reply_pixbuf,config_.reply_hover_pixbuf,null);
+    retweet_button=new IconButton(config_.retweet_pixbuf,config_.retweet_hover_pixbuf,config_.retweet_on_pixbuf);
+    favorite_button=new IconButton(config_.favorite_pixbuf,config_.favorite_hover_pixbuf,config_.favorite_on_pixbuf);
     
     this.attach(header_d_box,1,0,1,1);
     this.attach(text_d_box,1,1,1,1);
@@ -68,13 +68,30 @@ public class TweetNode:Grid{
       var in_reply_d_box=new InReplyDrawingBox(api_proxy,parsed_json_obj_.in_reply_to_status_id,config_,signal_pipe_);
       this.attach(in_reply_d_box,1,5,1,1);
     }
-
+    
+    //シグナルハンドラ
     //背景色設定のシグナル
     signal_pipe.color_change_event.connect(()=>{
       set_bg_color();
-      this.hide();
-      this.show();
+      this.queue_draw();
     });
+    
+    //reply
+    reply_button.clicked.connect((already)=>{
+      signal_pipe_.reply_request_event(parsed_json_obj_.tweet_id_str,parsed_json_obj_.screen_name);
+      return true;
+    });
+    
+    //retweet
+    retweet_button.clicked.connect((already)=>{
+      return retweet(parsed_json_obj_.tweet_id_str,api_proxy_);
+    });
+    
+    //favorite
+    favorite_button.clicked.connect((already)=>{
+      return favorite(parsed_json_obj_.tweet_id_str,api_proxy_);
+    });
+    
   }
   
   //色の設定

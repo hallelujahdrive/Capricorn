@@ -8,6 +8,7 @@ icon_DATA = \
 						fav_hover_icon.png \
 						fav_on_icon.png \
 						loading_icon.png \
+						medias.png \
 						post.png \
 						protected_icon.png \
 						reply_icon.png \

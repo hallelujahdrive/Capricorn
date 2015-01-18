@@ -87,7 +87,7 @@ class AccountSettingsPage:Frame{
     settings_window_=settings_window;
     
     //tabのicon
-    tab.set_from_pixbuf(config_.account_icon_pixbuf);
+    tab.set_from_pixbuf(config_.account_pixbuf);
     
     //TreeViewのload
     account_tree_view.insert_column_with_attributes(-1,"",cell_pixbuf,"pixbuf",1);
@@ -109,7 +109,7 @@ class AccountSettingsPage:Frame{
       int my_list_id=account_array_.index(i).my_list_id;
       string my_screen_name=account_array_.index(i).my_screen_name;
       get_pixbuf_async.begin(config_.cache_dir_path,my_screen_name,account_array_.index(i).my_profile_image_url,16,config_.profile_image_hash_table,(obj,res)=>{
-        Pixbuf pixbuf=config_.loading_icon_pixbuf_16px;
+        Pixbuf pixbuf=config_.loading_pixbuf_16px;
         account_list_store.append(out iter);
         account_list_store.set(iter,0,my_list_id,1,pixbuf,2,my_screen_name);
         //profile_imageの取得

@@ -14,23 +14,20 @@ sources = \
 			Config.vala \
 			DisplaySettingsPage.vala \
 			DrawingBox.vala \
-			FavoriteButton.vala \
 			FontProfile.vala \
 			FooterDrawingBox.vala \
 			HeaderDrawingBox.vala \
+			IconButton.vala \
 			ImageButton.vala \
 			InReplyDrawingBox.vala \
 			MainWindow.vala \
-			MediasPage.vala \
+			MediaPage.vala \
+			MediaWindow.vala \
 			OAuth.vala \
 			PhotoBox.vala \
-			PostButton.vala \
 			PostPage.vala \
 			ProfileImageButton.vala \
-			ReplyButton.vala \
 			RetweetDrawingBox.vala \
-			RetweetButton.vala \
-			SettingsButton.vala \
 			SettingsWindow.vala \
 			SignalPipe.vala \
 			TextDrawingBox.vala \
@@ -38,7 +35,6 @@ sources = \
 			TLPage.vala \
 			TLSettingsPage.vala \
 			TweetNode.vala \
-			URLShortingButton.vala \
 			sqlite/Account.vala \
 			sqlite/Color.vala \
 			sqlite/Font.vala \
