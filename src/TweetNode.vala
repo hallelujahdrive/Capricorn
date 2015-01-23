@@ -23,6 +23,9 @@ public class TweetNode:Grid{
   private IconButton retweet_button;
   private IconButton favorite_button;
   
+  public string tweet_id_str;
+  public string screen_name;
+  
   [GtkChild]
   private Box profile_image_box;
   
@@ -34,6 +37,9 @@ public class TweetNode:Grid{
     api_proxy_=api_proxy;
     config_=config;
     signal_pipe_=signal_pipe;
+    
+    tweet_id_str=parsed_json_obj_.tweet_id_str;
+    screen_name=parsed_json_obj_.screen_name;
     
     header_d_box=new HeaderDrawingBox(parsed_json_obj_.screen_name,parsed_json_obj_.name,parsed_json_obj_.account_is_protected,config_,signal_pipe_);
     text_d_box=new TextDrawingBox(parsed_json_obj_.text,parsed_json_obj_.media_array,parsed_json_obj_.urls_array,config_,signal_pipe_);
@@ -78,7 +84,7 @@ public class TweetNode:Grid{
     
     //reply
     reply_button.clicked.connect((already)=>{
-      signal_pipe_.reply_request_event(parsed_json_obj_.tweet_id_str,parsed_json_obj_.screen_name);
+      signal_pipe_.reply_request_event(this.clone());
       return true;
     });
     

@@ -14,10 +14,14 @@ class PostPage:Frame{
   private IconButton post_button;
   private IconButton url_shorting_button;
   
+  private TweetNode tweet_node_;
+  
   //tweet_text_view内の文字数
   private static int chars_count=140;
   //リプライ元のtweet_id
   private string? to_reply_tweet_id_str;
+  //replyのリセットをしない
+  private bool freeze=false;
 
   //選択中のaccount
   private static int selected_account_num=0;
@@ -45,6 +49,9 @@ class PostPage:Frame{
   private Box bbox;
   
   [GtkChild]
+  private Box tweet_node_box;
+  
+  [GtkChild]
   private ComboBox account_cbox;
   
   [GtkChild]
@@ -63,6 +70,9 @@ class PostPage:Frame{
     //post_buttonのプロパティ
     if(chars_count==140||chars_count<0){
       post_button.set_sensitive(false);
+      if(chars_count==140){
+        reply_reset();
+      }
     }else{
       post_button.set_sensitive(true);
     }
@@ -103,7 +113,7 @@ class PostPage:Frame{
     bbox.add(url_shorting_button);
     
     //プロパティ
-    post_button.sensitive=false;
+    post_button.set_sensitive(false);
     
     account_cbox.pack_start(cell_pixbuf,false);
     account_cbox.add_attribute(cell_pixbuf,"pixbuf",1);
@@ -123,6 +133,7 @@ class PostPage:Frame{
       post_tweet.begin(buffer.text,to_reply_tweet_id_str,account_array_.index(selected_account_num).api_proxy,(obj,res)=>{
       if(post_tweet.end(res)){
         buffer.text="";
+        reply_reset();
         }
       });
       to_reply_tweet_id_str=null;
@@ -139,9 +150,14 @@ class PostPage:Frame{
     });
     
     //リプライのリクエスト
-    signal_pipe.reply_request_event.connect((tweet_id_str,screen_name)=>{
-      to_reply_tweet_id_str=tweet_id_str;
-      buffer.text="@"+screen_name+" ";
+    signal_pipe.reply_request_event.connect((tweet_node)=>{
+      reply_reset();
+      freeze=true;
+      tweet_node_=tweet_node;
+      to_reply_tweet_id_str=tweet_node_.tweet_id_str;
+      buffer.text=buffer.text+"@"+tweet_node_.screen_name+" ";
+      tweet_node_box.add(tweet_node_);
+      freeze=false;
       tweet_text_view.grab_focus();
     });
     
@@ -165,6 +181,14 @@ class PostPage:Frame{
           account_cbox.active=0;
         }
       });
+    }
+  }
+  
+  //リプライのリセット
+  private void reply_reset(){
+    if(tweet_node_!=null&&!freeze){
+      tweet_node_.destroy();
+      to_reply_tweet_id_str=null;
     }
   }
   

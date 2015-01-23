@@ -8,7 +8,7 @@ public class SignalPipe{
   public signal void timeline_nodes_is_changed();
   
   //リプライの要求
-  public signal void reply_request_event(string tweet_id_str,string screen_name);
+  public signal void reply_request_event(TweetNode tweet_node);
   
   //post
   public signal void post_button_click_event();

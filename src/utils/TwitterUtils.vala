@@ -66,7 +66,7 @@ namespace TwitterUtils{
       try{
         stream_call.continuous(user_stream_cb,stream_call);
       }catch(Error e){
-        print("%s\n",e.message);
+        print("Error:%s\n",e.message);
       }
     }
   

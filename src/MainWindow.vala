@@ -11,7 +11,7 @@ public class MainWindow:ApplicationWindow{
   private SignalPipe signal_pipe;
 
   //Accountの配列
-  private GLib.Array<Account> account_array;
+  private Array<Account> account_array;
 
   //TLNodeの配列
   private GLib.Array<TLNode> tl_node_array=new GLib.Array<TLNode>();

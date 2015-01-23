@@ -70,7 +70,7 @@ class TLNode{
     });
     
     user_stream.callback_error.connect((err)=>{
-      print("%s\n",err);
+      print("UserStream Error:%s\n",err);
       user_stream.run();
     });
   }

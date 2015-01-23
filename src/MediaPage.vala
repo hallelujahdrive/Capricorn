@@ -11,7 +11,7 @@ class MediaPage:Frame{
   private Config config_;
   private SignalPipe signal_pipe_;
   
-  private Array<Pixbuf> pixbuf_array=new Array<Pixbuf>();
+  private Array<PhotoBox> photo_box_array=new Array<PhotoBox>();
   
   private MediaWindow media_window;
   
@@ -49,16 +49,14 @@ class MediaPage:Frame{
         
     //media_arrayからの画像の読み込み
     for(int i=0;i<media_array_.length;i++){
-      PhotoBox photo_box=new PhotoBox(i,media_array_[i],open_media_window);
-      photo_box.load_photo_async.begin((obj,res)=>{
-        pixbuf_array.append_val(photo_box.load_photo_async.end(res));
-      });
-      media_grid.attach(photo_box,i%2,i/2,1,1);
+      PhotoBox photo_box=new PhotoBox(i,media_array_[i].media_url,open_media_window);
+      photo_box_array.append_val(photo_box);
+      media_grid.attach(photo_box_array.index(i),i%2,i/2,1,1);
     }
   }
   
   private void open_media_window(int num){
-    media_window=new MediaWindow(num,pixbuf_array);
+    media_window=new MediaWindow(num,photo_box_array,config_);
     media_window.show_all();
   }
 }

@@ -24,6 +24,9 @@ public class Config{
   public Pixbuf twitter_pixbuf;
   public Pixbuf url_shorting_pixbuf;
   
+  public Pixbuf prev_pixbuf;
+  public Pixbuf next_pixbuf;
+  
   public Pixbuf account_pixbuf;
   public Pixbuf display_pixbuf;
   public Pixbuf media_pixbuf;
@@ -89,6 +92,9 @@ public class Config{
     post_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"post.png",24);
     twitter_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"twitter.png",24);
     url_shorting_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"url_shorting.png",24);
+    
+    prev_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"prev.png",24);
+    next_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"next.png",24);
     
     account_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"account.png",24);
     display_pixbuf=get_pixbuf_from_path(ICON_DIR_PATH+"display.png",24);

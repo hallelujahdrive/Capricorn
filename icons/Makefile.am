@@ -9,7 +9,9 @@ icon_DATA = \
 						fav_on_icon.png \
 						loading_icon.png \
 						medias.png \
+						next.png \
 						post.png \
+						prev.png \
 						protected_icon.png \
 						reply_icon.png \
 						reply_hover_icon.png \
