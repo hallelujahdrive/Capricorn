@@ -77,13 +77,16 @@ namespace ImageUtils{
   //pixbufのリサイズ
   public Pixbuf resize_pixbuf(int width,int? height,Pixbuf pixbuf){
     if(pixbuf.width>width){
+      int w;
       int h;
-      if(height==null){
-        h=(int)((double)width/pixbuf.width*pixbuf.height);
-      }else{
+      if(height!=null&&(double)height/pixbuf.height<(double)width/pixbuf.width){
+        w=(int)((double)height/pixbuf.height*pixbuf.width);
         h=height;
+      }else{
+        w=width;
+        h=(int)((double)width/pixbuf.width*pixbuf.height);
       }
-      return pixbuf.scale_simple(width,h,InterpType.BILINEAR);
+      return pixbuf.scale_simple(w,h,InterpType.BILINEAR);
     }
     return pixbuf;
   }

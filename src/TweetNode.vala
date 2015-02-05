@@ -71,8 +71,10 @@ public class TweetNode:Grid{
     
     //in_reply_d_boxの追加
     if(parsed_json_obj_.in_reply_to_status_id!=null){
-      var in_reply_d_box=new InReplyDrawingBox(api_proxy,parsed_json_obj_.in_reply_to_status_id,config_,signal_pipe_);
-      this.attach(in_reply_d_box,1,5,1,1);
+      var in_reply_d_box=new InReplyDrawingBox(config_,signal_pipe_);
+      if(in_reply_d_box.draw_tweet(api_proxy,parsed_json_obj.in_reply_to_status_id)){
+        this.attach(in_reply_d_box,1,5,1,1);
+      }
     }
     
     //シグナルハンドラ

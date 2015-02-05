@@ -194,7 +194,7 @@ namespace TwitterUtils{
       get_call.run();
       json_str=get_call.get_payload();
     }catch(Error e){
-      print("%s\n",e.message);
+      print("Json Error:%s\n",e.message);
     }
     return json_str;
   }

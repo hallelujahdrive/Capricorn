@@ -1,16 +1,33 @@
 using Gdk;
 using Gtk;
 
+using ImageUtils;
+
 [GtkTemplate(ui="/org/gtk/capricorn/ui/media_window.ui")]
 class MediaWindow:Gtk.Window{
   private int num_;
   private Array<PhotoBox> photo_box_array_;
   private Config config_;
   
+  private double mag;
+  
   private Pixbuf resized_pixbuf;
+  
+  //widget
+  [GtkChild]
+  private ScrolledWindow scrolledwindow;
+  
+  [GtkChild]
+  private Viewport viewport;  
   
   [GtkChild]
   private Box left_button_box;
+  
+  [GtkChild]
+  private ComboBox combobox;
+  
+  [GtkChild]
+  private Entry combobox_entry;
   
   [GtkChild]
   private ListStore liststore;
@@ -22,7 +39,6 @@ class MediaWindow:Gtk.Window{
   private IconButton prev_button;
   private IconButton next_button;
   
-  //Widget
   [GtkChild]
   private Image image;
   
@@ -39,24 +55,27 @@ class MediaWindow:Gtk.Window{
     
     set_button_sensitive();
     
-    image.set_from_pixbuf(photo_box_array.index(num).pixbuf);
+    this.show.connect_after(()=>{
+      set_default_size_pixbuf();
+    });
     
     //シグナルハンドラ
     prev_button.clicked.connect(()=>{
       num_-=1;
-      image.set_from_pixbuf(photo_box_array.index(num_).pixbuf);
+      set_default_size_pixbuf();
       set_button_sensitive();
       return true;
     });
     
     next_button.clicked.connect(()=>{
       num_+=1;
-      image.set_from_pixbuf(photo_box_array.index(num_).pixbuf);
+      set_default_size_pixbuf();
       set_button_sensitive();
       return true;
     });
   }
   
+  //ボタンのsensitiveを設定
   private void set_button_sensitive(){
     if(num_==0){
       prev_button.set_sensitive(false);
@@ -69,4 +88,29 @@ class MediaWindow:Gtk.Window{
       next_button.set_sensitive(true);
     }
   }
+  
+  //デフォルトの倍率
+  private void set_default_size_pixbuf(){
+    double mag;
+    Allocation allocation;
+    
+    viewport.get_allocation(out allocation);
+    if(photo_box_array_.index(num_).pixbuf.width<=allocation.width&&photo_box_array_.index(num_).pixbuf.height<=allocation.height){
+      combobox.active=3;
+      mag=1;
+    }else{
+      double w_mag=(double)allocation.width/photo_box_array_.index(num_).pixbuf.width;
+      double h_mag=(double)allocation.height/photo_box_array_.index(num_).pixbuf.height;
+      mag=w_mag<h_mag?w_mag:h_mag;
+    }
+    set_pixbuf(mag);
+  }
+  
+  //pixbufのセット
+  private void set_pixbuf(double mag){
+    double w=photo_box_array_.index(num_).pixbuf.width*mag;
+    resized_pixbuf=resize_pixbuf((int)w,null,photo_box_array_.index(num_).pixbuf);
+    image.set_from_pixbuf(resized_pixbuf);
+  }
+  
 }

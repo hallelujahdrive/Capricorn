@@ -31,7 +31,7 @@ class PhotoBox:DrawingBox{
       w=this.get_allocated_width();
       resized_pixbuf=resize_pixbuf(w,null,pixbuf);
       h=resized_pixbuf.height;
-    
+      
       image_surface=cairo_surface_create_from_pixbuf(resized_pixbuf,1,null);
       context.set_source_surface(image_surface,0,0);
       context.paint();

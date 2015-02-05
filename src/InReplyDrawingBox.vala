@@ -41,22 +41,27 @@ class InReplyDrawingBox:DrawingBox{
     return true;
   }
   
-  public InReplyDrawingBox(OAuthProxy api_proxy,string in_reply_to_status_id,Config config,SignalPipe signal_pipe){
+  public InReplyDrawingBox(Config config,SignalPipe signal_pipe){
     config_=config;
     signal_pipe_=signal_pipe;
+  }
     
-    //reply元の
+  //reply元のツイートを取得
+  public bool draw_tweet(OAuthProxy api_proxy,string in_reply_to_status_id){
     string json_str=get_tweet_json(api_proxy,in_reply_to_status_id);
     if(json_str!=null){
       in_reply_parsed_json_obj=new ParsedJsonObj(json_str,null);
       
       //profile_image_pixbufの取得
       in_reply_profile_image_pixbuf=config_.loading_pixbuf_24px;
-      get_pixbuf_async.begin(config.cache_dir_path,in_reply_parsed_json_obj.screen_name,in_reply_parsed_json_obj.profile_image_url,24,config.profile_image_hash_table,(obj,res)=>{
+      get_pixbuf_async.begin(config_.cache_dir_path,in_reply_parsed_json_obj.screen_name,in_reply_parsed_json_obj.profile_image_url,24,config_.profile_image_hash_table,(obj,res)=>{
         in_reply_profile_image_pixbuf=get_pixbuf_async.end(res);
         //再描画
         drawing_area.queue_draw();
       });
+      return true;
+    }else{
+      return false;
     }
   }
   

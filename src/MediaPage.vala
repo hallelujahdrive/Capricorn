@@ -12,12 +12,15 @@ class MediaPage:Frame{
   private SignalPipe signal_pipe_;
   
   private Array<PhotoBox> photo_box_array=new Array<PhotoBox>();
-  
+    
   private MediaWindow media_window;
   
   //Widget
   [GtkChild]
   public Image tab;
+  
+  [GtkChild]
+  private Viewport viewport;
   
   [GtkChild]
   private Grid media_grid;
@@ -46,7 +49,7 @@ class MediaPage:Frame{
     
     //tabの画像のセット
     tab.set_from_pixbuf(config_.media_pixbuf);
-        
+
     //media_arrayからの画像の読み込み
     for(int i=0;i<media_array_.length;i++){
       PhotoBox photo_box=new PhotoBox(i,media_array_[i].media_url,open_media_window);

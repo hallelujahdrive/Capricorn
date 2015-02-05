@@ -28,7 +28,7 @@ namespace JsonUtils{
         }
       }
     }catch(Error e){
-      print("%s\n",e.message);
+      print("ParseJson Error:%s\n",e.message);
       success=false;
     }
     return success;
