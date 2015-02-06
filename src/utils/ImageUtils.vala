@@ -75,20 +75,28 @@ namespace ImageUtils{
   
   
   //pixbufのリサイズ
-  public Pixbuf resize_pixbuf(int width,int? height,Pixbuf pixbuf){
-    if(pixbuf.width>width){
-      int w;
-      int h;
-      if(height!=null&&(double)height/pixbuf.height<(double)width/pixbuf.width){
-        w=(int)((double)height/pixbuf.height*pixbuf.width);
-        h=height;
+  public Pixbuf scale_pixbuf(int dst_width,int? dst_height,Pixbuf pixbuf){
+    if(pixbuf.width>dst_width){
+      int width;
+      int height;
+      if(dst_height!=null&&(double)dst_height/pixbuf.height<(double)dst_width/pixbuf.width){
+        width=(int)((double)dst_height/pixbuf.height*pixbuf.width);
+        height=dst_height;
       }else{
-        w=width;
-        h=(int)((double)width/pixbuf.width*pixbuf.height);
+        width=dst_width;
+        height=(int)((double)dst_width/pixbuf.width*pixbuf.height);
       }
-      return pixbuf.scale_simple(w,h,InterpType.BILINEAR);
+      return pixbuf.scale_simple(width,height,InterpType.BILINEAR);
     }
     return pixbuf;
+  }
+  
+  //pixbufのリサイズ(倍率)
+  public Pixbuf scale_pixbuf_with_magnifaction(double mag,Pixbuf pixbuf){
+    int width=(int)(mag*pixbuf.width);    
+    int height=(int)(mag*pixbuf.height);
+    
+    return pixbuf.scale_simple(width,height,InterpType.BILINEAR);
   }
   
   //pathからのpixbufの生成

@@ -9,19 +9,17 @@ class MediaWindow:Gtk.Window{
   private Array<PhotoBox> photo_box_array_;
   private Config config_;
   
-  private double mag;
-  
   private Pixbuf resized_pixbuf;
   
   //widget
-  [GtkChild]
-  private ScrolledWindow scrolledwindow;
-  
   [GtkChild]
   private Viewport viewport;  
   
   [GtkChild]
   private Box left_button_box;
+  
+  [GtkChild]
+  private Box right_button_box;
   
   [GtkChild]
   private ComboBox combobox;
@@ -31,7 +29,7 @@ class MediaWindow:Gtk.Window{
   
   [GtkChild]
   private ListStore liststore;
-  private TextIter iter;
+  private TreeIter iter;
   
   [GtkChild]
   private EntryBuffer entrybuffer;
@@ -41,6 +39,28 @@ class MediaWindow:Gtk.Window{
   
   [GtkChild]
   private Image image;
+  
+  //コールバック
+  [GtkCallback]
+  private void combobox_changed_cb(){
+    if(combobox.get_active_iter(out iter)){
+      Value val;
+      liststore.get_value(iter,1,out val);
+      set_pixbuf((double)val);
+    }
+  }
+  
+  //エントリへの入力で拡大率設定
+  [GtkCallback]
+  private void combobox_entry_activate_cb(){
+    double mag=double.parse(entrybuffer.text);
+    
+    if(mag<12.5){
+      mag=12.5;
+    }
+    set_pixbuf(mag/100);
+    entrybuffer.set_text((uchar[])("%.1f%%".printf(mag)));
+  }
   
   public MediaWindow(int num,Array<PhotoBox> photo_box_array,Config config){
     num_=num;
@@ -54,12 +74,12 @@ class MediaWindow:Gtk.Window{
     left_button_box.pack_start(next_button,false,false,0);
     
     set_button_sensitive();
-    
+
+    //シグナルハンドラ
     this.show.connect_after(()=>{
       set_default_size_pixbuf();
     });
     
-    //シグナルハンドラ
     prev_button.clicked.connect(()=>{
       num_-=1;
       set_default_size_pixbuf();
@@ -102,15 +122,14 @@ class MediaWindow:Gtk.Window{
       double w_mag=(double)allocation.width/photo_box_array_.index(num_).pixbuf.width;
       double h_mag=(double)allocation.height/photo_box_array_.index(num_).pixbuf.height;
       mag=w_mag<h_mag?w_mag:h_mag;
+      entrybuffer.set_text((uchar[])"%.1f%%".printf(mag*100));
     }
     set_pixbuf(mag);
   }
   
   //pixbufのセット
   private void set_pixbuf(double mag){
-    double w=photo_box_array_.index(num_).pixbuf.width*mag;
-    resized_pixbuf=resize_pixbuf((int)w,null,photo_box_array_.index(num_).pixbuf);
+    resized_pixbuf=scale_pixbuf_with_magnifaction(mag,photo_box_array_.index(num_).pixbuf);
     image.set_from_pixbuf(resized_pixbuf);
   }
-  
 }

@@ -14,7 +14,7 @@ public class MainWindow:ApplicationWindow{
   private Array<Account> account_array;
 
   //TLNodeの配列
-  private GLib.Array<TLNode> tl_node_array=new GLib.Array<TLNode>();
+  private Array<TLNode> tl_node_array=new Array<TLNode>();
   
   private PostPage post_page;
   private IconButton settings_button;

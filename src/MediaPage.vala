@@ -61,5 +61,10 @@ class MediaPage:Frame{
   private void open_media_window(int num){
     media_window=new MediaWindow(num,photo_box_array,config_);
     media_window.show_all();
+    
+    //ページ破棄と一緒にウィンドウも破棄
+    this.destroy.connect(()=>{
+      media_window.destroy();
+    });
   }
 }

@@ -81,14 +81,15 @@ class PostPage:Frame{
   //accountの選択
   [GtkCallback]
   private void account_cbox_changed_cb(ComboBox account_cbox){
-    GLib.Value val;
-    account_cbox.get_active_iter(out iter);
-    account_list_store.get_value(iter,0, out val);
-    selected_account_num=(int)val;
+    if(account_cbox.get_active_iter(out iter)){
+      Value val;
+      account_list_store.get_value(iter,0, out val);
+      selected_account_num=(int)val;
     
-    //TLの切り替えをAccountと連動させる
-    if(tl_is_linked){
+      //TLの切り替えをAccountと連動させる
+      if(tl_is_linked){
       tl_link(selected_account_num);
+      }
     }
   }
   
