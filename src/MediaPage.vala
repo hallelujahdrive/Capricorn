@@ -49,6 +49,14 @@ class MediaPage:Frame{
     
     //tabの画像のセット
     tab.set_from_pixbuf(config_.media_pixbuf);
+    
+    this.draw.connect_after(()=>{
+      int h=viewport.get_allocated_height()-(int)media_grid.get_row_spacing()*2;
+      for(int i=0;i<media_array_.length;i++){
+        photo_box_array.index(i).change_allocated_height(h);
+      }
+      return true;
+    });
 
     //media_arrayからの画像の読み込み
     for(int i=0;i<media_array_.length;i++){

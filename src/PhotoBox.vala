@@ -29,7 +29,7 @@ class PhotoBox:DrawingBox{
     
     if(pixbuf!=null){
       w=this.get_allocated_width();
-      resized_pixbuf=scale_pixbuf(w,null,pixbuf);
+      resized_pixbuf=scale_pixbuf(w,h,pixbuf);
       h=resized_pixbuf.height;
       
       image_surface=cairo_surface_create_from_pixbuf(resized_pixbuf,1,null);
@@ -52,5 +52,11 @@ class PhotoBox:DrawingBox{
       //再描画
       drawing_area.queue_draw();
     });
+  }
+  
+  //縦サイズ変更
+  public void change_allocated_height(int h_){
+    h=h_;
+    this.queue_draw();
   }
 }
