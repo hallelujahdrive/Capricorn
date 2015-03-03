@@ -43,6 +43,7 @@
               <object class="GtkViewport" id="viewport">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <signal name="draw" handler="viewport_draw_after_cb" after="yes" swapped="no"/>
                 <child>
                   <object class="GtkGrid" id="media_grid">
                     <property name="visible">True</property>
@@ -139,6 +140,7 @@
   <object class="GtkImage" id="tab">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="stock">gtk-missing-image</property>
+    <property name="icon_name">capricorn-medias</property>
+    <property name="icon_size">3</property>
   </object>
 </interface>

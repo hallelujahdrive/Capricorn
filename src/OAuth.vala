@@ -1,9 +1,9 @@
 using Gtk;
 using Sqlite;
 
-using SqliteUtils;
-using TwitterUtils;
-using UriUtils;
+using SqliteUtil;
+using TwitterUtil;
+using URIUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/oauth_window.ui")]
 public class OAuthDialog:Gtk.Dialog{

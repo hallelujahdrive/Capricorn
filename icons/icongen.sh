@@ -6,10 +6,16 @@ sizes=(32 48 64 128 256)
 
 for size in ${sizes_mini[@]}
 do
-	rsvg-convert ${path}/capricorn_mini.svg -h $size -w $size -f png -o ${path}/${size}x${size}/capricorn.png
+	if [ ! -a ${path}/${size}x${size}/apps ];then
+		mkdir -p ${path}/${size}x${size}/apps
+	fi
+	rsvg-convert ${path}/capricorn_mini.svg -h $size -w $size -f png -o ${path}/${size}x${size}/apps/capricorn.png
 done
 
 for size in ${sizes[@]}
 do
-	rsvg-convert ${path}/capricorn.svg -h $size -w $size -f png -o ${path}/${size}x${size}/capricorn.png
+	if [ ! -a ${path}/${size}x${size}/apps ];then
+		mkdir -p ${path}/${size}x${size}/apps
+	fi
+	rsvg-convert ${path}/capricorn.svg -h $size -w $size -f png -o ${path}/${size}x${size}/apps/capricorn.png
 done

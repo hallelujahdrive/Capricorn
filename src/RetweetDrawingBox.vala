@@ -2,15 +2,16 @@ using Cairo;
 using Gdk;
 using Gtk;
 
-using ImageUtils;
+using ImageUtil;
 
 class RetweetDrawingBox:DrawingBox{
   private const string retweet_text="Retweeted by";
   
   private StringBuilder rt_screen_name_sb=new StringBuilder();
-  private Pixbuf rt_profile_image_pixbuf;
+  private RotateSurface rotate_surface;
   private Surface image_surface;
   
+  private bool profile_image_loaded=false;
   //アイコンの描画位置
   private int icon_pos;
   
@@ -37,7 +38,6 @@ class RetweetDrawingBox:DrawingBox{
     Pango.cairo_show_layout(context,layout);
     
     //rt_profile_image_pixbufの描画
-    image_surface=cairo_surface_create_from_pixbuf(rt_profile_image_pixbuf,1,null);
     //描画位置の調整(spacer(5px))
     context.set_source_surface(image_surface,icon_pos+5,0);
     context.paint();
@@ -57,10 +57,26 @@ class RetweetDrawingBox:DrawingBox{
     rt_screen_name_sb.append("@");
     rt_screen_name_sb.append(rt_screen_name);
     
-    //rt_profile_imageの取得
-    rt_profile_image_pixbuf=config_.loading_pixbuf_16px;
-    get_pixbuf_async.begin(config.cache_dir_path,rt_screen_name,rt_profile_image_url,16,config.profile_image_hash_table,(obj,res)=>{
-      rt_profile_image_pixbuf=get_pixbuf_async.end(res);
+    //profile_image_pixbufの取得
+    try{
+      //load中の画像のRotateSurface
+      Pixbuf pixbuf=config_.icon_theme.load_icon(LOADING_ICON,16,IconLookupFlags.NO_SVG);
+      rotate_surface=new RotateSurface(pixbuf,16,16);
+      rotate_surface.run();
+      rotate_surface.update.connect((surface)=>{
+        if(!profile_image_loaded){
+          image_surface=surface;
+        }
+        //再描画
+        drawing_area.queue_draw();    
+        return !profile_image_loaded;
+      });
+    }catch(Error e){
+      print("IconTheme Error : %s\n",e.message);
+    }
+    get_pixbuf_async.begin(config_.cache_dir_path,rt_screen_name,rt_profile_image_url,16,config_.profile_image_hash_table,(obj,res)=>{
+      image_surface=cairo_surface_create_from_pixbuf(get_pixbuf_async.end(res),1,null);
+      profile_image_loaded=true;
       //再描画
       drawing_area.queue_draw();
     });

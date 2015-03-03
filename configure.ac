@@ -67,6 +67,17 @@ AC_CHECK_FUNCS([atexit memchr memset setlocale strstr])
 
 AC_CONFIG_FILES([Makefile
 								 data/Makefile
+								 icons/16x16/actions/Makefile
+								 icons/24x24/actions/Makefile
+                 icons/48x48/actions/Makefile
+								 icons/128x128/apps/Makefile
+								 icons/16x16/apps/Makefile
+								 icons/22x22/apps/Makefile
+								 icons/24x24/apps/Makefile
+								 icons/256x256/apps/Makefile
+								 icons/32x32/apps/Makefile
+								 icons/48x48/apps/Makefile
+								 icons/64x64/apps/Makefile
                  icons/128x128/Makefile
                  icons/16x16/Makefile
                  icons/22x22/Makefile

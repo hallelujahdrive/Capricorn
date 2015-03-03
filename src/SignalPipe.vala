@@ -1,4 +1,4 @@
-using UriUtils;
+using URIUtil;
 
 public class SignalPipe{
   //colorが変更された
@@ -17,5 +17,5 @@ public class SignalPipe{
   public signal void url_shorting_button_click_event();
 
   //media_url
-  public signal void media_url_click_event(media[] media_array,TweetNode tweet_node);
+  public signal void media_url_click_event(MediaPage media_page);
 }

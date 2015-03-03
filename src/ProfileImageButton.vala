@@ -1,11 +1,14 @@
 using Gdk;
 using Gtk;
 
-using ImageUtils;
+using ImageUtil;
 
 class ProfileImageButton:ImageButton{
   private Config config_;
   private SignalPipe signal_pipe_;
+  
+  private RotateSurface rotate_surface;
+  private bool profile_image_loaded=false;
   
   //button_release_event_cbのCallack(override)
   protected override bool button_release_event_cb(EventButton event_button){
@@ -31,12 +34,24 @@ class ProfileImageButton:ImageButton{
     config_=config;
     signal_pipe_=signal_pipe;
     
-    //loadingiconのset
-    image.set_from_animation(config.loading_animation_pixbuf);
-    
-    //profile_imageのset
-    get_pixbuf_async.begin(config_.cache_dir_path,screen_name,profile_image_url,48,config.profile_image_hash_table,(obj,res)=>{
+    //profile_image_pixbufの取得
+    try{
+      //load中の画像のRotateSurface
+      Pixbuf pixbuf=config_.icon_theme.load_icon(LOADING_ICON,48,IconLookupFlags.NO_SVG);
+      rotate_surface=new RotateSurface(pixbuf,48,48);
+      rotate_surface.run();
+      rotate_surface.update.connect((surface)=>{
+        if(!profile_image_loaded){
+          image.set_from_pixbuf(pixbuf_get_from_surface(surface,0,0,48,48));
+        }   
+        return !profile_image_loaded;
+      });
+    }catch(Error e){
+      print("IconTheme Error : %s\n",e.message);
+    }
+    get_pixbuf_async.begin(config_.cache_dir_path,screen_name,profile_image_url,48,config_.profile_image_hash_table,(obj,res)=>{
       image.set_from_pixbuf(get_pixbuf_async.end(res));
+      profile_image_loaded=true;
     });
   }
 }

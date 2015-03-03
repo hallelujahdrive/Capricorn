@@ -2,7 +2,7 @@ using Cairo;
 using Gdk;
 using Gtk;
 
-using ImageUtils;
+using ImageUtil;
 
 class HeaderDrawingBox:DrawingBox{
   private bool account_is_protected_;
@@ -30,11 +30,9 @@ class HeaderDrawingBox:DrawingBox{
     
     //protected_icon_pixbufの描画
     if(account_is_protected_){
-      image_surface=cairo_surface_create_from_pixbuf(config_.protected_pixbuf,1,null);
       //描画位置の調整(spacer(5px))
       context.set_source_surface(image_surface,icon_pos+5,0);
       context.paint();
-    
     }
     h/=layout.get_line_count();
     h=!account_is_protected_||h>16?h:16;
@@ -47,6 +45,16 @@ class HeaderDrawingBox:DrawingBox{
     account_is_protected_=account_is_protected;
     config_=config;
     signal_pipe_=signal_pipe;
+    
+    //IconThemeを作成
+    if(account_is_protected_){
+      try{
+        Screen screen=Screen.get_default();
+        image_surface=config_.icon_theme.load_surface(PROTECTED_ICON,16,1,screen.get_active_window(),IconLookupFlags.NO_SVG);
+      }catch(Error e){
+        print("IconTheme Error : %s\n",e.message);
+      }
+    }
     
     //表示する文字列
     name_sb.append("<b>@");

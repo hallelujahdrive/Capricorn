@@ -10,5 +10,5 @@ install-data-hook:
 	gtk-update-icon-cache @datadir@/icons/hicolor
 
 uninstall-hook:
-	gtk-update-icon-cache @iconsdir@
-	if test -d @pkgdatadir@;then rm -r @pkgdatadir@; fi
+	gtk-update-icon-cache @datadir@/icons/hicolor
+	if test -d @datadir@/capricorn;then rm -r @datadir@/capricorn; fi

@@ -2,8 +2,9 @@ using Cairo;
 using Gdk;
 using Gtk;
 
-using StringUtils;
-using UriUtils;
+using StringUtil;
+using TwitterUtil;
+using URIUtil;
 
 class TextDrawingBox:DrawingBox{
   private media[] media_array_;
@@ -21,9 +22,8 @@ class TextDrawingBox:DrawingBox{
     //media_arrayから検索
     for(int i=0;i<media_array_.length;i++){
       if(index_>=media_array_[i].start_indices&&index_<media_array_[i].end_indices){
-        TweetNode parent_node=(TweetNode)this.get_parent();
-        TweetNode clone_node=parent_node.clone();
-        signal_pipe_.media_url_click_event(media_array_,clone_node);
+        unowned TweetNode parent_node=(TweetNode)this.get_parent();
+        signal_pipe_.media_url_click_event(new MediaPage(media_array_,parent_node.copy()));
         break;
       }
     }
@@ -73,5 +73,9 @@ class TextDrawingBox:DrawingBox{
     //textの整形
     parsed_text=parse_text(ref text_,media_array_,urls_array_);
     get_incides(text_,media_array_,urls_array_);
+  }
+  
+  private void open_media_page(){
+    
   }
 }

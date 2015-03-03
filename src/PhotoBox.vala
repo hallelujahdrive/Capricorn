@@ -2,8 +2,8 @@ using Cairo;
 using Gdk;
 using Gtk;
 
-using ImageUtils;
-using UriUtils;
+using ImageUtil;
+using URIUtil;
 
 class PhotoBox:DrawingBox{
   private int num_;

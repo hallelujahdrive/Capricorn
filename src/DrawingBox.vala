@@ -1,6 +1,5 @@
 using Cairo;
 using Gdk;
-using Gdk;
 using Gtk;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/drawing_box.ui")]

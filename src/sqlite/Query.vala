@@ -1,6 +1,4 @@
-using Sqlite;
-
-namespace SqliteUtils{
+namespace SqliteUtil{
   //文字列定数.てかsql文の雛形
   private const string CREATE_TABLE_ACCOUNT_QUERY="""
   CREATE TABLE ACCOUNT(
@@ -50,7 +48,7 @@ namespace SqliteUtils{
   $IN_REPLY_FD,
   $IN_REPLY_FR
   );""";
-  private const string INSERT_TIMELINE_NODES_QUERY="INSERT INTO TIMELINE_NODES VALUES($GET_TWEET_NODES,$TWEET_NODE_MAX);";
+  private const string insert_timeline_node_count_QUERY="INSERT INTO TIMELINE_NODES VALUES($GET_TWEET_NODES,$TWEET_NODE_MAX);";
   private const string SELECT_FROM_ACCOUNT_QUERY="SELECT * FROM ACCOUNT WHERE list_id=$LIST_ID;";
   private const string SELECT_FROM_COLOR_QUERY="SELECT * FROM COLOR WHERE id=$ID;";
   private const string SELECT_FROM_FONT_QUERY="SELECT * FROM FONT WHERE id=$ID;";
@@ -71,6 +69,6 @@ namespace SqliteUtils{
   in_reply_font_rgba=$IN_REPLY_FR 
   WHERE id=$ID;
   """;
-  private const string UPDATE_TIMELINE_NODES_QUERY="UPDATE TIMELINE_NODES SET get_tweet_nodes=$GET_TWEET_NODES,tweet_node_max=$TWEET_NODE_MAX;";
+  private const string update_timeline_node_count_QUERY="UPDATE TIMELINE_NODES SET get_tweet_nodes=$GET_TWEET_NODES,tweet_node_max=$TWEET_NODE_MAX;";
   private const string SELECT_ID_FORM_ACCOUNT_QUERY="SELECT id FROM ACCOUNT WHERE list_id=$LIST_ID;";
 }

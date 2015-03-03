@@ -1,9 +1,9 @@
 using Gtk;
 using Sqlite;
 
-using FileUtils;
-using SqliteUtils;
-using TwitterUtils;
+using FileUtil;
+using SqliteUtil;
+using TwitterUtil;
 
 public class Capricorn:Gtk.Application{
   //ApplicationWindow
@@ -53,7 +53,7 @@ public class Capricorn:Gtk.Application{
       //insert
       insert_color(0,config);
       insert_font(0,config.font_profile,config.db);
-      insert_timeline_nodes(config.get_tweet_nodes,config.tweet_node_max,config.db);
+      insert_timeline_node_count(config.get_tweet_nodes,config.tweet_node_max,config.db);
     }else{
       //テーブルが存在したら
       //colorの読み出し
@@ -63,7 +63,7 @@ public class Capricorn:Gtk.Application{
       //ツイート取得数の読み出し
       select_timeline_nodes(ref config.get_tweet_nodes,ref config.tweet_node_max,config.db);
       //Account情報の読み出し
-      account_count=record_count(config.db,"ACCOUNT");
+      account_count=count_records(config.db,"ACCOUNT");
       for(int i=0;i<account_count;i++){
         var account=new Account();
         select_account(i,account,config.db);
@@ -90,7 +90,7 @@ public class Capricorn:Gtk.Application{
           account_array.append_val(account);
           insert_account(account_array.index(0),config.db);
         }
-        if(account_count==record_count(config.db,"ACCOUNT")){
+        if(account_count==count_records(config.db,"ACCOUNT")){
           window.destroy();
         }else{
           window.load_all();

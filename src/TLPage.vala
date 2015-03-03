@@ -36,9 +36,7 @@ class TLPage:ScrolledWindow{
     //古いTweetNodeの削除
     if(node_count==config_.tweet_node_max){
       //ListBoxRowの取得
-      var del_node=tl_list_box.get_row_at_index(config_.tweet_node_max);
-      tl_list_box.remove(del_node);
-      del_node.destroy();
+      tl_list_box.remove(tl_list_box.get_row_at_index(config_.tweet_node_max));
     }else{
       node_count++;
     }
@@ -49,9 +47,7 @@ class TLPage:ScrolledWindow{
     while(node_count!=config_.tweet_node_max){
       //ListBoxRowの取得
       node_count--;
-      var del_node=tl_list_box.get_row_at_index(node_count);
-      tl_list_box.remove(del_node);
-      del_node.destroy();
+      tl_list_box.remove(tl_list_box.get_row_at_index(node_count));
     }
   }
 }

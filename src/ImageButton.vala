@@ -7,7 +7,7 @@ public class ImageButton:EventBox{
   private RGBA clear=RGBA();
   
   [GtkChild]
-  protected unowned Image image;
+  protected Image image;
   
   //button_release_event_cbのCallack
   [GtkCallback]

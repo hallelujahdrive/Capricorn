@@ -1,6 +1,6 @@
 using Gtk;
 
-using DateTimeUtils;
+using DateTimeUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/locale_settings_page.ui")]
 class LocaleSettingsPage:Frame{

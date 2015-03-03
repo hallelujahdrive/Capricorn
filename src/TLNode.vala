@@ -2,9 +2,8 @@ using Gdk;
 using Gtk;
 using Rest;
 
-using ImageUtils;
-using JsonUtils;
-using TwitterUtils;
+using ImageUtil;
+using TwitterUtil;
 
 class TLNode{
   public int my_id;
@@ -15,7 +14,6 @@ class TLNode{
   private Account account_;
   private Config config_;
   private SignalPipe signal_pipe_;
-  
   
   private UserStream user_stream;
   
@@ -60,15 +58,17 @@ class TLNode{
       if(parsed_json_obj.is_tweet){
         //homeのTweetNode
         TweetNode tweet_node=new TweetNode(parsed_json_obj,account.api_proxy,config_,signal_pipe);
-        home_tl_page.prepend_node(tweet_node);
         //replyの作成
         if(parsed_json_obj.is_reply){
-          TweetNode reply_node=tweet_node.clone();
+          TweetNode reply_node=tweet_node.copy();
           mention_tl_page.prepend_node(reply_node);
         }
+        home_tl_page.prepend_node(tweet_node);
+
       }
     });
     
+    //エラー処理
     user_stream.callback_error.connect((err)=>{
       print("UserStream Error:%s\n",err);
       user_stream.run();
@@ -79,12 +79,12 @@ class TLNode{
   private void get_tweet_by_api(int get_tweet_max,bool is_mention){
     string[] json_array=get_timeline_json(account_.api_proxy,get_tweet_max,is_mention);
     for(int i=0;i<json_array.length;i++){
-      parsed_json_obj=new ParsedJsonObj(json_array[i],account_.my_screen_name);
+      parsed_json_obj=new ParsedJsonObj((owned)json_array[i],account_.my_screen_name);
       TweetNode tweet_node=new TweetNode(parsed_json_obj,account_.api_proxy,config_,signal_pipe_);
       if(is_mention){
-        mention_tl_page.add_node(tweet_node);
+        mention_tl_page.add_node((owned)tweet_node);
       }else{
-        home_tl_page.add_node(tweet_node);
+        home_tl_page.add_node((owned)tweet_node);
       }
     }
   }

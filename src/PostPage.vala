@@ -1,9 +1,9 @@
 using Gdk;
 using Gtk;
 
-using ImageUtils;
-using StringUtils;
-using TwitterUtils;
+using ImageUtil;
+using StringUtil;
+using TwitterUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/post_page.ui")]
 class PostPage:Frame{
@@ -107,8 +107,8 @@ class PostPage:Frame{
     config_=config;
     signal_pipe_=signal_pipe;
     
-    post_button=new IconButton(config_.post_pixbuf,null,null);
-    url_shorting_button=new IconButton(config_.url_shorting_pixbuf,null,null);
+    post_button=new IconButton(POST_ICON,null,null,IconSize.LARGE_TOOLBAR);
+    url_shorting_button=new IconButton(URL_SHORTING_ICON,null,null,IconSize.LARGE_TOOLBAR);
     
     bbox.add(post_button);
     bbox.add(url_shorting_button);
@@ -122,9 +122,7 @@ class PostPage:Frame{
     account_cbox.add_attribute(cell_text,"text",2);
     
     account_list_store.set_sort_column_id(0,SortType.ASCENDING);
-    
-    //tabの画像のセット
-    tab.set_from_pixbuf(config_.twitter_pixbuf);
+
     //load
     load_account_combobox();
     

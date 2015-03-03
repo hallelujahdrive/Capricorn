@@ -1,8 +1,8 @@
 using Gdk;
 using Gtk;
 
-using SqliteUtils;
-using TwitterUtils;
+using SqliteUtil;
+using TwitterUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/settings_window.ui")]
 class SettingsWindow:Dialog{
@@ -23,13 +23,13 @@ class SettingsWindow:Dialog{
   [GtkCallback]
   private void ok_button_clicked_cb(Button ok_button){
     if(account_is_changed){
-      int account_record_count=record_count(config_.db,"ACCOUNT");
+      int account_count_records=count_records(config_.db,"ACCOUNT");
       //Databaseからの削除
-      for(int i=0;i<account_record_count;){
+      for(int i=0;i<account_count_records;){
         if(i>=account_array_.length||get_id(i,config_.db)!=account_array_.index(i).my_id){
           delete_account(i,config_.db);
-          account_record_count--;
-          for(int j=i;j<account_record_count;j++){
+          account_count_records--;
+          for(int j=i;j<account_count_records;j++){
             update_account_list_id(j,j+1,config_.db);
           }
         }else{
@@ -37,7 +37,7 @@ class SettingsWindow:Dialog{
         }
       }
       //Databaseへ追加
-      for(int i=account_record_count;i<account_array_.length;i++){
+      for(int i=account_count_records;i<account_array_.length;i++){
         insert_account(account_array_.index(i),config_.db);
       }
     }
@@ -63,7 +63,7 @@ class SettingsWindow:Dialog{
     if(tl_s_page.node_max_is_changed){
       tl_s_page.set_timeline_nodes();
       //アップデート
-      update_timeline_nodes(config_.get_tweet_nodes,config_.tweet_node_max,config_.db);
+      update_timeline_node_count(config_.get_tweet_nodes,config_.tweet_node_max,config_.db);
       //シグナルの発行
       signal_pipe_.timeline_nodes_is_changed();
     }
@@ -77,8 +77,8 @@ class SettingsWindow:Dialog{
     //account_arrayの復帰
     if(account_is_changed){
       account_array_.remove_range(0,account_array_.length);
-      int account_record_count=record_count(config_.db,"ACCOUNT");
-      for(int i=0;i<account_record_count;i++){
+      int account_count_records=count_records(config_.db,"ACCOUNT");
+      for(int i=0;i<account_count_records;i++){
         Account account=new Account();
         account_array_.append_val(account);
         select_account(i,account_array_.index(i),config_.db);

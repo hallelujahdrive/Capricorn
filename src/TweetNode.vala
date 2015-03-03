@@ -3,9 +3,8 @@ using Gdk;
 using Gtk;
 using Rest;
 
-using JsonUtils;
-using TwitterUtils;
-using UriUtils;
+using TwitterUtil;
+using URIUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/tweet_node.ui")]
 public class TweetNode:Grid{
@@ -46,9 +45,9 @@ public class TweetNode:Grid{
     footer_d_box=new FooterDrawingBox(parsed_json_obj_.created_at,parsed_json_obj_.source_label,parsed_json_obj_.source_url,config_,signal_pipe_);
     
     profile_image_button=new ProfileImageButton(parsed_json_obj_.screen_name,parsed_json_obj_.profile_image_url,config_,signal_pipe_);
-    reply_button=new IconButton(config_.reply_pixbuf,config_.reply_hover_pixbuf,null);
-    retweet_button=new IconButton(config_.retweet_pixbuf,config_.retweet_hover_pixbuf,config_.retweet_on_pixbuf);
-    favorite_button=new IconButton(config_.favorite_pixbuf,config_.favorite_hover_pixbuf,config_.favorite_on_pixbuf);
+    reply_button=new IconButton(REPLY_ICON,REPLY_HOVER_ICON,null,IconSize.BUTTON);
+    retweet_button=new IconButton(RETWEET_ICON,RETWEET_HOVER_ICON,RETWEET_ON_ICON,IconSize.BUTTON);
+    favorite_button=new IconButton(FAVORITE_ICON,FAVORITE_HOVER_ICON,FAVORITE_ON_ICON,IconSize.BUTTON);
     
     this.attach(header_d_box,1,0,1,1);
     this.attach(text_d_box,1,1,1,1);
@@ -86,7 +85,7 @@ public class TweetNode:Grid{
     
     //reply
     reply_button.clicked.connect((already)=>{
-      signal_pipe_.reply_request_event(this.clone());
+      signal_pipe_.reply_request_event(this.copy());
       return true;
     });
     
@@ -99,7 +98,6 @@ public class TweetNode:Grid{
     favorite_button.clicked.connect((already)=>{
       return favorite(parsed_json_obj_.tweet_id_str,api_proxy_);
     });
-    
   }
   
   //色の設定
@@ -115,9 +113,8 @@ public class TweetNode:Grid{
     }
   }
   
-  //Clone
-  public TweetNode clone(){
-    TweetNode clone_node=new TweetNode(parsed_json_obj_,api_proxy_,config_,signal_pipe_);
-    return clone_node;
+  //コピー
+  public TweetNode copy(){
+    return new TweetNode(parsed_json_obj_,api_proxy_,config_,signal_pipe_);
   }
 }

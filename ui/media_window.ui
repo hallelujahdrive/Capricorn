@@ -117,11 +117,8 @@
             </child>
             <child>
               <object class="GtkComboBox" id="combobox">
-                <property name="width_request">10</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="halign">start</property>
-                <property name="hexpand">False</property>
                 <property name="model">liststore</property>
                 <property name="has_frame">False</property>
                 <property name="has_entry">True</property>

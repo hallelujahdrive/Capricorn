@@ -1,13 +1,13 @@
 using Gdk;
 using Gtk;
 
-using ImageUtils;
+using ImageUtil;
+using TwitterUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/media_window.ui")]
 class MediaWindow:Gtk.Window{
   private int num_;
   private Array<PhotoBox> photo_box_array_;
-  private Config config_;
   
   private Pixbuf resized_pixbuf;
   
@@ -23,9 +23,6 @@ class MediaWindow:Gtk.Window{
   
   [GtkChild]
   private ComboBox combobox;
-  
-  [GtkChild]
-  private Entry combobox_entry;
   
   [GtkChild]
   private ListStore liststore;
@@ -62,13 +59,12 @@ class MediaWindow:Gtk.Window{
     entrybuffer.set_text((uchar[])("%.1f%%".printf(mag)));
   }
   
-  public MediaWindow(int num,Array<PhotoBox> photo_box_array,Config config){
+  public MediaWindow(int num,Array<PhotoBox> photo_box_array){
     num_=num;
     photo_box_array_=photo_box_array;
-    config_=config;
-    
-    prev_button=new IconButton(config_.prev_pixbuf,null,null);
-    next_button=new IconButton(config_.next_pixbuf,null,null);
+   
+    prev_button=new IconButton(PREV_ICON,null,null,IconSize.LARGE_TOOLBAR);
+    next_button=new IconButton(NEXT_ICON,null,null,IconSize.LARGE_TOOLBAR);
         
     left_button_box.pack_start(prev_button,false,false,0);
     left_button_box.pack_start(next_button,false,false,0);

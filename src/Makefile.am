@@ -8,7 +8,6 @@ bin_PROGRAMS = capricorn
 noinst_LTLIBRARIES = libcapricorn.la
 
 sources = \
-			Account.vala \
 			AccountSettingsPage.vala \
 			Capricorn.vala \
 			Config.vala \
@@ -35,22 +34,47 @@ sources = \
 			TLPage.vala \
 			TLSettingsPage.vala \
 			TweetNode.vala \
-			sqlite/Account.vala \
-			sqlite/Color.vala \
-			sqlite/Font.vala \
-			sqlite/GeneralPurpose.vala \
+			bitly/ShortingURL.vala \
+			bitly/Strings.vala \
+			sqlite/CountRecords.vala \
+			sqlite/CreateTables.vala \
+			sqlite/DeleteAccount.vala \
+			sqlite/GetID.vala \
+			sqlite/InsertAccount.vala \
+			sqlite/InsertColor.vala \
+			sqlite/InsertFont.vala \
+			sqlite/InsertTimelineNodeCount.vala \
 			sqlite/Query.vala \
-			sqlite/Timeline.vala \
-			utils/BitlyJsonUtils.vala \
-			utils/BitlyUtils.vala \
-			utils/DateTimeUtils.vala \
+			sqlite/SelecAccount.vala \
+			sqlite/SelectColor.vala \
+			sqlite/SelectFont.vala \
+			sqlite/UpdateAccountListID.vala \
+			sqlite/UpdateColor.vala \
+			sqlite/UpdateFont.vala \
+			sqlite/UpdateTimelineNodeCount.vala \
+			utils/DateTimeUtil.vala \
 			utils/DirPath.vala \
-			utils/FileUtils.vala \
-			utils/ImageUtils.vala \
-			utils/StringUtils.vala \
-			utils/TwitterJsonUtils.vala \
-			utils/TwitterUtils.vala \
-			utils/UriUtils.vala
+			utils/FileUtil.vala \
+			utils/IconName.vala \
+			utils/ImageUtil.vala \
+			utils/Keys.vala \
+			utils/RotateSueface.vala \
+			utils/StringUtil.vala \
+			utils/UriUtil.vala \
+			twitter/Account.vala \
+			twitter/Favorite.vala \
+			twitter/GetAccountInfo.vala \
+			twitter/GetTimelineJson.vala \
+			twitter/GetTokenAndTokenSecret.vala \
+			twitter/GetTokenURL.vala \
+			twitter/GetTweetJson.vala \
+			twitter/ParseProfileJson.vala \
+			twitter/ParsedJsonObj.vala \
+			twitter/PostTweet.vala \
+			twitter/Retweet.vala \
+			twitter/Strings.vala \
+			twitter/Struct.vala \
+			twitter/UserStream.vala
 
 capricorn.vapi libcapricorn_la_vala.stamp capricorn.h : $(sources)
 	@$(VALAC) $^ --vapi=capricorn.vapi -C --header capricorn.h @CPR_VALA_FLAGS@

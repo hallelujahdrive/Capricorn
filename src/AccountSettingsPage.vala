@@ -1,8 +1,9 @@
 using Gdk;
 using Gtk;
 
-using ImageUtils;
-using SqliteUtils;
+using ImageUtil;
+using SqliteUtil;
+using TwitterUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/account_settings_page.ui")]
 class AccountSettingsPage:Frame{
@@ -45,7 +46,7 @@ class AccountSettingsPage:Frame{
     oauth_dialog.destroy.connect(()=>{
       if(oauth_dialog.success){
         settings_window_.account_is_changed=true;
-        account_array_.append_val(account);
+        account_array_.append_val((owned)account);
       }
       load_acount_tree_view();
     });
@@ -85,9 +86,6 @@ class AccountSettingsPage:Frame{
     account_array_=account_array;
     config_=config;
     settings_window_=settings_window;
-    
-    //tabのicon
-    tab.set_from_pixbuf(config_.account_pixbuf);
     
     //TreeViewのload
     account_tree_view.insert_column_with_attributes(-1,"",cell_pixbuf,"pixbuf",1);

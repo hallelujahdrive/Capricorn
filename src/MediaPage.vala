@@ -1,19 +1,17 @@
 using Gdk;
 using Gtk;
 
-using ImageUtils;
-using UriUtils;
+using ImageUtil;
+using TwitterUtil;
+using URIUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/media_page.ui")]
-class MediaPage:Frame{
+public class MediaPage:Frame{
   private media[] media_array_;
-    
-  private Config config_;
-  private SignalPipe signal_pipe_;
-  
+
   private Array<PhotoBox> photo_box_array=new Array<PhotoBox>();
-    
-  private MediaWindow media_window;
+  
+  private int height=0;
   
   //Widget
   [GtkChild]
@@ -28,6 +26,19 @@ class MediaPage:Frame{
   [GtkChild]
   private Box tweet_node_box;
   
+  //CallBack
+  //縦サイズの変更の取得
+  [GtkCallback]
+  private bool viewport_draw_after_cb(){
+    if(height!=(height=viewport.get_allocated_height()-(int)media_grid.get_row_spacing()*2)){
+      for(int i=0;i<media_array_.length;i++){
+        photo_box_array.index(i).change_allocated_height(height);
+      }
+    }
+    return true;
+  }
+  
+  //open_url_buttonのクリック
   [GtkCallback]
   private void open_url_button_clicked_cb(Button open_url_button){
     for(int i=0;i<media_array_.length;i++){
@@ -35,28 +46,16 @@ class MediaPage:Frame{
     }
   }
   
+  //閉じる
   [GtkCallback]
   private void close_button_clicked_cb(Button close_button){
     this.destroy();
   }
   
-  public MediaPage(media[] media_array,TweetNode tweet_node,Config config,SignalPipe signal_pipe){
+  public MediaPage(media[] media_array,TweetNode tweet_node){
     media_array_=media_array;
-    config_=config;
-    signal_pipe_=signal_pipe;
     
     tweet_node_box.add(tweet_node);
-    
-    //tabの画像のセット
-    tab.set_from_pixbuf(config_.media_pixbuf);
-    
-    this.draw.connect_after(()=>{
-      int h=viewport.get_allocated_height()-(int)media_grid.get_row_spacing()*2;
-      for(int i=0;i<media_array_.length;i++){
-        photo_box_array.index(i).change_allocated_height(h);
-      }
-      return true;
-    });
 
     //media_arrayからの画像の読み込み
     for(int i=0;i<media_array_.length;i++){
@@ -67,7 +66,7 @@ class MediaPage:Frame{
   }
   
   private void open_media_window(int num){
-    media_window=new MediaWindow(num,photo_box_array,config_);
+    MediaWindow media_window=new MediaWindow(num,photo_box_array);
     media_window.show_all();
     
     //ページ破棄と一緒にウィンドウも破棄
