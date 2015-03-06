@@ -1,4 +1,4 @@
-namespace DateTimeUtil{
+namespace TwitterUtil{
   //月を数字に直す
   public int? month_str_to_num(string month_str){
     int? month=null;

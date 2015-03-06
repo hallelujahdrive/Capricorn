@@ -8,12 +8,7 @@ using ImageUtil;
 public class Config{
   //キャッシュのパス
   public string cache_dir_path;
-    
-  //Pixbuf
-  public Pixbuf loading_pixbuf_24px;
-  public Pixbuf loading_pixbuf_16px;
-  public PixbufAnimation loading_animation_pixbuf;
-  
+
   //IconTheme
   public IconTheme icon_theme=new IconTheme();
   
@@ -60,11 +55,6 @@ public class Config{
     
     //IconThemeの読み込み
     icon_theme.set_custom_theme("hicolor");
-    
-    loading_pixbuf_24px=get_pixbuf_from_path(ICON_DIR_PATH+"loading_icon.png",24);
-    loading_pixbuf_16px=get_pixbuf_from_path(ICON_DIR_PATH+"loading_icon.png",16);
-    loading_animation_pixbuf=get_pixbuf_animation_from_path(ICON_DIR_PATH+"loading_icon.gif");
-    
   }
   
   //defaultのcolor

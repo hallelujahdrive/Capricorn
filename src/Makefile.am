@@ -52,7 +52,6 @@ sources = \
 			sqlite/UpdateColor.vala \
 			sqlite/UpdateFont.vala \
 			sqlite/UpdateTimelineNodeCount.vala \
-			utils/DateTimeUtil.vala \
 			utils/DirPath.vala \
 			utils/FileUtil.vala \
 			utils/IconName.vala \
@@ -68,6 +67,7 @@ sources = \
 			twitter/GetTokenAndTokenSecret.vala \
 			twitter/GetTokenURL.vala \
 			twitter/GetTweetJson.vala \
+			twitter/MonthStrToNum.vala \
 			twitter/ParseProfileJson.vala \
 			twitter/ParsedJsonObj.vala \
 			twitter/PostTweet.vala \

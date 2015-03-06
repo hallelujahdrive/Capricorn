@@ -166,21 +166,34 @@ class PostPage:Frame{
   public void load_account_combobox(){
     account_list_store.clear();
     for(int i=0;i<account_array_.length;i++){
-      int my_list_id=account_array_.index(i).my_list_id;
-      string my_screen_name=account_array_.index(i).my_screen_name;
-      get_pixbuf_async.begin(config_.cache_dir_path,my_screen_name,account_array_.index(i).my_profile_image_url,16,config_.profile_image_hash_table,(obj,res)=>{
-        Pixbuf pixbuf=config_.loading_pixbuf_16px;
-        account_list_store.append(out iter);
-        account_list_store.set(iter,0,my_list_id,1,pixbuf,2,my_screen_name);
+      //戻り値用のbool
+      bool profile_image_loaded=false;
+      //iter(ローカル)
+      TreeIter iter;
+      
+      account_list_store.append(out iter);
+      account_list_store.set(iter,0,account_array_.index(i).my_list_id,2,account_array_.index(i).my_screen_name);
+      //load中の画像のRotateSurface
+      try{
+        RotateSurface rotate_surface=new RotateSurface(config_.icon_theme.load_icon(LOADING_ICON,16,IconLookupFlags.NO_SVG),16,16);
+        rotate_surface.run();
+        rotate_surface.update.connect((surface)=>{
+          if(!profile_image_loaded&&account_list_store!=null){
+            account_list_store.set(iter,1,pixbuf_get_from_surface(surface,0,0,16,16));
+          }   
+          return !profile_image_loaded;
+        });
+      }catch(Error e){
+        print("IconTheme Error : %s\n",e.message);
+      }
+      get_pixbuf_async.begin(config_.cache_dir_path,account_array_.index(i).my_screen_name,account_array_.index(i).my_profile_image_url,16,config_.profile_image_hash_table,(obj,res)=>{
         //profile_imageの取得
-        pixbuf=get_pixbuf_async.end(res);
-        account_list_store.set(iter,1,pixbuf);
-        if(i==account_array_.length){
-          //デフォで0のアカウントを表示
-          account_cbox.active=0;
-        }
+        account_list_store.set(iter,1,get_pixbuf_async.end(res));
+        profile_image_loaded=true;
       });
     }
+    //デフォで0のアカウントを表示
+    account_cbox.active=0;
   }
   
   //リプライのリセット

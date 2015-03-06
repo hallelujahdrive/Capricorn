@@ -9,7 +9,6 @@ using TwitterUtil;
 class InReplyDrawingBox:DrawingBox{
   private ParsedJsonObj in_reply_parsed_json_obj;
   private Surface image_surface;
-  private RotateSurface rotate_surface;
   private bool profile_image_loaded=false;
   
   //drawのcallback(override)
@@ -30,7 +29,9 @@ class InReplyDrawingBox:DrawingBox{
     Pango.cairo_show_layout(context,layout);
     layout.get_pixel_size(null,out h);
     
-    context.set_source_surface(image_surface,0,0);
+    if(image_surface!=null){
+      context.set_source_surface(image_surface,0,0);
+    }
     context.paint();
     
     //高さの設定
@@ -54,8 +55,7 @@ class InReplyDrawingBox:DrawingBox{
       //profile_image_pixbufの取得
       try{
         //load中の画像のRotateSurface
-        Pixbuf pixbuf=config_.icon_theme.load_icon(LOADING_ICON,24,IconLookupFlags.NO_SVG);
-        rotate_surface=new RotateSurface(pixbuf,24,24);
+        RotateSurface rotate_surface=new RotateSurface(config_.icon_theme.load_icon(LOADING_ICON,24,IconLookupFlags.NO_SVG),24,24);
         rotate_surface.run();
         rotate_surface.update.connect((surface)=>{
           if(!profile_image_loaded){

@@ -1,7 +1,5 @@
 using Json;
 
-using DateTimeUtil;
-
 namespace TwitterUtil{
   public class ParsedJsonObj{
     //コンストラクタ    

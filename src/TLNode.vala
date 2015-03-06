@@ -24,6 +24,9 @@ class TLNode{
   public Image home_tab=new Image();
   public Image mention_tab=new Image();
   
+  //loading用
+  private bool profile_image_loaded=false;
+  
   public TLNode(Account account,Config config,SignalPipe signal_pipe){
     account_=account;
     config_=config;
@@ -37,13 +40,26 @@ class TLNode{
     //UserStream
     user_stream=new UserStream(account_.stream_proxy);
     //tab 
-    Pixbuf pixbuf=config_.loading_pixbuf_24px;
-    home_tab.set_from_pixbuf(pixbuf);
-    mention_tab.set_from_pixbuf(pixbuf);
+    //profile_image_pixbufの取得
+    try{
+      //load中の画像のRotateSurface
+      RotateSurface rotate_surface=new RotateSurface(config_.icon_theme.load_icon(LOADING_ICON,24,IconLookupFlags.NO_SVG),24,24);
+      rotate_surface.run();
+      rotate_surface.update.connect((surface)=>{
+        if(!profile_image_loaded){
+          home_tab.set_from_pixbuf(pixbuf_get_from_surface(surface,0,0,24,24));
+          mention_tab.set_from_pixbuf(pixbuf_get_from_surface(surface,0,0,24,24));
+        }   
+        return !profile_image_loaded;
+      });
+    }catch(Error e){
+      print("IconTheme Error : %s\n",e.message);
+    }
     get_pixbuf_async.begin(config_.cache_dir_path,account_.my_screen_name,account_.my_profile_image_url,24,config.profile_image_hash_table,(obj,res)=>{
-      pixbuf=get_pixbuf_async.end(res);
+      Pixbuf pixbuf=get_pixbuf_async.end(res);
       home_tab.set_from_pixbuf(pixbuf);
       mention_tab.set_from_pixbuf(pixbuf);
+      profile_image_loaded=true;
     });
     //home
     get_tweet_by_api(config_.get_tweet_nodes,false);

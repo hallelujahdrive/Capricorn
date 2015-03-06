@@ -20,4 +20,3 @@ public const string FAVORITE_HOVER_ICON="capricorn-favorite-hover";
 public const string FAVORITE_ON_ICON="capricorn-favorite-on";
 
 public const string LOADING_ICON="capricorn-loading";
-public const string LOADING_ICON_ANIMATION="capricorn-loading-animation";

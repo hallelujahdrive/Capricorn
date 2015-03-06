@@ -8,7 +8,6 @@ class RetweetDrawingBox:DrawingBox{
   private const string retweet_text="Retweeted by";
   
   private StringBuilder rt_screen_name_sb=new StringBuilder();
-  private RotateSurface rotate_surface;
   private Surface image_surface;
   
   private bool profile_image_loaded=false;
@@ -39,7 +38,9 @@ class RetweetDrawingBox:DrawingBox{
     
     //rt_profile_image_pixbufの描画
     //描画位置の調整(spacer(5px))
-    context.set_source_surface(image_surface,icon_pos+5,0);
+    if(image_surface!=null){
+      context.set_source_surface(image_surface,icon_pos+5,0);
+    }
     context.paint();
     
     //DrawingAreaの高さの設定
@@ -60,9 +61,7 @@ class RetweetDrawingBox:DrawingBox{
     //profile_image_pixbufの取得
     try{
       //load中の画像のRotateSurface
-      Pixbuf pixbuf=config_.icon_theme.load_icon(LOADING_ICON,16,IconLookupFlags.NO_SVG);
-      rotate_surface=new RotateSurface(pixbuf,16,16);
-      rotate_surface.run();
+      RotateSurface rotate_surface=new RotateSurface(config_.icon_theme.load_icon(LOADING_ICON,16,IconLookupFlags.NO_SVG),16,16);
       rotate_surface.update.connect((surface)=>{
         if(!profile_image_loaded){
           image_surface=surface;
