@@ -55,6 +55,7 @@ CPR_VALA_FLAGS=" \
 	--target-glib=2.38 \
 	--gresources=\$(top_srcdir)/gresources.xml
 "
+bindir=${prefix}/bin
 datadir=${prefix}/share
 prefix=${prefix}/local
 
