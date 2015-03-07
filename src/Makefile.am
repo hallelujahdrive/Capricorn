@@ -62,7 +62,7 @@ sources = \
 			utils/UriUtil.vala \
 			twitter/Account.vala \
 			twitter/Favorite.vala \
-			twitter/GetAccountInfo.vala \
+			twitter/GetAccountVerifyCredential.vala \
 			twitter/GetTimelineJson.vala \
 			twitter/GetTokenAndTokenSecret.vala \
 			twitter/GetTokenURL.vala \

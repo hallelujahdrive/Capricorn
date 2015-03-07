@@ -80,9 +80,9 @@ class SettingsWindow:Dialog{
       int account_count_records=count_records(config_.db,"ACCOUNT");
       for(int i=0;i<account_count_records;i++){
         Account account=new Account();
-        account_array_.append_val(account);
+        account_array_.append_val((owned)account);
         select_account(i,account_array_.index(i),config_.db);
-        get_account_info(account_array_.index(i));
+        get_account_verify_credential(account_array_.index(i));
       }
     }
     account_is_changed=false;

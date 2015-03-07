@@ -19,11 +19,7 @@ class TLNode{
   
   //json用
   private ParsedJsonObj parsed_json_obj;
-  
-  //tab
-  public Image home_tab=new Image();
-  public Image mention_tab=new Image();
-  
+    
   //loading用
   private bool profile_image_loaded=false;
   
@@ -43,12 +39,12 @@ class TLNode{
     //profile_image_pixbufの取得
     try{
       //load中の画像のRotateSurface
-      RotateSurface rotate_surface=new RotateSurface(config_.icon_theme.load_icon(LOADING_ICON,24,IconLookupFlags.NO_SVG),24,24);
+      RotateSurface rotate_surface=new RotateSurface(config_.icon_theme.load_icon(LOADING_ICON,24,IconLookupFlags.NO_SVG));
       rotate_surface.run();
       rotate_surface.update.connect((surface)=>{
         if(!profile_image_loaded){
-          home_tab.set_from_pixbuf(pixbuf_get_from_surface(surface,0,0,24,24));
-          mention_tab.set_from_pixbuf(pixbuf_get_from_surface(surface,0,0,24,24));
+          home_tl_page.tab.set_from_pixbuf(pixbuf_get_from_surface(surface,0,0,24,24));
+          mention_tl_page.tab.set_from_pixbuf(pixbuf_get_from_surface(surface,0,0,24,24));
         }   
         return !profile_image_loaded;
       });
@@ -57,8 +53,8 @@ class TLNode{
     }
     get_pixbuf_async.begin(config_.cache_dir_path,account_.my_screen_name,account_.my_profile_image_url,24,config.profile_image_hash_table,(obj,res)=>{
       Pixbuf pixbuf=get_pixbuf_async.end(res);
-      home_tab.set_from_pixbuf(pixbuf);
-      mention_tab.set_from_pixbuf(pixbuf);
+      home_tl_page.tab.set_from_pixbuf(pixbuf);
+      mention_tl_page.tab.set_from_pixbuf(pixbuf);
       profile_image_loaded=true;
     });
     //home
@@ -71,7 +67,10 @@ class TLNode{
     //シグナルハンドラ
     user_stream.get_json_str.connect((json_str)=>{
       parsed_json_obj=new ParsedJsonObj(json_str,account_.my_screen_name);
-      if(parsed_json_obj.is_tweet){
+      if(parsed_json_obj.is_delete){
+        //ツイートの削除の処理
+        signal_pipe.delete_tweet_node_event(parsed_json_obj.id_str);
+      }else if(parsed_json_obj.is_tweet){
         //homeのTweetNode
         TweetNode tweet_node=new TweetNode(parsed_json_obj,account.api_proxy,config_,signal_pipe);
         //replyの作成

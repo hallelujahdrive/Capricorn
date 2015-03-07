@@ -21,10 +21,7 @@ public class TweetNode:Grid{
   private IconButton reply_button;
   private IconButton retweet_button;
   private IconButton favorite_button;
-  
-  public string tweet_id_str;
-  public string screen_name;
-  
+    
   [GtkChild]
   private Box profile_image_box;
   
@@ -36,9 +33,6 @@ public class TweetNode:Grid{
     api_proxy_=api_proxy;
     config_=config;
     signal_pipe_=signal_pipe;
-    
-    tweet_id_str=parsed_json_obj_.tweet_id_str;
-    screen_name=parsed_json_obj_.screen_name;
     
     header_d_box=new HeaderDrawingBox(parsed_json_obj_.screen_name,parsed_json_obj_.name,parsed_json_obj_.account_is_protected,config_,signal_pipe_);
     text_d_box=new TextDrawingBox(parsed_json_obj_.text,parsed_json_obj_.media_array,parsed_json_obj_.urls_array,config_,signal_pipe_);
@@ -83,20 +77,28 @@ public class TweetNode:Grid{
       this.queue_draw();
     });
     
+    //delete
+    signal_pipe.delete_tweet_node_event.connect((id_str)=>{
+      if(id_str==parsed_json_obj_.id_str){
+        parsed_json_obj_.is_delete=true;
+        this.override_background_color(StateFlags.NORMAL,config_.delete_bg_rgba);
+      }
+    });
+    
     //reply
     reply_button.clicked.connect((already)=>{
-      signal_pipe_.reply_request_event(this.copy());
+      signal_pipe_.reply_request_event(this.copy(),parsed_json_obj.id_str,parsed_json_obj_.screen_name);
       return true;
     });
     
     //retweet
     retweet_button.clicked.connect((already)=>{
-      return retweet(parsed_json_obj_.tweet_id_str,api_proxy_);
+      return retweet(parsed_json_obj_.id_str,api_proxy_);
     });
     
     //favorite
     favorite_button.clicked.connect((already)=>{
-      return favorite(parsed_json_obj_.tweet_id_str,api_proxy_);
+      return favorite(parsed_json_obj_.id_str,api_proxy_);
     });
   }
   
@@ -108,7 +110,7 @@ public class TweetNode:Grid{
       this.override_background_color(StateFlags.NORMAL,config_.retweet_bg_rgba);
     }else if(parsed_json_obj_.is_reply){
       this.override_background_color(StateFlags.NORMAL,config_.reply_bg_rgba);
-    }else{
+    }else if(!parsed_json_obj_.is_delete){
       this.override_background_color(StateFlags.NORMAL,config_.default_bg_rgba);
     }
   }

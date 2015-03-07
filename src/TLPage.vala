@@ -8,8 +8,12 @@ class TLPage:ScrolledWindow{
   
   private int node_count=0;
   
+  //widget
   [GtkChild]
   private ListBox tl_list_box;
+  
+  //tab
+  public Image tab=new Image();
       
   public TLPage(Config config,SignalPipe signal_pipe){
     config_=config;

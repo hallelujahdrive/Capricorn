@@ -2,7 +2,7 @@ using Rest;
 
 namespace TwitterUtil{
   //アカウント情報の取得
-  public bool get_account_info(Account account){
+  public bool get_account_verify_credential(Account account){
     //prox_call
     ProxyCall profile_call=account.api_proxy.new_call();
     profile_call.set_function(FUNCTION_ACCOUNT_VERIFY_CREDENTIALS);
@@ -13,7 +13,7 @@ namespace TwitterUtil{
       parse_profile_json(profile_json,account);
       return true;
     }catch(Error e){
-      print("%s\n",e.message);
+      print("Account Verify Error:%s\n",e.message);
       return false;
     }
   }

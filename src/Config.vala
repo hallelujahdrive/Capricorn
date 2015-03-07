@@ -30,6 +30,8 @@ public class Config{
   public RGBA clear=RGBA();
   public RGBA white=RGBA();
   
+  public RGBA delete_bg_rgba=RGBA();
+  
   //ツイートの取得数
   public int get_tweet_nodes;
   public int tweet_node_max;
@@ -46,7 +48,8 @@ public class Config{
     
     //Gdk.RGBAの設定
     clear.alpha=0;
-    white.parse("rgba(255,255,255,255)");
+    white.parse("rgb(255,255,255)");
+    delete_bg_rgba.parse("rgb(255,0,0)");
     
     default_bg_rgba.alpha=1;
     reply_bg_rgba.alpha=1;

@@ -24,8 +24,9 @@ public class Capricorn:Gtk.Application{
   
   //config
   public Config config;
-
-  private bool mk_dirs=false;
+  
+  //accountの読み出し
+  private bool get_account_verify_credential_sucess;
   
   public Capricorn(){
     application_id="org.gtk.capricorn";
@@ -35,9 +36,7 @@ public class Capricorn:Gtk.Application{
     config=new Config(CPR_DIR_PATH,signal_pipe);
     
     //ディレクトリの作成
-    if(mk_cpr_dir(CPR_DIR_PATH,config.cache_dir_path)){
-      mk_dirs=true;
-    }
+    mk_cpr_dir(CPR_DIR_PATH,config.cache_dir_path);
     //データベースのオープン
     int ec=Database.open_v2(DB_PATH,out config.db,OPEN_READWRITE|OPEN_CREATE);
     if(ec!=Sqlite.OK){
@@ -68,9 +67,9 @@ public class Capricorn:Gtk.Application{
         var account=new Account();
         select_account(i,account,config.db);
         //配列に追加
-        account_array.append_val(account);
+        account_array.append_val((owned)account);
         //Account情報の取得
-        get_account_info(account_array.index(i));
+        get_account_verify_credential_sucess=get_account_verify_credential(account_array.index(i));
       }
     }
   }
@@ -87,7 +86,7 @@ public class Capricorn:Gtk.Application{
       //シグナルハンドラ
       oauth_dialog.destroy.connect(()=>{
         if(oauth_dialog.success){
-          account_array.append_val(account);
+          account_array.append_val((owned)account);
           insert_account(account_array.index(0),config.db);
         }
         if(account_count==count_records(config.db,"ACCOUNT")){
@@ -100,13 +99,17 @@ public class Capricorn:Gtk.Application{
     
     //時刻表示のロケールを設定
     Intl.setlocale(LocaleCategory.TIME,"en_US.UTF-8");
+    //Windowを開く
+    if(get_account_verify_credential_sucess){
+      window=new MainWindow(this);
+    }
     
     //終了処理
     this.shutdown.connect(()=>{
       clear_cache(config.cache_dir_path);
     });
     
-    window=new MainWindow(this);
+
   }
   public override void activate(){
     window.present();

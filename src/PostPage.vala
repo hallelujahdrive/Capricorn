@@ -149,13 +149,12 @@ class PostPage:Frame{
     });
     
     //リプライのリクエスト
-    signal_pipe.reply_request_event.connect((tweet_node)=>{
+    signal_pipe.reply_request_event.connect((tweet_node,id_str,screen_name)=>{
       reply_reset();
       freeze=true;
-      tweet_node_=tweet_node;
-      to_reply_tweet_id_str=tweet_node_.tweet_id_str;
-      buffer.text=buffer.text+"@"+tweet_node_.screen_name+" ";
-      tweet_node_box.add(tweet_node_);
+      to_reply_tweet_id_str=id_str;
+      buffer.text=buffer.text+"@"+screen_name+" ";
+      tweet_node_box.add(tweet_node);
       freeze=false;
       tweet_text_view.grab_focus();
     });
@@ -175,7 +174,7 @@ class PostPage:Frame{
       account_list_store.set(iter,0,account_array_.index(i).my_list_id,2,account_array_.index(i).my_screen_name);
       //load中の画像のRotateSurface
       try{
-        RotateSurface rotate_surface=new RotateSurface(config_.icon_theme.load_icon(LOADING_ICON,16,IconLookupFlags.NO_SVG),16,16);
+        RotateSurface rotate_surface=new RotateSurface(config_.icon_theme.load_icon(LOADING_ICON,16,IconLookupFlags.NO_SVG));
         rotate_surface.run();
         rotate_surface.update.connect((surface)=>{
           if(!profile_image_loaded&&account_list_store!=null){

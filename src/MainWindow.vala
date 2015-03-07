@@ -47,7 +47,6 @@ public class MainWindow:ApplicationWindow{
     button_box.pack_end(settings_button,false,false,0);
     
     //シグナルハンドラ
-    
     //表示に時間かかるからあとから読み込み
     this.show.connect(()=>{
       load_notebooks();
@@ -94,8 +93,8 @@ public class MainWindow:ApplicationWindow{
       for(uint i=tl_node_array.length;i<account_array.length;i++){
         TLNode tl_node=new TLNode(account_array.index(i),config,signal_pipe);
         tl_node_array.append_val((owned)tl_node);
-        home_tl_notebook.append_page(tl_node_array.index(i).home_tl_page,tl_node_array.index(i).home_tab);
-        mention_tl_notebook.append_page(tl_node_array.index(i).mention_tl_page,tl_node_array.index(i).mention_tab);
+        home_tl_notebook.append_page(tl_node_array.index(i).home_tl_page,tl_node_array.index(i).home_tl_page.tab);
+        mention_tl_notebook.append_page(tl_node_array.index(i).mention_tl_page,tl_node_array.index(i).mention_tl_page.tab);
       }
       //account_cboxの再読み込み
       post_page.load_account_combobox();
@@ -108,8 +107,8 @@ public class MainWindow:ApplicationWindow{
     for(int i=0;i<account_array.length;i++){
       TLNode tl_node=new TLNode(account_array.index(i),config,signal_pipe);
       tl_node_array.append_val((owned)tl_node);
-      home_tl_notebook.append_page(tl_node_array.index(i).home_tl_page,tl_node_array.index(i).home_tab);
-      mention_tl_notebook.append_page(tl_node_array.index(i).mention_tl_page,tl_node_array.index(i).mention_tab);
+      home_tl_notebook.append_page(tl_node_array.index(i).home_tl_page,tl_node_array.index(i).home_tl_page.tab);
+      mention_tl_notebook.append_page(tl_node_array.index(i).mention_tl_page,tl_node_array.index(i).mention_tl_page.tab);
     }
   }
   

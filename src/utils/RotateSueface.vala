@@ -3,26 +3,26 @@ using Gdk;
 
 namespace ImageUtil{
   class RotateSurface{
-    private int w_;
-    private int h_;
+    private int width;
+    private int height;
     
     private Surface surface;
     private int deg=0;
     
     //Surface
-    public RotateSurface(Pixbuf pixbuf,int w,int h){
+    public RotateSurface(Pixbuf pixbuf){
       //初期化
       surface=cairo_surface_create_from_pixbuf(pixbuf,1,null);
-      w_=w;
-      h_=h;
+      width=pixbuf.get_width();
+      height=pixbuf.get_height();
     }
     
     private bool rotate(){
-      ImageSurface image_surface=new ImageSurface(Format.ARGB32,w_,h_);
+      ImageSurface image_surface=new ImageSurface(Format.ARGB32,width,height);
       Context context=new Context(image_surface);
-      context.translate(0.5*w_,0.5*h_);
+      context.translate(0.5*width,0.5*height);
       context.rotate(deg*Math.PI/180);
-      context.translate(-0.5*w_,-0.5*h_);
+      context.translate(-0.5*width,-0.5*height);
       context.set_source_surface(surface,0,0);
       context.paint();
       if((deg+=15)>=360){

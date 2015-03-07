@@ -2,7 +2,7 @@ using Json;
 
 namespace TwitterUtil{
   public class ParsedJsonObj{
-    //コンストラクタ    
+    //インスタンス
     public string name;
     public string screen_name;
     public string profile_image_url;
@@ -11,7 +11,7 @@ namespace TwitterUtil{
     public string text;
     public string source_label;
     public string source_url;
-    public string tweet_id_str;
+    public string id_str;
     
     public media[]? media_array=null;
     public urls[]? urls_array=null;
@@ -29,6 +29,7 @@ namespace TwitterUtil{
     public bool is_reply=false;
     public bool is_retweet=false;
     public bool is_mine=false;
+    public bool is_delete=false;
     
     public DateTime created_at;
     public ParsedJsonObj(string json_str,string? my_screen_name){
@@ -66,6 +67,10 @@ namespace TwitterUtil{
                 break;
               }
             }
+          }else if(json_obj.has_member("delete")){
+            //deleteの解析.json_main_objはstatusから取得
+            is_delete=true;
+            json_main_obj=(json_obj.get_object_member("delete")).get_object_member("status");
           }else{
             //retweetedではなかった場合,json_objそのものがjson_main_objになる
             json_main_obj=json_obj;
@@ -78,9 +83,7 @@ namespace TwitterUtil{
                 break;
                 case "favorited":favorited=json_main_obj.get_boolean_member(member);
                 break;
-                case "id_str":
-                tweet_id_str=json_main_obj.get_string_member(member);
-                is_tweet=true;
+                case "id_str":id_str=json_main_obj.get_string_member(member);
                 break;
                 case "in_reply_to_status_id_str":in_reply_to_status_id=json_main_obj.get_string_member(member);
                 break;
@@ -103,6 +106,7 @@ namespace TwitterUtil{
                 break;
                 case "text":
                 text=json_main_obj.get_string_member(member);
+                is_tweet=true;
                 if(my_screen_name!=null){
                   is_reply=text.contains(my_screen_name);
                 }

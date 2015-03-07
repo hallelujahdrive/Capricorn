@@ -61,7 +61,7 @@ public class OAuthDialog:Gtk.Dialog{
     this.destroy.connect(()=>{
       if(success){
         //アカウント情報の取得
-        get_account_info(account);
+        get_account_verify_credential(account);
         account.my_list_id=account_count;
       }
     });

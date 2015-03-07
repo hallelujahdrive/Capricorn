@@ -36,7 +36,7 @@ class ProfileImageButton:ImageButton{
     //profile_image_pixbufの取得
     try{
       //load中の画像のRotateSurface
-      RotateSurface rotate_surface=new RotateSurface(config_.icon_theme.load_icon(LOADING_ICON,48,IconLookupFlags.NO_SVG),48,48);
+      RotateSurface rotate_surface=new RotateSurface(config_.icon_theme.load_icon(LOADING_ICON,48,IconLookupFlags.NO_SVG));
       rotate_surface.run();
       rotate_surface.update.connect((surface)=>{
         if(!profile_image_loaded){

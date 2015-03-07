@@ -61,7 +61,7 @@ class RetweetDrawingBox:DrawingBox{
     //profile_image_pixbufの取得
     try{
       //load中の画像のRotateSurface
-      RotateSurface rotate_surface=new RotateSurface(config_.icon_theme.load_icon(LOADING_ICON,16,IconLookupFlags.NO_SVG),16,16);
+      RotateSurface rotate_surface=new RotateSurface(config_.icon_theme.load_icon(LOADING_ICON,16,IconLookupFlags.NO_SVG));
       rotate_surface.update.connect((surface)=>{
         if(!profile_image_loaded){
           image_surface=surface;
