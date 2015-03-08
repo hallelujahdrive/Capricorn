@@ -1,7 +1,7 @@
 using Rest;
 
 namespace TwitterUtil{
-  public bool get_token_and_token_secret(Account account,string pin_code){
+  public bool oauth_access_token(Account account,string pin_code){
     try{
       //token,token_secretの取得
       account.api_proxy.access_token(FUNCTION_ACCESS_TOKEN,pin_code);

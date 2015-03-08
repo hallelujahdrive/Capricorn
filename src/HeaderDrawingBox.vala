@@ -43,14 +43,14 @@ class HeaderDrawingBox:DrawingBox{
   
   public HeaderDrawingBox(string screen_name,string name,bool account_is_protected,Config config,SignalPipe signal_pipe){
     account_is_protected_=account_is_protected;
-    config_=config;
-    signal_pipe_=signal_pipe;
+    _config=config;
+    _signal_pipe=signal_pipe;
     
     //IconThemeを作成
     if(account_is_protected_){
       try{
         Screen screen=Screen.get_default();
-        image_surface=config_.icon_theme.load_surface(PROTECTED_ICON,16,1,screen.get_active_window(),IconLookupFlags.NO_SVG);
+        image_surface=_config.icon_theme.load_surface(PROTECTED_ICON,16,1,screen.get_active_window(),IconLookupFlags.NO_SVG);
       }catch(Error e){
         print("IconTheme Error : %s\n",e.message);
       }
@@ -65,12 +65,12 @@ class HeaderDrawingBox:DrawingBox{
   
   //color,descriptionの設定
   private void set_font(Context context){
-    if(config_.font_profile.use_default){
-      context_set_source_rgba(context,config_.font_profile.text_font_rgba);
-      layout.set_font_description(config_.font_profile.text_font_desc);
+    if(_config.font_profile.use_default){
+      context_set_source_rgba(context,_config.font_profile.text_font_rgba);
+      layout.set_font_description(_config.font_profile.text_font_desc);
     }else{
-      context_set_source_rgba(context,config_.font_profile.name_font_rgba);
-      layout.set_font_description(config_.font_profile.name_font_desc);
+      context_set_source_rgba(context,_config.font_profile.name_font_rgba);
+      layout.set_font_description(_config.font_profile.name_font_desc);
     }
   }
 }

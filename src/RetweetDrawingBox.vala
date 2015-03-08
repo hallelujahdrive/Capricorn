@@ -52,8 +52,8 @@ class RetweetDrawingBox:DrawingBox{
   }
   
   public RetweetDrawingBox(string rt_screen_name,string rt_profile_image_url,Config config,SignalPipe signal_pipe){
-    config_=config;
-    signal_pipe_=signal_pipe;
+    _config=config;
+    _signal_pipe=signal_pipe;
     
     rt_screen_name_sb.append("@");
     rt_screen_name_sb.append(rt_screen_name);
@@ -61,7 +61,7 @@ class RetweetDrawingBox:DrawingBox{
     //profile_image_pixbufの取得
     try{
       //load中の画像のRotateSurface
-      RotateSurface rotate_surface=new RotateSurface(config_.icon_theme.load_icon(LOADING_ICON,16,IconLookupFlags.NO_SVG));
+      RotateSurface rotate_surface=new RotateSurface(_config.icon_theme.load_icon(LOADING_ICON,16,IconLookupFlags.NO_SVG));
       rotate_surface.update.connect((surface)=>{
         if(!profile_image_loaded){
           image_surface=surface;
@@ -73,7 +73,7 @@ class RetweetDrawingBox:DrawingBox{
     }catch(Error e){
       print("IconTheme Error : %s\n",e.message);
     }
-    get_pixbuf_async.begin(config_.cache_dir_path,rt_screen_name,rt_profile_image_url,16,config_.profile_image_hash_table,(obj,res)=>{
+    get_pixbuf_async.begin(_config.cache_dir_path,rt_screen_name,rt_profile_image_url,16,_config.profile_image_hash_table,(obj,res)=>{
       image_surface=cairo_surface_create_from_pixbuf(get_pixbuf_async.end(res),1,null);
       profile_image_loaded=true;
       //再描画
@@ -83,12 +83,12 @@ class RetweetDrawingBox:DrawingBox{
   
   //color,descriptionの設定(footerの設定を使う)
   private void set_font(Context context){
-    if(config_.font_profile.use_default){
-      context_set_source_rgba(context,config_.font_profile.text_font_rgba);
-      layout.set_font_description(config_.font_profile.text_font_desc);
+    if(_config.font_profile.use_default){
+      context_set_source_rgba(context,_config.font_profile.text_font_rgba);
+      layout.set_font_description(_config.font_profile.text_font_desc);
     }else{
-      context_set_source_rgba(context,config_.font_profile.footer_font_rgba);
-      layout.set_font_description(config_.font_profile.footer_font_desc);
+      context_set_source_rgba(context,_config.font_profile.footer_font_rgba);
+      layout.set_font_description(_config.font_profile.footer_font_desc);
     }
   }
 }

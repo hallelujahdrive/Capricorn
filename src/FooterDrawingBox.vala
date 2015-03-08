@@ -6,7 +6,7 @@ class FooterDrawingBox:DrawingBox{
   private DateTime created_at_local;
   private StringBuilder source_sb=new StringBuilder();
   
-  private string source_url_;
+  private string _source_url;
   
   private int created_at_w;
   private int source_w;
@@ -20,7 +20,7 @@ class FooterDrawingBox:DrawingBox{
     //fontの設定
     set_font(context);
     //タイムスタンプの描画
-    layout.set_markup(created_at_local.format(config_.datetime_format),-1);
+    layout.set_markup(created_at_local.format(_config.datetime_format),-1);
     layout.set_width((int)w*Pango.SCALE);
     context.move_to(0,0);
     Pango.cairo_show_layout(context,layout);
@@ -44,10 +44,10 @@ class FooterDrawingBox:DrawingBox{
   }
   
   public FooterDrawingBox(DateTime created_at,string source_label,string source_url,Config config,SignalPipe signal_pipe){
-    config_=config;
-    signal_pipe_=signal_pipe;
+    _config=config;
+    _signal_pipe=signal_pipe;
     
-    source_url_=source_url;
+    _source_url=source_url;
     
     source_sb.append("via ");
     source_sb.append(source_label);
@@ -57,12 +57,12 @@ class FooterDrawingBox:DrawingBox{
   
   //color,descriptionの設定
   private void set_font(Context context){
-    if(config_.font_profile.use_default){
-      context_set_source_rgba(context,config_.font_profile.text_font_rgba);
-      layout.set_font_description(config_.font_profile.text_font_desc);
+    if(_config.font_profile.use_default){
+      context_set_source_rgba(context,_config.font_profile.text_font_rgba);
+      layout.set_font_description(_config.font_profile.text_font_desc);
     }else{
-      context_set_source_rgba(context,config_.font_profile.name_font_rgba);
-      layout.set_font_description(config_.font_profile.footer_font_desc);
+      context_set_source_rgba(context,_config.font_profile.name_font_rgba);
+      layout.set_font_description(_config.font_profile.footer_font_desc);
     }
   }
 }

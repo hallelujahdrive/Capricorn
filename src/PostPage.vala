@@ -7,21 +7,19 @@ using TwitterUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/post_page.ui")]
 class PostPage:Frame{
-  private GLib.Array<Account> account_array_;
-  private Config config_;
-  private SignalPipe signal_pipe_;
+  private GLib.Array<Account> _account_array;
+  private Config _config;
+  private SignalPipe _signal_pipe;
   
   private IconButton post_button;
   private IconButton url_shorting_button;
   
-  private TweetNode tweet_node_;
+  private TweetNode _tweet_node;
   
   //tweet_text_view内の文字数
   private static int chars_count=140;
   //リプライ元のtweet_id
-  private string? to_reply_tweet_id_str;
-  //replyのリセットをしない
-  private bool freeze=false;
+  private string? in_reply_to_status_id_str;
 
   //選択中のaccount
   private static int selected_account_num=0;
@@ -70,11 +68,13 @@ class PostPage:Frame{
     //post_buttonのプロパティ
     if(chars_count==140||chars_count<0){
       post_button.set_sensitive(false);
+      url_shorting_button.set_sensitive(false);
       if(chars_count==140){
         reply_reset();
       }
     }else{
       post_button.set_sensitive(true);
+      url_shorting_button.set_sensitive(true);
     }
   }
   
@@ -103,9 +103,9 @@ class PostPage:Frame{
   }
   
   public PostPage(GLib.Array<Account> account_array,Config config,SignalPipe signal_pipe){
-    account_array_=account_array;
-    config_=config;
-    signal_pipe_=signal_pipe;
+    _account_array=account_array;
+    _config=config;
+    _signal_pipe=signal_pipe;
     
     post_button=new IconButton(POST_ICON,null,null,IconSize.LARGE_TOOLBAR);
     url_shorting_button=new IconButton(URL_SHORTING_ICON,null,null,IconSize.LARGE_TOOLBAR);
@@ -126,36 +126,29 @@ class PostPage:Frame{
     //load
     load_account_combobox();
     
-    //signalhandler
+    //シグナルハンドラ
     //post
     post_button.clicked.connect((already)=>{
-      post_tweet.begin(buffer.text,to_reply_tweet_id_str,account_array_.index(selected_account_num).api_proxy,(obj,res)=>{
-      if(post_tweet.end(res)){
+      if(statuses_update(_account_array.index(selected_account_num).api_proxy,buffer.text,in_reply_to_status_id_str)){
         buffer.text="";
-        reply_reset();
-        }
-      });
-      to_reply_tweet_id_str=null;
+      }
       return true;
     });
     
     //URLの短縮
     url_shorting_button.clicked.connect((already)=>{
-      if(buffer.text!=""){
-        string parsed_text=parse_post_text(buffer.text);
-        buffer.text=parsed_text;      
-      }
+      string parsed_text=parse_post_text(buffer.text);
+      buffer.text=parsed_text;
       return true;
     });
     
     //リプライのリクエスト
     signal_pipe.reply_request_event.connect((tweet_node,id_str,screen_name)=>{
-      reply_reset();
-      freeze=true;
-      to_reply_tweet_id_str=id_str;
+      in_reply_to_status_id_str=id_str;
+      //buffer.txtが更新されるときreply_resetが呼ばれる
       buffer.text=buffer.text+"@"+screen_name+" ";
+      _tweet_node=tweet_node;
       tweet_node_box.add(tweet_node);
-      freeze=false;
       tweet_text_view.grab_focus();
     });
     
@@ -164,17 +157,17 @@ class PostPage:Frame{
   //account_comboboxの読み込み
   public void load_account_combobox(){
     account_list_store.clear();
-    for(int i=0;i<account_array_.length;i++){
+    for(int i=0;i<_account_array.length;i++){
       //戻り値用のbool
       bool profile_image_loaded=false;
       //iter(ローカル)
       TreeIter iter;
       
       account_list_store.append(out iter);
-      account_list_store.set(iter,0,account_array_.index(i).my_list_id,2,account_array_.index(i).my_screen_name);
+      account_list_store.set(iter,0,_account_array.index(i).my_list_id,2,_account_array.index(i).my_screen_name);
       //load中の画像のRotateSurface
       try{
-        RotateSurface rotate_surface=new RotateSurface(config_.icon_theme.load_icon(LOADING_ICON,16,IconLookupFlags.NO_SVG));
+        RotateSurface rotate_surface=new RotateSurface(_config.icon_theme.load_icon(LOADING_ICON,16,IconLookupFlags.NO_SVG));
         rotate_surface.run();
         rotate_surface.update.connect((surface)=>{
           if(!profile_image_loaded&&account_list_store!=null){
@@ -185,7 +178,7 @@ class PostPage:Frame{
       }catch(Error e){
         print("IconTheme Error : %s\n",e.message);
       }
-      get_pixbuf_async.begin(config_.cache_dir_path,account_array_.index(i).my_screen_name,account_array_.index(i).my_profile_image_url,16,config_.profile_image_hash_table,(obj,res)=>{
+      get_pixbuf_async.begin(_config.cache_dir_path,_account_array.index(i).my_screen_name,_account_array.index(i).my_profile_image_url,16,_config.profile_image_hash_table,(obj,res)=>{
         //profile_imageの取得
         account_list_store.set(iter,1,get_pixbuf_async.end(res));
         profile_image_loaded=true;
@@ -197,9 +190,9 @@ class PostPage:Frame{
   
   //リプライのリセット
   private void reply_reset(){
-    if(tweet_node_!=null&&!freeze){
-      tweet_node_.destroy();
-      to_reply_tweet_id_str=null;
+    if(_tweet_node!=null){
+      _tweet_node.destroy();
+      in_reply_to_status_id_str=null;
     }
   }
   

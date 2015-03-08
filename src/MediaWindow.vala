@@ -6,8 +6,8 @@ using TwitterUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/media_window.ui")]
 class MediaWindow:Gtk.Window{
-  private int num_;
-  private Array<PhotoBox> photo_box_array_;
+  private int _num;
+  private Array<PhotoBox> _photo_box_array;
   
   private Pixbuf resized_pixbuf;
   
@@ -60,8 +60,8 @@ class MediaWindow:Gtk.Window{
   }
   
   public MediaWindow(int num,Array<PhotoBox> photo_box_array){
-    num_=num;
-    photo_box_array_=photo_box_array;
+    _num=num;
+    _photo_box_array=photo_box_array;
    
     prev_button=new IconButton(PREV_ICON,null,null,IconSize.LARGE_TOOLBAR);
     next_button=new IconButton(NEXT_ICON,null,null,IconSize.LARGE_TOOLBAR);
@@ -77,14 +77,14 @@ class MediaWindow:Gtk.Window{
     });
     
     prev_button.clicked.connect(()=>{
-      num_-=1;
+      _num-=1;
       set_default_size_pixbuf();
       set_button_sensitive();
       return true;
     });
     
     next_button.clicked.connect(()=>{
-      num_+=1;
+      _num+=1;
       set_default_size_pixbuf();
       set_button_sensitive();
       return true;
@@ -93,12 +93,12 @@ class MediaWindow:Gtk.Window{
   
   //ボタンのsensitiveを設定
   private void set_button_sensitive(){
-    if(num_==0){
+    if(_num==0){
       prev_button.set_sensitive(false);
     }else{
       prev_button.set_sensitive(true);
     }
-    if(num_==photo_box_array_.length-1){
+    if(_num==_photo_box_array.length-1){
       next_button.set_sensitive(false);
     }else{
       next_button.set_sensitive(true);
@@ -111,12 +111,12 @@ class MediaWindow:Gtk.Window{
     Allocation allocation;
     
     viewport.get_allocation(out allocation);
-    if(photo_box_array_.index(num_).pixbuf.width<=allocation.width&&photo_box_array_.index(num_).pixbuf.height<=allocation.height){
+    if(_photo_box_array.index(_num).pixbuf.width<=allocation.width&&_photo_box_array.index(_num).pixbuf.height<=allocation.height){
       combobox.active=3;
       mag=1;
     }else{
-      double w_mag=(double)allocation.width/photo_box_array_.index(num_).pixbuf.width;
-      double h_mag=(double)allocation.height/photo_box_array_.index(num_).pixbuf.height;
+      double w_mag=(double)allocation.width/_photo_box_array.index(_num).pixbuf.width;
+      double h_mag=(double)allocation.height/_photo_box_array.index(_num).pixbuf.height;
       mag=w_mag<h_mag?w_mag:h_mag;
       entrybuffer.set_text((uchar[])"%.1f%%".printf(mag*100));
     }
@@ -125,7 +125,7 @@ class MediaWindow:Gtk.Window{
   
   //pixbufのセット
   private void set_pixbuf(double mag){
-    resized_pixbuf=scale_pixbuf_with_magnifaction(mag,photo_box_array_.index(num_).pixbuf);
+    resized_pixbuf=scale_pixbuf_with_magnifaction(mag,_photo_box_array.index(_num).pixbuf);
     image.set_from_pixbuf(resized_pixbuf);
   }
 }

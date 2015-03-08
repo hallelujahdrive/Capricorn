@@ -9,8 +9,7 @@ namespace TwitterUtil{
     proxy_call.set_method("GET");
     try{
       proxy_call.run();
-      parse_profile_json(proxy_call.get_payload());
-      return true;
+      return parse_profile_json(proxy_call.get_payload(),account);
     }catch(Error e){
       print("Account Verify Error:%s\n",e.message);
       return false;

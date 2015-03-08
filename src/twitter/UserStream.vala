@@ -8,7 +8,7 @@ namespace TwitterUtil{
     private string json_frg;
     private StringBuilder json_sb=new StringBuilder();
     
-    private ProxyCall stream_call;
+    private ProxyCall proxy_call;
     
     public UserStream(OAuthProxy stream_proxy){
       stream_proxy_=stream_proxy;
@@ -16,11 +16,11 @@ namespace TwitterUtil{
   
     public void run(){
       //proxy_callの設定
-      stream_call=stream_proxy_.new_call();
-      stream_call.set_function(FUNCTION_USER);
-      stream_call.set_method("GET");
+      proxy_call=stream_proxy_.new_call();
+      proxy_call.set_function(FUNCTION_USER);
+      proxy_call.set_method("GET");
       try{
-        stream_call.continuous(user_stream_cb,stream_call);
+        proxy_call.continuous(user_stream_cb,proxy_call);
       }catch(Error e){
         print("Error:%s\n",e.message);
       }
@@ -38,7 +38,7 @@ namespace TwitterUtil{
           json_sb.append(json_frg);
           if(json_frg.has_suffix("\r\n")||json_frg.has_suffix("\r")){
             //シグナル発行
-            get_json_str(json_sb.str);
+            callback_json(json_sb.str);
             //json_sbの初期化
             json_sb.erase();
           }
@@ -47,7 +47,7 @@ namespace TwitterUtil{
     }
     
     //シグナル
-    public signal void get_json_str(string json_str);
+    public signal void callback_json(string json_str);
     public signal void callback_error(string err);
   }
 }

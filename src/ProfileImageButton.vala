@@ -4,8 +4,8 @@ using Gtk;
 using ImageUtil;
 
 class ProfileImageButton:ImageButton{
-  private Config config_;
-  private SignalPipe signal_pipe_;
+  private Config _config;
+  private SignalPipe _signal_pipe;
   
   private bool profile_image_loaded=false;
   
@@ -30,13 +30,15 @@ class ProfileImageButton:ImageButton{
   }
   
   public ProfileImageButton(string screen_name,string profile_image_url,Config config,SignalPipe signal_pipe){
-    config_=config;
-    signal_pipe_=signal_pipe;
+    _config=config;
+    _signal_pipe=signal_pipe;
     
     //profile_image_pixbufの取得
     try{
+      Pixbuf pixbuf=_config.icon_theme.load_icon(LOADING_ICON,48,IconLookupFlags.NO_SVG);
       //load中の画像のRotateSurface
-      RotateSurface rotate_surface=new RotateSurface(config_.icon_theme.load_icon(LOADING_ICON,48,IconLookupFlags.NO_SVG));
+      image.set_from_pixbuf(pixbuf);
+      RotateSurface rotate_surface=new RotateSurface(pixbuf);
       rotate_surface.run();
       rotate_surface.update.connect((surface)=>{
         if(!profile_image_loaded){
@@ -47,7 +49,7 @@ class ProfileImageButton:ImageButton{
     }catch(Error e){
       print("IconTheme Error : %s\n",e.message);
     }
-    get_pixbuf_async.begin(config_.cache_dir_path,screen_name,profile_image_url,48,config_.profile_image_hash_table,(obj,res)=>{
+    get_pixbuf_async.begin(_config.cache_dir_path,screen_name,profile_image_url,48,_config.profile_image_hash_table,(obj,res)=>{
       image.set_from_pixbuf(get_pixbuf_async.end(res));
       profile_image_loaded=true;
     });

@@ -2,16 +2,16 @@ using Gtk;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/tl_settings_page.ui")]
 class TLSettingsPage:Frame{
-  private Config config_;
+  private Config _config;
   
-  public bool node_max_is_changed;
+  public bool changed;
     
   //Widget
   [GtkChild]
-  private SpinButton get_tweet_nodes_s_button;
+  private SpinButton init_node_count_spin_button;
   
   [GtkChild]
-  private SpinButton tweet_node_max_s_button;
+  private SpinButton tl_node_count_spin_button;
   
   [GtkChild]
   public Image tab;
@@ -19,22 +19,22 @@ class TLSettingsPage:Frame{
   //Callback
   [GtkCallback]
   private void value_changed_cb(){
-    node_max_is_changed=true;
+    changed=true;
   }
   
   public TLSettingsPage(Config config){
-    config_=config;
+    _config=config;
     
     //spinbuttonへの値の挿入
-    get_tweet_nodes_s_button.set_value(config_.get_tweet_nodes);
-    tweet_node_max_s_button.set_value(config_.tweet_node_max);
+    init_node_count_spin_button.set_value(_config.init_node_count);
+    tl_node_count_spin_button.set_value(_config.tl_node_count);
     
     //フラグの初期化(値の挿入前にやると挿入時のシグナルでtrueになる)
-    node_max_is_changed=false;
+    changed=false;
   }
   
   public void set_timeline_nodes(){
-    config_.get_tweet_nodes=get_tweet_nodes_s_button.get_value_as_int();
-    config_.tweet_node_max=tweet_node_max_s_button.get_value_as_int();
+    _config.init_node_count=init_node_count_spin_button.get_value_as_int();
+    _config.tl_node_count=tl_node_count_spin_button.get_value_as_int();
   }
 }

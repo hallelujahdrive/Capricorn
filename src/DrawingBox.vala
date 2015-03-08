@@ -4,8 +4,8 @@ using Gtk;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/drawing_box.ui")]
 class DrawingBox:EventBox{
-  protected unowned Config config_;
-  protected unowned SignalPipe signal_pipe_;
+  protected unowned Config _config;
+  protected unowned SignalPipe _signal_pipe;
   protected Pango.Layout layout;
   
   private RGBA clear=RGBA();

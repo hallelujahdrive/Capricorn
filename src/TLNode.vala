@@ -11,9 +11,9 @@ class TLNode{
   public TLPage home_tl_page;
   public TLPage mention_tl_page;
     
-  private Account account_;
-  private Config config_;
-  private SignalPipe signal_pipe_;
+  private Account _account;
+  private Config _config;
+  private SignalPipe _signal_pipe;
   
   private UserStream user_stream;
   
@@ -24,22 +24,22 @@ class TLNode{
   private bool profile_image_loaded=false;
   
   public TLNode(Account account,Config config,SignalPipe signal_pipe){
-    account_=account;
-    config_=config;
-    signal_pipe_=signal_pipe;
+    _account=account;
+    _config=config;
+    _signal_pipe=signal_pipe;
     
     my_id=account.my_id;
         
     //TLPage
-    home_tl_page=new TLPage(config_,signal_pipe_);
-    mention_tl_page=new TLPage(config_,signal_pipe_);
+    home_tl_page=new TLPage(_config,_signal_pipe);
+    mention_tl_page=new TLPage(_config,_signal_pipe);
     //UserStream
-    user_stream=new UserStream(account_.stream_proxy);
+    user_stream=new UserStream(_account.stream_proxy);
     //tab 
     //profile_image_pixbufの取得
     try{
       //load中の画像のRotateSurface
-      RotateSurface rotate_surface=new RotateSurface(config_.icon_theme.load_icon(LOADING_ICON,24,IconLookupFlags.NO_SVG));
+      RotateSurface rotate_surface=new RotateSurface(_config.icon_theme.load_icon(LOADING_ICON,24,IconLookupFlags.NO_SVG));
       rotate_surface.run();
       rotate_surface.update.connect((surface)=>{
         if(!profile_image_loaded){
@@ -51,28 +51,28 @@ class TLNode{
     }catch(Error e){
       print("IconTheme Error : %s\n",e.message);
     }
-    get_pixbuf_async.begin(config_.cache_dir_path,account_.my_screen_name,account_.my_profile_image_url,24,config.profile_image_hash_table,(obj,res)=>{
+    get_pixbuf_async.begin(_config.cache_dir_path,_account.my_screen_name,_account.my_profile_image_url,24,config.profile_image_hash_table,(obj,res)=>{
       Pixbuf pixbuf=get_pixbuf_async.end(res);
       home_tl_page.tab.set_from_pixbuf(pixbuf);
       mention_tl_page.tab.set_from_pixbuf(pixbuf);
       profile_image_loaded=true;
     });
     //home
-    get_tweet_by_api(config_.get_tweet_nodes,false);
+    get_tweet_by_api(_config.init_node_count,false);
     //mention
-    get_tweet_by_api(config_.get_tweet_nodes,true);
+    get_tweet_by_api(_config.init_node_count,true);
     //user_streamの開始
     user_stream.run();
     
     //シグナルハンドラ
-    user_stream.get_json_str.connect((json_str)=>{
-      parsed_json_obj=new ParsedJsonObj(json_str,account_.my_screen_name);
+    user_stream.callback_json.connect((json_str)=>{
+      parsed_json_obj=new ParsedJsonObj(json_str,_account.my_screen_name);
       if(parsed_json_obj.is_delete){
         //ツイートの削除の処理
         signal_pipe.delete_tweet_node_event(parsed_json_obj.id_str);
       }else if(parsed_json_obj.is_tweet){
         //homeのTweetNode
-        TweetNode tweet_node=new TweetNode(parsed_json_obj,account.api_proxy,config_,signal_pipe);
+        TweetNode tweet_node=new TweetNode(parsed_json_obj,account.api_proxy,_config,signal_pipe);
         //replyの作成
         if(parsed_json_obj.is_reply){
           TweetNode reply_node=tweet_node.copy();
@@ -91,16 +91,21 @@ class TLNode{
   }
   
   //ツイートの取得
-  private void get_tweet_by_api(int get_tweet_max,bool is_mention){
-    string[] json_array=get_timeline_json(account_.api_proxy,get_tweet_max,is_mention);
+  private void get_tweet_by_api(int count,bool is_mention){
+    string[] json_array;
+    TLPage tl_page;
+    if(is_mention){
+      json_array=statuses_mention_timeline(_account.api_proxy,count);
+      tl_page=mention_tl_page;
+    }else{
+      json_array=statuses_home_timeline(_account.api_proxy,count);
+      tl_page=home_tl_page;
+    }
     for(int i=0;i<json_array.length;i++){
-      parsed_json_obj=new ParsedJsonObj((owned)json_array[i],account_.my_screen_name);
-      TweetNode tweet_node=new TweetNode(parsed_json_obj,account_.api_proxy,config_,signal_pipe_);
-      if(is_mention){
-        mention_tl_page.add_node((owned)tweet_node);
-      }else{
-        home_tl_page.add_node((owned)tweet_node);
-      }
+      parsed_json_obj=new ParsedJsonObj((owned)json_array[i],_account.my_screen_name);
+      TweetNode tweet_node=new TweetNode(parsed_json_obj,_account.api_proxy,_config,_signal_pipe);
+      
+      tl_page.add_node((owned)tweet_node);
     }
   }
 }

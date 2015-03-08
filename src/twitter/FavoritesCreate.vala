@@ -2,7 +2,7 @@ using Rest;
 
 namespace TwitterUtil{
   //☆
-  public bool favorite(string tweet_id,OAuthProxy api_proxy){
+  public bool favorites_create(string tweet_id,OAuthProxy api_proxy){
     ProxyCall post_call=api_proxy.new_call();
     post_call.set_function(FUNCTION_FAVORITES_CREATE);
     post_call.set_method("POST");

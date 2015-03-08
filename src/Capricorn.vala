@@ -25,8 +25,8 @@ public class Capricorn:Gtk.Application{
   //config
   public Config config;
   
-  //accountの読み出し
-  private bool get_account_verify_credential_sucess;
+  //windowを開けるか否か
+  private bool can_window_open;
   
   public Capricorn(){
     application_id="org.gtk.capricorn";
@@ -52,7 +52,9 @@ public class Capricorn:Gtk.Application{
       //insert
       insert_color(0,config);
       insert_font(0,config.font_profile,config.db);
-      insert_timeline_node_count(config.get_tweet_nodes,config.tweet_node_max,config.db);
+      insert_timeline_node_count(config.init_node_count,config.tl_node_count,config.db);
+      
+      can_window_open=true;
     }else{
       //テーブルが存在したら
       //colorの読み出し
@@ -60,7 +62,7 @@ public class Capricorn:Gtk.Application{
       //フォントの読み出し
       select_font(0,config.font_profile,config.db);
       //ツイート取得数の読み出し
-      select_timeline_nodes(ref config.get_tweet_nodes,ref config.tweet_node_max,config.db);
+      select_timeline_nodes(ref config.init_node_count,ref config.tl_node_count,config.db);
       //Account情報の読み出し
       account_count=count_records(config.db,"ACCOUNT");
       for(int i=0;i<account_count;i++){
@@ -69,7 +71,7 @@ public class Capricorn:Gtk.Application{
         //配列に追加
         account_array.append_val((owned)account);
         //Account情報の取得
-        get_account_verify_credential_sucess=get_account_verify_credential(account_array.index(i));
+        can_window_open=account_verify_credential(account_array.index(i));
       }
     }
   }
@@ -100,7 +102,7 @@ public class Capricorn:Gtk.Application{
     //時刻表示のロケールを設定
     Intl.setlocale(LocaleCategory.TIME,"en_US.UTF-8");
     //Windowを開く
-    if(get_account_verify_credential_sucess){
+    if(can_window_open){
       window=new MainWindow(this);
     }
     

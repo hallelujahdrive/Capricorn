@@ -3,8 +3,8 @@ using Gtk;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/tl_page.ui")]
 class TLPage:ScrolledWindow{
-  private Config config_;
-  private SignalPipe signal_pipe_;
+  private Config _config;
+  private SignalPipe _signal_pipe;
   
   private int node_count=0;
   
@@ -16,13 +16,13 @@ class TLPage:ScrolledWindow{
   public Image tab=new Image();
       
   public TLPage(Config config,SignalPipe signal_pipe){
-    config_=config;
-    signal_pipe_=signal_pipe;
+    _config=config;
+    _signal_pipe=signal_pipe;
     
     tl_list_box.override_background_color(StateFlags.NORMAL,config.white);
     
-    signal_pipe_.timeline_nodes_is_changed.connect(()=>{
-      if(config_.tweet_node_max<node_count){
+    _signal_pipe.timeline_nodes_is_changed.connect(()=>{
+      if(_config.tl_node_count<node_count){
         delete_nodes();
       }
     });
@@ -38,9 +38,9 @@ class TLPage:ScrolledWindow{
   public void prepend_node(TweetNode tweet_node){
     tl_list_box.prepend(tweet_node);
     //古いTweetNodeの削除
-    if(node_count==config_.tweet_node_max){
+    if(node_count==_config.tl_node_count){
       //ListBoxRowの取得
-      tl_list_box.remove(tl_list_box.get_row_at_index(config_.tweet_node_max));
+      tl_list_box.remove(tl_list_box.get_row_at_index(_config.tl_node_count));
     }else{
       node_count++;
     }
@@ -48,7 +48,7 @@ class TLPage:ScrolledWindow{
   
   //TweetNodeの削除
   private void delete_nodes(){
-    while(node_count!=config_.tweet_node_max){
+    while(node_count!=_config.tl_node_count){
       //ListBoxRowの取得
       node_count--;
       tl_list_box.remove(tl_list_box.get_row_at_index(node_count));

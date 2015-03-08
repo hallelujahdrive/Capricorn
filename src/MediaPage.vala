@@ -7,7 +7,7 @@ using URIUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/media_page.ui")]
 public class MediaPage:Frame{
-  private media[] media_array_;
+  private media[] _media_array;
 
   private Array<PhotoBox> photo_box_array=new Array<PhotoBox>();
   
@@ -31,7 +31,7 @@ public class MediaPage:Frame{
   [GtkCallback]
   private bool viewport_draw_after_cb(){
     if(height!=(height=viewport.get_allocated_height()-(int)media_grid.get_row_spacing()*2)){
-      for(int i=0;i<media_array_.length;i++){
+      for(int i=0;i<_media_array.length;i++){
         photo_box_array.index(i).change_allocated_height(height);
       }
     }
@@ -41,8 +41,8 @@ public class MediaPage:Frame{
   //open_url_buttonのクリック
   [GtkCallback]
   private void open_url_button_clicked_cb(Button open_url_button){
-    for(int i=0;i<media_array_.length;i++){
-      open_url(media_array_[i].expanded_url);
+    for(int i=0;i<_media_array.length;i++){
+      open_url(_media_array[i].expanded_url);
     }
   }
   
@@ -53,13 +53,13 @@ public class MediaPage:Frame{
   }
   
   public MediaPage(media[] media_array,TweetNode tweet_node){
-    media_array_=media_array;
+    _media_array=media_array;
     
     tweet_node_box.add(tweet_node);
 
     //media_arrayからの画像の読み込み
-    for(int i=0;i<media_array_.length;i++){
-      PhotoBox photo_box=new PhotoBox(i,media_array_[i].media_url,open_media_window);
+    for(int i=0;i<_media_array.length;i++){
+      PhotoBox photo_box=new PhotoBox(i,_media_array[i].media_url,open_media_window);
       photo_box_array.append_val(photo_box);
       media_grid.attach(photo_box_array.index(i),i%2,i/2,1,1);
     }

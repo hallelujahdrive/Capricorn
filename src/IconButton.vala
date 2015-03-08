@@ -2,10 +2,10 @@ using Gdk;
 using Gtk;
 
 class IconButton:ImageButton{
-  private string default_icon_;
-  private string hover_icon_;
-  private string on_icon_;
-  private IconSize icon_size_;
+  private string _default_icon;
+  private string _hover_icon;
+  private string _on_icon;
+  private IconSize _icon_size;
   
   private bool already=false;
 
@@ -13,12 +13,12 @@ class IconButton:ImageButton{
   protected override bool button_release_event_cb(EventButton event_button){
     base.button_release_event_cb(event_button);
     
-    if(clicked(already)&&on_icon_!=null){
+    if(clicked(already)&&_on_icon!=null){
       already=!already;
       if(already){
-        image.set_from_icon_name(on_icon_,icon_size_);
+        image.set_from_icon_name(_on_icon,_icon_size);
       }else{
-        image.set_from_icon_name(default_icon_,icon_size_);
+        image.set_from_icon_name(_default_icon,_icon_size);
       }
     }
     
@@ -29,8 +29,8 @@ class IconButton:ImageButton{
   protected override bool enter_notify_event_cb(EventCrossing event){
     base.enter_notify_event_cb(event);
     
-    if(hover_icon_!=null&&!already){
-      image.set_from_icon_name(hover_icon_,icon_size_);
+    if(_hover_icon!=null&&!already){
+      image.set_from_icon_name(_hover_icon,_icon_size);
     }
     
     return true;
@@ -40,20 +40,20 @@ class IconButton:ImageButton{
   protected override bool leave_notify_event_cb(EventCrossing event){
     base.leave_notify_event_cb(event);
     
-    if(hover_icon_!=null&&!already){
-      image.set_from_icon_name(default_icon_,icon_size_);
+    if(_hover_icon!=null&&!already){
+      image.set_from_icon_name(_default_icon,_icon_size);
     }
     
     return true;
   }
   
   public IconButton(string default_icon,string? hover_icon,string? on_icon,IconSize icon_size){
-    default_icon_=default_icon;
-    hover_icon_=hover_icon;
-    on_icon_=on_icon;
-    icon_size_=icon_size;
+    _default_icon=default_icon;
+    _hover_icon=hover_icon;
+    _on_icon=on_icon;
+    _icon_size=icon_size;
     
     
-    image.set_from_icon_name(default_icon_,icon_size_);
+    image.set_from_icon_name(_default_icon,_icon_size);
   }
 }

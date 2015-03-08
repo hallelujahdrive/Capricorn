@@ -48,6 +48,7 @@ sources = \
 			sqlite/SelecAccount.vala \
 			sqlite/SelectColor.vala \
 			sqlite/SelectFont.vala \
+			sqlite/SelectTimelineNodeCount.vala \
 			sqlite/UpdateAccountListID.vala \
 			sqlite/UpdateColor.vala \
 			sqlite/UpdateFont.vala \
@@ -61,17 +62,19 @@ sources = \
 			utils/StringUtil.vala \
 			utils/UriUtil.vala \
 			twitter/Account.vala \
-			twitter/Favorite.vala \
-			twitter/GetAccountVerifyCredential.vala \
-			twitter/GetTimelineJson.vala \
-			twitter/GetTokenAndTokenSecret.vala \
-			twitter/GetTokenURL.vala \
-			twitter/GetTweetJson.vala \
+			twitter/AccountVerifyCredential.vala \
+			twitter/FavoritesCreate.vala \
 			twitter/MonthStrToNum.vala \
+			twitter/OauthAccessToken.vala \
 			twitter/ParseProfileJson.vala \
 			twitter/ParsedJsonObj.vala \
-			twitter/PostTweet.vala \
+			twitter/RequestToken.vala \
 			twitter/Retweet.vala \
+			twitter/StatusesHomeTimeline.vala \
+			twitter/StatusesMentionTimeline.vala \
+			twitter/StatusesShow.vala \
+			twitter/StatusesTimeline.vala \
+			twitter/StatusesUpdate.vala \
 			twitter/Strings.vala \
 			twitter/Struct.vala \
 			twitter/UserStream.vala
@@ -95,6 +98,6 @@ resources.c : $(resources_deps)
 	$(GLIB_COMPILE_RESOURCES) $(top_srcdir)/gresources.xml --target=$@ --generate-source --sourcedir=$(top_srcdir)
 
 
-CLEANFILES = *.h *.c *.o *.stamp libcapricorn.la capricorn.vapi capricorn.h utils/*.c
+CLEANFILES = *.h *.c *.o *.stamp libcapricorn.la capricorn.vapi capricorn.h utils/*.c twitter/*.c
 EXTRA_DIST = $(sources) \
 						 capricorn.h

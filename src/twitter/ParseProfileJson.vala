@@ -3,7 +3,6 @@ using Json;
 namespace TwitterUtil{
   //プロファイルの解析
   public bool parse_profile_json(string profile_json,Account account){
-    bool success=true;
     try{
       Json.Parser profile_parser=new Json.Parser();
       profile_parser.load_from_data(profile_json);
@@ -23,10 +22,12 @@ namespace TwitterUtil{
           break;
         }
       }
+      
+      return true;
     }catch(Error e){
       print("ParseJson Error:%s\n",e.message);
-      success=false;
+      
+      return false;
     }
-    return success;
   }
 }

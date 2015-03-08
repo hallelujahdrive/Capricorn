@@ -17,7 +17,7 @@ public class Config{
   //アイコンのHashTable
   public HashTable<string,string?> profile_image_hash_table=new HashTable<string,string?>(str_hash,str_equal);
   //signal_pipe
-  private SignalPipe signal_pipe_;
+  private SignalPipe _signal_pipe;
   //font  
   public FontProfile font_profile=new FontProfile();
   
@@ -33,8 +33,8 @@ public class Config{
   public RGBA delete_bg_rgba=RGBA();
   
   //ツイートの取得数
-  public int get_tweet_nodes;
-  public int tweet_node_max;
+  public int init_node_count;
+  public int tl_node_count;
   
   //時差
   public string datetime_format="%I:%M%P - %e %b %g";
@@ -44,7 +44,7 @@ public class Config{
   public Config(string cpr_dir_path,SignalPipe signal_pipe){
     cache_dir_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,cpr_dir_path,"cache");
     
-    signal_pipe_=signal_pipe;
+    _signal_pipe=signal_pipe;
     
     //Gdk.RGBAの設定
     clear.alpha=0;
@@ -67,7 +67,7 @@ public class Config{
     retweet_bg_rgba.parse("rgb(255,217,82)");
     mine_bg_rgba.parse("rgb(193,209,255)");
     
-    get_tweet_nodes=10;
-    tweet_node_max=50;
+    init_node_count=10;
+    tl_node_count=50;
   }
 }

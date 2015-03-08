@@ -42,20 +42,20 @@ class InReplyDrawingBox:DrawingBox{
   }
   
   public InReplyDrawingBox(Config config,SignalPipe signal_pipe){
-    config_=config;
-    signal_pipe_=signal_pipe;
+    _config=config;
+    _signal_pipe=signal_pipe;
   }
     
   //reply元のツイートを取得
   public bool draw_tweet(OAuthProxy api_proxy,string in_reply_to_status_id){
-    string json_str=get_tweet_json(api_proxy,in_reply_to_status_id);
+    string json_str=statuses_show(api_proxy,in_reply_to_status_id);
     if(json_str!=null){
       in_reply_parsed_json_obj=new ParsedJsonObj(json_str,null);
       
       //profile_image_pixbufの取得
       try{
         //load中の画像のRotateSurface
-        RotateSurface rotate_surface=new RotateSurface(config_.icon_theme.load_icon(LOADING_ICON,24,IconLookupFlags.NO_SVG));
+        RotateSurface rotate_surface=new RotateSurface(_config.icon_theme.load_icon(LOADING_ICON,24,IconLookupFlags.NO_SVG));
         rotate_surface.run();
         rotate_surface.update.connect((surface)=>{
           if(!profile_image_loaded){
@@ -68,7 +68,7 @@ class InReplyDrawingBox:DrawingBox{
       }catch(Error e){
         print("IconTheme Error : %s\n",e.message);
       }
-      get_pixbuf_async.begin(config_.cache_dir_path,in_reply_parsed_json_obj.screen_name,in_reply_parsed_json_obj.profile_image_url,24,config_.profile_image_hash_table,(obj,res)=>{
+      get_pixbuf_async.begin(_config.cache_dir_path,in_reply_parsed_json_obj.screen_name,in_reply_parsed_json_obj.profile_image_url,24,_config.profile_image_hash_table,(obj,res)=>{
         image_surface=cairo_surface_create_from_pixbuf(get_pixbuf_async.end(res),1,null);
         profile_image_loaded=true;
         //再描画
@@ -82,12 +82,12 @@ class InReplyDrawingBox:DrawingBox{
   
   //color,descriptionの設定
   private void set_font(Context context){
-    if(config_.font_profile.use_default){
-      context_set_source_rgba(context,config_.font_profile.text_font_rgba);
-      layout.set_font_description(config_.font_profile.text_font_desc);
+    if(_config.font_profile.use_default){
+      context_set_source_rgba(context,_config.font_profile.text_font_rgba);
+      layout.set_font_description(_config.font_profile.text_font_desc);
     }else{
-      context_set_source_rgba(context,config_.font_profile.in_reply_font_rgba);
-      layout.set_font_description(config_.font_profile.in_reply_font_desc);
+      context_set_source_rgba(context,_config.font_profile.in_reply_font_rgba);
+      layout.set_font_description(_config.font_profile.in_reply_font_desc);
     }
   }
 }

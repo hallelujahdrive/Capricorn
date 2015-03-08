@@ -3,7 +3,7 @@ using Gtk;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/display_settings_page.ui")]
 class DisplaySettingsPage:Frame{
-  private Config config_;
+  private Config _config;
 
   public bool color_is_changed=false;
   public bool font_is_changed=false;
@@ -97,8 +97,8 @@ class DisplaySettingsPage:Frame{
   }
   
   public DisplaySettingsPage(Config config){
-    config_=config;
-    use_default_font=config_.font_profile.use_default;
+    _config=config;
+    use_default_font=_config.font_profile.use_default;
     
     //fontbuttonの設定
     enable_font_detail_cbutton.set_active(!config.font_profile.use_default);
@@ -107,48 +107,48 @@ class DisplaySettingsPage:Frame{
     }
     
     //ColorButtonの設定
-    default_bg_color_button.set_rgba(config_.default_bg_rgba);
-    reply_bg_color_button.set_rgba(config_.reply_bg_rgba);
-    retweet_bg_color_button.set_rgba(config_.retweet_bg_rgba);
-    mine_bg_color_button.set_rgba(config_.mine_bg_rgba);
+    default_bg_color_button.set_rgba(_config.default_bg_rgba);
+    reply_bg_color_button.set_rgba(_config.reply_bg_rgba);
+    retweet_bg_color_button.set_rgba(_config.retweet_bg_rgba);
+    mine_bg_color_button.set_rgba(_config.mine_bg_rgba);
     
-    default_font_color_button.set_rgba(config_.font_profile.text_font_rgba);
-    name_font_color_button.set_rgba(config_.font_profile.name_font_rgba);
-    text_font_color_button.set_rgba(config_.font_profile.text_font_rgba);
-    footer_font_color_button.set_rgba(config_.font_profile.footer_font_rgba);
-    in_reply_font_color_button.set_rgba(config_.font_profile.in_reply_font_rgba);
+    default_font_color_button.set_rgba(_config.font_profile.text_font_rgba);
+    name_font_color_button.set_rgba(_config.font_profile.name_font_rgba);
+    text_font_color_button.set_rgba(_config.font_profile.text_font_rgba);
+    footer_font_color_button.set_rgba(_config.font_profile.footer_font_rgba);
+    in_reply_font_color_button.set_rgba(_config.font_profile.in_reply_font_rgba);
     
     //FontButtonの設定
-    default_font_button.set_font_desc(config_.font_profile.text_font_desc);
+    default_font_button.set_font_desc(_config.font_profile.text_font_desc);
     
-    name_font_button.set_font_desc(config_.font_profile.name_font_desc);
-    text_font_button.set_font_desc(config_.font_profile.text_font_desc);
-    footer_font_button.set_font_desc(config_.font_profile.footer_font_desc);
-    in_reply_font_button.set_font_desc(config_.font_profile.in_reply_font_desc);
+    name_font_button.set_font_desc(_config.font_profile.name_font_desc);
+    text_font_button.set_font_desc(_config.font_profile.text_font_desc);
+    footer_font_button.set_font_desc(_config.font_profile.footer_font_desc);
+    in_reply_font_button.set_font_desc(_config.font_profile.in_reply_font_desc);
   }
   
   public void set_color(){
-    config_.default_bg_rgba=default_bg_color_button.get_rgba();
-    config_.reply_bg_rgba=reply_bg_color_button.get_rgba();
-    config_.retweet_bg_rgba=retweet_bg_color_button.get_rgba();
-    config_.mine_bg_rgba=mine_bg_color_button.get_rgba();
+    _config.default_bg_rgba=default_bg_color_button.get_rgba();
+    _config.reply_bg_rgba=reply_bg_color_button.get_rgba();
+    _config.retweet_bg_rgba=retweet_bg_color_button.get_rgba();
+    _config.mine_bg_rgba=mine_bg_color_button.get_rgba();
     
-    if(config_.font_profile.use_default){
-      config_.font_profile.text_font_rgba=default_font_color_button.get_rgba();
+    if(_config.font_profile.use_default){
+      _config.font_profile.text_font_rgba=default_font_color_button.get_rgba();
     }else{
-      config_.font_profile.name_font_rgba=name_font_color_button.get_rgba();
-      config_.font_profile.text_font_rgba=text_font_color_button.get_rgba();
-      config_.font_profile.footer_font_rgba=footer_font_color_button.get_rgba();
-      config_.font_profile.in_reply_font_rgba=in_reply_font_color_button.get_rgba();
+      _config.font_profile.name_font_rgba=name_font_color_button.get_rgba();
+      _config.font_profile.text_font_rgba=text_font_color_button.get_rgba();
+      _config.font_profile.footer_font_rgba=footer_font_color_button.get_rgba();
+      _config.font_profile.in_reply_font_rgba=in_reply_font_color_button.get_rgba();
     }
   }
   
   public void set_font_desc(){
-    config_.font_profile.name_font_desc=name_font_button.get_font_desc();
-    config_.font_profile.text_font_desc=text_font_button.get_font_desc();
-    config_.font_profile.footer_font_desc=footer_font_button.get_font_desc();
-    config_.font_profile.in_reply_font_desc=in_reply_font_button.get_font_desc();
+    _config.font_profile.name_font_desc=name_font_button.get_font_desc();
+    _config.font_profile.text_font_desc=text_font_button.get_font_desc();
+    _config.font_profile.footer_font_desc=footer_font_button.get_font_desc();
+    _config.font_profile.in_reply_font_desc=in_reply_font_button.get_font_desc();
     
-    config_.font_profile.use_default=use_default_font;
+    _config.font_profile.use_default=use_default_font;
   }
 }

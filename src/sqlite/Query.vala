@@ -30,8 +30,8 @@ namespace SqliteUtil{
   );""";
   private const string CREATE_TABLE_TIMELINE_NODES_QUERY="""
   CREATE TABLE TIMELINE_NODES(
-  get_tweet_nodes INT NOT NULL,
-  tweet_node_max INT NOT NULL
+  init_node_count INT NOT NULL,
+  tl_node_count INT NOT NULL
   );""";
   private const string INSERT_ACCOUNT_QUERY="INSERT INTO ACCOUNT VALUES($LIST_ID,$ID,$TOKEN,$TOKEN_SECRET);";
   private const string INSERT_COLOR_QUERY="INSERT INTO COLOR VALUES($ID,$DEFAULT_BG,$REPLY_BG,$RETWEET_BG,$MINE_BG);";
@@ -48,7 +48,7 @@ namespace SqliteUtil{
   $IN_REPLY_FD,
   $IN_REPLY_FR
   );""";
-  private const string insert_timeline_node_count_QUERY="INSERT INTO TIMELINE_NODES VALUES($GET_TWEET_NODES,$TWEET_NODE_MAX);";
+  private const string INSERT_TIMELINE_NODE_COUNT_QUERY="INSERT INTO TIMELINE_NODES VALUES($INIT_NODE_COUNT,$TL_NODE_COUNT);";
   private const string SELECT_FROM_ACCOUNT_QUERY="SELECT * FROM ACCOUNT WHERE list_id=$LIST_ID;";
   private const string SELECT_FROM_COLOR_QUERY="SELECT * FROM COLOR WHERE id=$ID;";
   private const string SELECT_FROM_FONT_QUERY="SELECT * FROM FONT WHERE id=$ID;";
@@ -69,6 +69,6 @@ namespace SqliteUtil{
   in_reply_font_rgba=$IN_REPLY_FR 
   WHERE id=$ID;
   """;
-  private const string update_timeline_node_count_QUERY="UPDATE TIMELINE_NODES SET get_tweet_nodes=$GET_TWEET_NODES,tweet_node_max=$TWEET_NODE_MAX;";
+  private const string UPDATE_TIMELINE_NODE_COUNT_QUERY="UPDATE TIMELINE_NODES SET init_node_count=$INIT_NODE_COUNT,tl_node_count=$TL_NODE_COUNT;";
   private const string SELECT_ID_FORM_ACCOUNT_QUERY="SELECT id FROM ACCOUNT WHERE list_id=$LIST_ID;";
 }
