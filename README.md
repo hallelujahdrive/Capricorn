@@ -1,7 +1,11 @@
-Capricorn_BETA
-==============
+CapricorИ
+=========
 valaで書かれた軽量Twitterクライアント
 
 ――の、β版です
 
-2014 11/21 リファクタリング終了しました。てかぶっちゃけ全部書き直した。
+
+LICENSE
+-------
+Copyright &copy; 2015 hallelujahdrive
+Licensed under the [WTFPL version 2.0](http://www.wtfpl.net/txt/copying/)
