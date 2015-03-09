@@ -7,5 +7,5 @@ valaで書かれた軽量Twitterクライアント
 
 LICENSE
 -------
-Copyright &copy; 2015 hallelujahdrive 
+Copyright &copy; 2015 hallelujahdrive  
 Licensed under the [WTFPL version 2.0](http://www.wtfpl.net/txt/copying/)
