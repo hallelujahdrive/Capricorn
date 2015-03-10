@@ -8,8 +8,8 @@ using TwitterUtil;
 class SettingsWindow:Dialog{
   private GLib.Array<Account> _account_array;
   
-  private Config _config;
-  private SignalPipe _signal_pipe;
+  private weak Config _config;
+  private weak SignalPipe _signal_pipe;
   
   private AccountSettingsPage account_settings_page;
   private DisplaySettingsPage display_settings_page;

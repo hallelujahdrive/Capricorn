@@ -9,7 +9,7 @@ using TwitterUtil;
 class AccountSettingsPage:Frame{
   private GLib.Array<Account> _account_array;
   
-  private Config _config;
+  private weak Config _config;
 
   //AccountのCellRenderer
   private CellRendererPixbuf cell_pixbuf=new CellRendererPixbuf();

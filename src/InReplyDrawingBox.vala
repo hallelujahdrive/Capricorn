@@ -15,7 +15,7 @@ class InReplyDrawingBox:DrawingBox{
   protected override bool drawing_area_draw_cb(Context context){
     base.drawing_area_draw_cb(context);
     
-    w=this.get_allocated_width();
+    width=this.get_allocated_width();
     
     layout=Pango.cairo_create_layout(context);
     //fontの設定
@@ -23,11 +23,11 @@ class InReplyDrawingBox:DrawingBox{
     //textの描画
     layout.set_markup(in_reply_parsed_json_obj.text,-1);
     //横幅の設定(引かないとズレる)
-    layout.set_width((int)(w-29)*Pango.SCALE);
+    layout.set_width((int)(width-29)*Pango.SCALE);
     //描画位置の調整(pixbuf(24px)+spacer(5px)=29px)
     context.move_to(29,0);
     Pango.cairo_show_layout(context,layout);
-    layout.get_pixel_size(null,out h);
+    layout.get_pixel_size(null,out height);
     
     if(image_surface!=null){
       context.set_source_surface(image_surface,0,0);
@@ -35,15 +35,14 @@ class InReplyDrawingBox:DrawingBox{
     context.paint();
     
     //高さの設定
-    h=h>24?h:24;
-    this.set_size_request(-1,h);
+    height=height>24?height:24;
+    this.set_size_request(-1,height);
     
     return true;
   }
   
   public InReplyDrawingBox(Config config,SignalPipe signal_pipe){
-    _config=config;
-    _signal_pipe=signal_pipe;
+    base(config,signal_pipe);
   }
     
   //reply元のツイートを取得

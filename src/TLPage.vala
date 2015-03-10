@@ -3,8 +3,8 @@ using Gtk;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/tl_page.ui")]
 class TLPage:ScrolledWindow{
-  private Config _config;
-  private SignalPipe _signal_pipe;
+  private weak Config _config;
+  private weak SignalPipe _signal_pipe;
   
   private int node_count=0;
   

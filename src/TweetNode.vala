@@ -9,9 +9,9 @@ using URIUtil;
 [GtkTemplate(ui="/org/gtk/capricorn/ui/tweet_node.ui")]
 public class TweetNode:Grid{
   private ParsedJsonObj _parsed_json_obj;
-  private OAuthProxy _api_proxy;
-  private Config _config;
-  private SignalPipe _signal_pipe;
+  private unowned Account _account;
+  private weak Config _config;
+  private weak SignalPipe _signal_pipe;
     
   private HeaderDrawingBox header_d_box;
   private TextDrawingBox text_d_box;
@@ -21,22 +21,27 @@ public class TweetNode:Grid{
   private IconButton reply_button;
   private IconButton retweet_button;
   private IconButton favorite_button;
-    
+  
+  public string id_str;
+  public string screen_name;
   [GtkChild]
   private Box profile_image_box;
   
   [GtkChild]
   private Box action_box;
   
-  public TweetNode(ParsedJsonObj parsed_json_obj,OAuthProxy api_proxy,Config config,SignalPipe signal_pipe){
+  public TweetNode(ParsedJsonObj parsed_json_obj,Account account,Config config,SignalPipe signal_pipe){
     _parsed_json_obj=parsed_json_obj;
-    _api_proxy=api_proxy;
+    _account=account;
     _config=config;
     _signal_pipe=signal_pipe;
     
-    header_d_box=new HeaderDrawingBox(_parsed_json_obj.screen_name,_parsed_json_obj.name,_parsed_json_obj.account_is_protected,_config,_signal_pipe);
-    text_d_box=new TextDrawingBox(_parsed_json_obj.text,_parsed_json_obj.media_array,_parsed_json_obj.urls_array,_config,_signal_pipe);
-    footer_d_box=new FooterDrawingBox(_parsed_json_obj.created_at,_parsed_json_obj.source_label,_parsed_json_obj.source_url,_config,_signal_pipe);
+    id_str=_parsed_json_obj.id_str;
+    screen_name=_parsed_json_obj.screen_name;
+    
+    header_d_box=new HeaderDrawingBox(_parsed_json_obj,_config,_signal_pipe);
+    text_d_box=new TextDrawingBox(_parsed_json_obj,_config,_signal_pipe);
+    footer_d_box=new FooterDrawingBox(_parsed_json_obj,_config,_signal_pipe);
     
     profile_image_button=new ProfileImageButton(_parsed_json_obj.screen_name,_parsed_json_obj.profile_image_url,_config,_signal_pipe);
     reply_button=new IconButton(REPLY_ICON,REPLY_HOVER_ICON,null,IconSize.BUTTON);
@@ -58,14 +63,14 @@ public class TweetNode:Grid{
     
     //rt_d_boxの追加
     if(_parsed_json_obj.is_retweet){
-      var rt_d_box=new RetweetDrawingBox(_parsed_json_obj.rt_screen_name,_parsed_json_obj.rt_profile_image_url,_config,_signal_pipe);
+      var rt_d_box=new RetweetDrawingBox(_parsed_json_obj,_config,_signal_pipe);
       this.attach(rt_d_box,1,4,1,1);
     }
     
     //in_reply_d_boxの追加
     if(_parsed_json_obj.in_reply_to_status_id!=null){
       var in_reply_d_box=new InReplyDrawingBox(_config,_signal_pipe);
-      if(in_reply_d_box.draw_tweet(api_proxy,parsed_json_obj.in_reply_to_status_id)){
+      if(in_reply_d_box.draw_tweet(_account.api_proxy,parsed_json_obj.in_reply_to_status_id)){
         this.attach(in_reply_d_box,1,5,1,1);
       }
     }
@@ -87,18 +92,18 @@ public class TweetNode:Grid{
     
     //reply
     reply_button.clicked.connect((already)=>{
-      _signal_pipe.reply_request_event(this.copy(),parsed_json_obj.id_str,_parsed_json_obj.screen_name);
+      _signal_pipe.reply_request_event(this.copy(),_account.my_list_id);
       return true;
     });
     
     //retweet
     retweet_button.clicked.connect((already)=>{
-      return retweet(_parsed_json_obj.id_str,_api_proxy);
+      return retweet(_parsed_json_obj.id_str,_account.api_proxy);
     });
     
     //favorite
     favorite_button.clicked.connect((already)=>{
-      return favorites_create(_parsed_json_obj.id_str,_api_proxy);
+      return favorites_create(_parsed_json_obj.id_str,_account.api_proxy);
     });
   }
   
@@ -117,6 +122,6 @@ public class TweetNode:Grid{
   
   //コピー
   public TweetNode copy(){
-    return new TweetNode(_parsed_json_obj,_api_proxy,_config,_signal_pipe);
+    return new TweetNode(_parsed_json_obj,_account,_config,_signal_pipe);
   }
 }

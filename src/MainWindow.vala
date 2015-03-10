@@ -7,8 +7,8 @@ using TwitterUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/main_window.ui")]
 public class MainWindow:ApplicationWindow{
-  private Config config;
-  private SignalPipe signal_pipe;
+  private unowned Config config;
+  private weak SignalPipe signal_pipe;
 
   //Accountの配列
   private Array<Account> account_array;
@@ -18,6 +18,7 @@ public class MainWindow:ApplicationWindow{
   
   private PostPage post_page;
   private IconButton settings_button;
+  
   private SettingsWindow settings_window;
     
   [GtkChild]
@@ -70,7 +71,8 @@ public class MainWindow:ApplicationWindow{
     });
     
     //Mediasのopen
-    signal_pipe.media_url_click_event.connect((media_page)=>{
+    signal_pipe.media_url_click_event.connect((tweet_node,media_array)=>{
+      MediaPage media_page=new MediaPage(tweet_node,media_array);
       various_notebook.append_page(media_page,media_page.tab);
       various_notebook.set_current_page(various_notebook.page_num(media_page));
     });
@@ -92,7 +94,7 @@ public class MainWindow:ApplicationWindow{
       //追加
       for(uint i=tl_node_array.length;i<account_array.length;i++){
         TLNode tl_node=new TLNode(account_array.index(i),config,signal_pipe);
-        tl_node_array.append_val((owned)tl_node);
+        tl_node_array.append_val(tl_node);
         home_tl_notebook.append_page(tl_node_array.index(i).home_tl_page,tl_node_array.index(i).home_tl_page.tab);
         mention_tl_notebook.append_page(tl_node_array.index(i).mention_tl_page,tl_node_array.index(i).mention_tl_page.tab);
       }
@@ -106,7 +108,7 @@ public class MainWindow:ApplicationWindow{
     //TLのロード
     for(int i=0;i<account_array.length;i++){
       TLNode tl_node=new TLNode(account_array.index(i),config,signal_pipe);
-      tl_node_array.append_val((owned)tl_node);
+      tl_node_array.append_val(tl_node);
       home_tl_notebook.append_page(tl_node_array.index(i).home_tl_page,tl_node_array.index(i).home_tl_page.tab);
       mention_tl_notebook.append_page(tl_node_array.index(i).mention_tl_page,tl_node_array.index(i).mention_tl_page.tab);
     }

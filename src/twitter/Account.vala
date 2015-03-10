@@ -1,6 +1,7 @@
 using Rest;
 
 namespace TwitterUtil{
+  [Compact]
   public class Account{
     //メンバ
     public int my_list_id;

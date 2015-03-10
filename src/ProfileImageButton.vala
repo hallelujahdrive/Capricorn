@@ -4,8 +4,8 @@ using Gtk;
 using ImageUtil;
 
 class ProfileImageButton:ImageButton{
-  private Config _config;
-  private SignalPipe _signal_pipe;
+  private weak Config _config;
+  private weak SignalPipe _signal_pipe;
   
   private bool profile_image_loaded=false;
   

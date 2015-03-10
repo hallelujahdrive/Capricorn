@@ -4,17 +4,17 @@ using Gtk;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/drawing_box.ui")]
 class DrawingBox:EventBox{
-  protected unowned Config _config;
-  protected unowned SignalPipe _signal_pipe;
+  protected weak Config _config;
+  protected weak SignalPipe _signal_pipe;
   protected Pango.Layout layout;
   
   private RGBA clear=RGBA();
   
-  protected int w;
-  protected int h;
+  protected int width;
+  protected int height;
   
   [GtkChild]
-  protected unowned DrawingArea drawing_area;
+  protected DrawingArea drawing_area;
   
   //button_release_eventのCallback(子クラスでoverrideする)
   [GtkCallback]
@@ -28,10 +28,13 @@ class DrawingBox:EventBox{
     return true;
   }
    
-  public DrawingBox(){
-   clear.alpha=0;
-   this.override_background_color(StateFlags.NORMAL,clear);
-   drawing_area.override_background_color(StateFlags.NORMAL,clear);
+  public DrawingBox(Config? config,SignalPipe? signal_pipe){
+    _config=config;
+    _signal_pipe=signal_pipe;
+    
+    clear.alpha=0;
+    this.override_background_color(StateFlags.NORMAL,clear);
+    drawing_area.override_background_color(StateFlags.NORMAL,clear);
 
   }
    

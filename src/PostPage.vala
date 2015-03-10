@@ -8,8 +8,8 @@ using TwitterUtil;
 [GtkTemplate(ui="/org/gtk/capricorn/ui/post_page.ui")]
 class PostPage:Frame{
   private GLib.Array<Account> _account_array;
-  private Config _config;
-  private SignalPipe _signal_pipe;
+  private weak Config _config;
+  private weak SignalPipe _signal_pipe;
   
   private IconButton post_button;
   private IconButton url_shorting_button;
@@ -143,12 +143,14 @@ class PostPage:Frame{
     });
     
     //リプライのリクエスト
-    signal_pipe.reply_request_event.connect((tweet_node,id_str,screen_name)=>{
-      in_reply_to_status_id_str=id_str;
+    signal_pipe.reply_request_event.connect((tweet_node,my_list_id)=>{
+      in_reply_to_status_id_str=tweet_node.id_str;
       //buffer.txtが更新されるときreply_resetが呼ばれる
-      buffer.text=buffer.text+"@"+screen_name+" ";
+      buffer.text=buffer.text+"@"+tweet_node.screen_name+" ";
       _tweet_node=tweet_node;
-      tweet_node_box.add(tweet_node);
+      tweet_node_box.add(_tweet_node);
+      account_cbox.active=my_list_id;
+      
       tweet_text_view.grab_focus();
     });
     

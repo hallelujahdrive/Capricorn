@@ -11,9 +11,9 @@ class TLNode{
   public TLPage home_tl_page;
   public TLPage mention_tl_page;
     
-  private Account _account;
-  private Config _config;
-  private SignalPipe _signal_pipe;
+  private unowned Account _account;
+  private weak Config _config;
+  private weak SignalPipe _signal_pipe;
   
   private UserStream user_stream;
   
@@ -72,7 +72,7 @@ class TLNode{
         signal_pipe.delete_tweet_node_event(parsed_json_obj.id_str);
       }else if(parsed_json_obj.is_tweet){
         //homeのTweetNode
-        TweetNode tweet_node=new TweetNode(parsed_json_obj,account.api_proxy,_config,signal_pipe);
+        TweetNode tweet_node=new TweetNode(parsed_json_obj,_account,_config,signal_pipe);
         //replyの作成
         if(parsed_json_obj.is_reply){
           TweetNode reply_node=tweet_node.copy();
@@ -103,9 +103,9 @@ class TLNode{
     }
     for(int i=0;i<json_array.length;i++){
       parsed_json_obj=new ParsedJsonObj((owned)json_array[i],_account.my_screen_name);
-      TweetNode tweet_node=new TweetNode(parsed_json_obj,_account.api_proxy,_config,_signal_pipe);
+      TweetNode tweet_node=new TweetNode(parsed_json_obj,_account,_config,_signal_pipe);
       
-      tl_page.add_node((owned)tweet_node);
+      tl_page.add_node(tweet_node);
     }
   }
 }

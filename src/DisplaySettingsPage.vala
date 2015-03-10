@@ -3,7 +3,7 @@ using Gtk;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/display_settings_page.ui")]
 class DisplaySettingsPage:Frame{
-  private Config _config;
+  private weak Config _config;
 
   public bool color_is_changed=false;
   public bool font_is_changed=false;

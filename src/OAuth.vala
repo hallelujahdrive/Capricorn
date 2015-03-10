@@ -14,7 +14,7 @@ public class OAuthDialog:Gtk.Dialog{
   public bool success=false;
   
   //Account
-  private Account _account;
+  private unowned Account _account;
   
   [GtkChild]
   private Button auth_button;

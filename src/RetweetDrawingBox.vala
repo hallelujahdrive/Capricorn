@@ -3,10 +3,12 @@ using Gdk;
 using Gtk;
 
 using ImageUtil;
+using TwitterUtil;
 
 class RetweetDrawingBox:DrawingBox{
-  private const string retweet_text="Retweeted by";
+  private weak ParsedJsonObj _parsed_json_obj;
   
+  private const string retweet_text="Retweeted by";
   private StringBuilder rt_screen_name_sb=new StringBuilder();
   private Surface image_surface;
   
@@ -18,14 +20,14 @@ class RetweetDrawingBox:DrawingBox{
   public override bool drawing_area_draw_cb(Context context){
     base.drawing_area_draw_cb(context);
     
-    w=this.get_allocated_width();
+    width=this.get_allocated_width();
        
     layout=Pango.cairo_create_layout(context);
     //fontの設定
     set_font(context);
     //retweet_text(Retweeted by)の描画
     layout.set_markup(retweet_text,-1);
-    layout.set_width((int)w*Pango.SCALE);
+    layout.set_width((int)width*Pango.SCALE);
     context.move_to(0,0);
     Pango.cairo_show_layout(context,layout);
     layout.get_pixel_size(out icon_pos,null);
@@ -44,19 +46,20 @@ class RetweetDrawingBox:DrawingBox{
     context.paint();
     
     //DrawingAreaの高さの設定
-    layout.get_pixel_size(null,out h);
-    h=h>16?h:16;
+    layout.get_pixel_size(null,out height);
+    height=height>16?height:16;
 
-    this.set_size_request(-1,h);
+    this.set_size_request(-1,height);
     return true;
   }
   
-  public RetweetDrawingBox(string rt_screen_name,string rt_profile_image_url,Config config,SignalPipe signal_pipe){
-    _config=config;
-    _signal_pipe=signal_pipe;
+  public RetweetDrawingBox(ParsedJsonObj parsed_json_obj,Config config,SignalPipe signal_pipe){
+    base(config,signal_pipe);
+    
+    _parsed_json_obj=parsed_json_obj;
     
     rt_screen_name_sb.append("@");
-    rt_screen_name_sb.append(rt_screen_name);
+    rt_screen_name_sb.append(_parsed_json_obj.rt_screen_name);
     
     //profile_image_pixbufの取得
     try{
@@ -73,7 +76,7 @@ class RetweetDrawingBox:DrawingBox{
     }catch(Error e){
       print("IconTheme Error : %s\n",e.message);
     }
-    get_pixbuf_async.begin(_config.cache_dir_path,rt_screen_name,rt_profile_image_url,16,_config.profile_image_hash_table,(obj,res)=>{
+    get_pixbuf_async.begin(_config.cache_dir_path,_parsed_json_obj.rt_screen_name,_parsed_json_obj.rt_profile_image_url,16,_config.profile_image_hash_table,(obj,res)=>{
       image_surface=cairo_surface_create_from_pixbuf(get_pixbuf_async.end(res),1,null);
       profile_image_loaded=true;
       //再描画

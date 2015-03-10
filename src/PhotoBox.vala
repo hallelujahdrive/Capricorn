@@ -28,19 +28,20 @@ class PhotoBox:DrawingBox{
     base.drawing_area_draw_cb(context);
     
     if(pixbuf!=null){
-      w=this.get_allocated_width();
-      resized_pixbuf=scale_pixbuf(w,h,pixbuf);
-      h=resized_pixbuf.height;
+      width=this.get_allocated_width();
+      resized_pixbuf=scale_pixbuf(width,height,pixbuf);
+      height=resized_pixbuf.height;
       
       image_surface=cairo_surface_create_from_pixbuf(resized_pixbuf,1,null);
       context.set_source_surface(image_surface,0,0);
       context.paint();
-      this.set_size_request(-1,h);
+      this.set_size_request(-1,height);
     }
     return true;
   }
   
   public PhotoBox(int num,string media_url,Func<int> func){
+    base(null,null);
     _num=num;
     _func=func;
     
@@ -55,8 +56,8 @@ class PhotoBox:DrawingBox{
   }
   
   //縦サイズ変更
-  public void change_allocated_height(int h_){
-    h=h_;
+  public void change_allocated_height(int _height){
+    height=_height;
     this.queue_draw();
   }
 }

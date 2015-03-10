@@ -5,6 +5,7 @@ using ImageUtil;
 using TwitterUtil;
 using URIUtil;
 
+[Compact]
 [GtkTemplate(ui="/org/gtk/capricorn/ui/media_page.ui")]
 public class MediaPage:Frame{
   private media[] _media_array;
@@ -52,7 +53,7 @@ public class MediaPage:Frame{
     this.destroy();
   }
   
-  public MediaPage(media[] media_array,TweetNode tweet_node){
+  public MediaPage(TweetNode tweet_node,media[] media_array){
     _media_array=media_array;
     
     tweet_node_box.add(tweet_node);

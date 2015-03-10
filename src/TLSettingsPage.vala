@@ -2,7 +2,7 @@ using Gtk;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/tl_settings_page.ui")]
 class TLSettingsPage:Frame{
-  private Config _config;
+  private weak Config _config;
   
   public bool changed;
     
