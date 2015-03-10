@@ -1,7 +1,6 @@
 CapricorИ
 =========
-valaで書かれた軽量Twitterクライアント
-
+valaで書かれた軽量Twitterクライアント  
 ――の、β版です
 
 
