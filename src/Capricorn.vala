@@ -66,7 +66,7 @@ public class Capricorn:Gtk.Application{
       //Account情報の読み出し
       account_count=count_records(config.db,"ACCOUNT");
       for(int i=0;i<account_count;i++){
-        var account=new Account();
+        var account=new Account(TWITTER_CONSUMER_KEY,TWITTER_CONSUMER_SECRET);
         select_account(i,account,config.db);
         //配列に追加
         account_array.append_val((owned)account);
@@ -81,7 +81,7 @@ public class Capricorn:Gtk.Application{
     
     //Accountが0なら,認証windowを開く
     if(account_count==0){
-      Account account=new Account();
+      Account account=new Account(TWITTER_CONSUMER_KEY,TWITTER_CONSUMER_SECRET);
       OAuthDialog oauth_dialog=new OAuthDialog(account_count,account);
       oauth_dialog.show_all();
       

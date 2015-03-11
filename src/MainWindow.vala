@@ -17,6 +17,8 @@ public class MainWindow:ApplicationWindow{
   private Array<TLNode> tl_node_array=new Array<TLNode>();
   
   private PostPage post_page;
+  private EventNotifyPage event_notofy_page;
+  
   private IconButton settings_button;
   
   private SettingsWindow settings_window;
@@ -41,10 +43,13 @@ public class MainWindow:ApplicationWindow{
     account_array=capricorn.account_array;
     
     post_page=new PostPage(account_array,config,signal_pipe);
+    event_notofy_page=new EventNotifyPage(account_array,tl_node_array,config,signal_pipe);
+    
     settings_button=new IconButton(SETTINGS_ICON,null,null,IconSize.LARGE_TOOLBAR);
         
     //load
     various_notebook.append_page(post_page,post_page.tab);
+    various_notebook.append_page(event_notofy_page,event_notofy_page.tab);
     button_box.pack_end(settings_button,false,false,0);
     
     //シグナルハンドラ
@@ -99,7 +104,7 @@ public class MainWindow:ApplicationWindow{
         mention_tl_notebook.append_page(tl_node_array.index(i).mention_tl_page,tl_node_array.index(i).mention_tl_page.tab);
       }
       //account_cboxの再読み込み
-      post_page.load_account_combobox();
+      signal_pipe.account_array_change_event();
     }
     settings_button.set_sensitive(true);
   }
@@ -116,7 +121,7 @@ public class MainWindow:ApplicationWindow{
   
   //初回起動時,認証後に再読込する
   public void load_all(){
-    post_page.load_account_combobox();
+    signal_pipe.account_array_change_event();
     load_notebooks();
   }
 }

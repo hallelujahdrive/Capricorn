@@ -8,11 +8,13 @@ bin_PROGRAMS = capricorn
 noinst_LTLIBRARIES = libcapricorn.la
 
 sources = \
+			AccountComboBox.vala \
 			AccountSettingsPage.vala \
 			Capricorn.vala \
 			Config.vala \
 			DisplaySettingsPage.vala \
 			DrawingBox.vala \
+			EventNotifyPage.vala \
 			FontProfile.vala \
 			FooterDrawingBox.vala \
 			HeaderDrawingBox.vala \
@@ -63,6 +65,7 @@ sources = \
 			utils/UriUtil.vala \
 			twitter/Account.vala \
 			twitter/AccountVerifyCredential.vala \
+			twitter/Enums.vala \
 			twitter/FavoritesCreate.vala \
 			twitter/MonthStrToNum.vala \
 			twitter/OauthAccessToken.vala \

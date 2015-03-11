@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
   <gresource prefix="/org/gtk/capricorn">
+    <file compressed="true" preprocess="xml-stripblanks">ui/account_combo_box.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/account_settings_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/display_settings_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/drawing_box.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/event_notify_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/image_button.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/main_window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/media_page.ui</file>

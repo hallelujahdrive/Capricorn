@@ -62,7 +62,7 @@ public class TweetNode:Grid{
     set_bg_color();
     
     //rt_d_boxの追加
-    if(_parsed_json_obj.is_retweet){
+    if(_parsed_json_obj.tweet_type==TweetType.RETWEET){
       var rt_d_box=new RetweetDrawingBox(_parsed_json_obj,_config,_signal_pipe);
       this.attach(rt_d_box,1,4,1,1);
     }
@@ -85,8 +85,9 @@ public class TweetNode:Grid{
     //delete
     signal_pipe.delete_tweet_node_event.connect((id_str)=>{
       if(id_str==_parsed_json_obj.id_str){
-        _parsed_json_obj.is_delete=true;
-        this.override_background_color(StateFlags.NORMAL,_config.delete_bg_rgba);
+        _parsed_json_obj.type=ParsedJsonObjType.DELETE;
+        set_bg_color();
+        this.queue_draw();
       }
     });
     
@@ -107,16 +108,23 @@ public class TweetNode:Grid{
     });
   }
   
-  //色の設定
+  //背景色の設定
   private void set_bg_color(){
-    if(_parsed_json_obj.is_mine){
-      this.override_background_color(StateFlags.NORMAL,_config.mine_bg_rgba);
-    }else if(_parsed_json_obj.is_retweet){
-      this.override_background_color(StateFlags.NORMAL,_config.retweet_bg_rgba);
-    }else if(_parsed_json_obj.is_reply){
-      this.override_background_color(StateFlags.NORMAL,_config.reply_bg_rgba);
-    }else if(!_parsed_json_obj.is_delete){
-      this.override_background_color(StateFlags.NORMAL,_config.default_bg_rgba);
+    switch(_parsed_json_obj.type){
+      case ParsedJsonObjType.DELETE:this.override_background_color(StateFlags.NORMAL,_config.delete_bg_rgba);
+      break;
+      default:
+      switch(_parsed_json_obj.tweet_type){
+        case TweetType.MINE:this.override_background_color(StateFlags.NORMAL,_config.mine_bg_rgba);
+        break;
+        case TweetType.RETWEET:this.override_background_color(StateFlags.NORMAL,_config.retweet_bg_rgba);
+        break;
+        case TweetType.REPLY:this.override_background_color(StateFlags.NORMAL,_config.reply_bg_rgba);
+        break;
+        default:this.override_background_color(StateFlags.NORMAL,_config.default_bg_rgba);
+        break;
+      }
+      break;
     }
   }
   

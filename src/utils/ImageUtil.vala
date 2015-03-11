@@ -76,7 +76,7 @@ namespace ImageUtil{
   
   //pixbufのリサイズ
   public Pixbuf scale_pixbuf(int dst_width,int? dst_height,Pixbuf pixbuf){
-    if(pixbuf.width>dst_width){
+    if(pixbuf.width>dst_width||pixbuf.height>(dst_height!=null?dst_height:pixbuf.height)){
       int width;
       int height;
       if(dst_height!=null&&(double)dst_height/pixbuf.height<(double)dst_width/pixbuf.width){

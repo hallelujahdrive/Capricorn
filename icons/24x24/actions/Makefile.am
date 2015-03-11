@@ -2,6 +2,7 @@ icondir = @datadir@/icons/hicolor/24x24/actions
 icon_DATA = \
 					capricorn-account.png \
 					capricorn-display.png \
+					capricorn-event-notify.png \
 					capricorn-loading.png \
 					capricorn-medias.png \
 					capricorn-next.png \

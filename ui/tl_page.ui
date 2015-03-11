@@ -5,7 +5,8 @@
   <template class="TLPage" parent="GtkScrolledWindow">
     <property name="visible">True</property>
     <property name="can_focus">True</property>
-    <property name="vexpand">False</property>
+    <property name="hexpand">True</property>
+    <property name="vexpand">True</property>
     <property name="hscrollbar_policy">never</property>
     <property name="vscrollbar_policy">always</property>
     <property name="shadow_type">in</property>

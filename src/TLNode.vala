@@ -10,6 +10,7 @@ class TLNode{
   //TLScrolled
   public TLPage home_tl_page;
   public TLPage mention_tl_page;
+  public TLPage event_page;
     
   private unowned Account _account;
   private weak Config _config;
@@ -33,6 +34,8 @@ class TLNode{
     //TLPage
     home_tl_page=new TLPage(_config,_signal_pipe);
     mention_tl_page=new TLPage(_config,_signal_pipe);
+    event_page=new TLPage(_config,_signal_pipe);
+    
     //UserStream
     user_stream=new UserStream(_account.stream_proxy);
     //tab 
@@ -67,19 +70,24 @@ class TLNode{
     //シグナルハンドラ
     user_stream.callback_json.connect((json_str)=>{
       parsed_json_obj=new ParsedJsonObj(json_str,_account.my_screen_name);
-      if(parsed_json_obj.is_delete){
-        //ツイートの削除の処理
-        signal_pipe.delete_tweet_node_event(parsed_json_obj.id_str);
-      }else if(parsed_json_obj.is_tweet){
+      switch(parsed_json_obj.type){
+        //tweetの削除の処理
+        case ParsedJsonObjType.DELETE:signal_pipe.delete_tweet_node_event(parsed_json_obj.id_str);
+        break;
+        //eventの処理
+        case ParsedJsonObjType.EVENT:
+        break;
+        //tweetの処理
+        case ParsedJsonObjType.TWEET:
         //homeのTweetNode
         TweetNode tweet_node=new TweetNode(parsed_json_obj,_account,_config,signal_pipe);
+        home_tl_page.prepend_node(tweet_node);
         //replyの作成
-        if(parsed_json_obj.is_reply){
+        if(parsed_json_obj.tweet_type==TweetType.REPLY){
           TweetNode reply_node=tweet_node.copy();
           mention_tl_page.prepend_node(reply_node);
         }
-        home_tl_page.prepend_node(tweet_node);
-
+        break;
       }
     });
     

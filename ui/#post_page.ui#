@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.18.3 -->
+<interface>
+  <requires lib="gtk+" version="3.12"/>
+  <object class="GtkListStore" id="account_list_store">
+    <columns>
+      <!-- column-name list_id -->
+      <column type="gint"/>
+      <!-- column-name profile_image -->
+      <column type="GdkPixbuf"/>
+      <!-- column-name screen_name -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkTextBuffer" id="buffer">
+    <signal name="changed" handler="buffer_changed_cb" swapped="no"/>
+  </object>
+  <template class="PostPage" parent="GtkFrame">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="border_width">0</property>
+    <property name="label_xalign">0</property>
+    <property name="shadow_type">in</property>
+    <child>
+      <object class="GtkBox" id="post_box">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="border_width">5</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">5</property>
+        <property name="baseline_position">top</property>
+        <child>
+          <object class="GtkBox" id="chars_count_box">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkLabel" id="chars_count_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">140</property>
+                <property name="use_markup">True</property>
+                <property name="lines">1</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="tweet_scrolled_window">
+            <property name="height_request">100</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="valign">start</property>
+            <property name="hexpand">False</property>
+            <property name="vexpand">False</property>
+            <property name="shadow_type">in</property>
+            <child>
+              <object class="GtkTextView" id="tweet_text_view">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="wrap_mode">char</property>
+                <property name="buffer">buffer</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="bbox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="spacing">5</property>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="tweet_node_box">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkComboBox" id="account_cbox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="opacity">0.98039215686274506</property>
+            <property name="model">account_list_store</property>
+            <property name="popup_fixed_width">False</property>
+            <signal name="changed" handler="account_cbox_changed_cb" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="tl_link_cbutton">
+            <property name="label" translatable="yes">タイムラインの切り替えを連動させる</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="xalign">0</property>
+            <property name="draw_indicator">True</property>
+            <signal name="toggled" handler="tl_link_cbutton_toggled_cb" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <child type="label_item">
+      <placeholder/>
+    </child>
+  </template>
+  <object class="GtkImage" id="tab">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">capricorn-tweet</property>
+    <property name="icon_size">3</property>
+  </object>
+</interface>

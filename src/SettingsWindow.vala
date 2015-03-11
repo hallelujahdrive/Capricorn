@@ -6,7 +6,7 @@ using TwitterUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/settings_window.ui")]
 class SettingsWindow:Dialog{
-  private GLib.Array<Account> _account_array;
+  private unowned GLib.Array<Account> _account_array;
   
   private weak Config _config;
   private weak SignalPipe _signal_pipe;
@@ -79,7 +79,7 @@ class SettingsWindow:Dialog{
       _account_array.remove_range(0,_account_array.length);
       int account_count_records=count_records(_config.db,"ACCOUNT");
       for(int i=0;i<account_count_records;i++){
-        Account account=new Account();
+        Account account=new Account(TWITTER_CONSUMER_KEY,TWITTER_CONSUMER_SECRET);
         _account_array.append_val((owned)account);
         select_account(i,_account_array.index(i),_config.db);
         account_verify_credential(_account_array.index(i));

@@ -1,10 +1,12 @@
 using TwitterUtil;
 
 public class SignalPipe{
+  //AccountComboBoxの再読み込み
+  public signal void account_array_change_event();
   //colorが変更された
   public signal void color_change_event();
   
-  //timeline_nodesが変更された
+  //timeline_node_conutが変更された
   public signal void timeline_nodes_is_changed();
   
   //リプライの要求

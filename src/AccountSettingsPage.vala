@@ -7,7 +7,7 @@ using TwitterUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/account_settings_page.ui")]
 class AccountSettingsPage:Frame{
-  private GLib.Array<Account> _account_array;
+  private unowned GLib.Array<Account> _account_array;
   
   private weak Config _config;
 
@@ -36,7 +36,7 @@ class AccountSettingsPage:Frame{
   //Callback
   [GtkCallback]
   private void account_add_button_clicked_cb(Button account_add_button){
-    Account account=new Account();
+    Account account=new Account(TWITTER_CONSUMER_KEY,TWITTER_CONSUMER_SECRET);
     int len=(int)_account_array.length;
     OAuthDialog oauth_dialog=new OAuthDialog(len,account);
     oauth_dialog.set_transient_for(settings_window_);

@@ -7,7 +7,7 @@ using URIUtil;
 
 class PhotoBox:DrawingBox{
   private int _num;
-  private Func<int> _func;
+  private unowned Func<int> _func;
     
   public Pixbuf pixbuf;
   private Pixbuf resized_pixbuf;
