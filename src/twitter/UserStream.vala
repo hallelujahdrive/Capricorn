@@ -3,20 +3,20 @@ using Rest;
 namespace TwitterUtil{
   //user_stream
   class UserStream{
-    private OAuthProxy stream_proxy_;
+    private OAuthProxy _stream_proxy;
     
     private string json_frg;
     private StringBuilder json_sb=new StringBuilder();
     
     private ProxyCall proxy_call;
     
-    public UserStream(OAuthProxy stream_proxy){
-      stream_proxy_=stream_proxy;
+    public UserStream(Account account){
+      _stream_proxy=account.stream_proxy;
     }
   
     public void run(){
       //proxy_callの設定
-      proxy_call=stream_proxy_.new_call();
+      proxy_call=_stream_proxy.new_call();
       proxy_call.set_function(FUNCTION_USER);
       proxy_call.set_method("GET");
       try{

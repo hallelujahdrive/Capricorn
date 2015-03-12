@@ -1,18 +1,26 @@
+using Json;
 using Rest;
 
 namespace TwitterUtil{
-  private string[]? statuses_timeline(ProxyCall proxy_call){
+  private GLib.Array<ParsedJsonObj> statuses_timeline(ProxyCall proxy_call,string screen_name){
     //取得とセイキヒョウゲンカッコバクショウ
+    GLib.Array<ParsedJsonObj> parsed_json_obj_array=new GLib.Array<ParsedJsonObj>();
     try{
       proxy_call.run();
-      string jsons=proxy_call.get_payload();
-      var regex_replace=new Regex("(},{\"created_at\")");
-      string regex=regex_replace.replace(jsons.slice(1,jsons.length-1),-1,0,"}\n{\"created_at\"");
-      
-      return regex.split("\n");
+      string jsons_str=proxy_call.get_payload();
+      //json_obj
+      Json.Parser json_parser=new Json.Parser();
+      json_parser.load_from_data(jsons_str);
+      Json.Node json_node=json_parser.get_root();
+      if(json_node!=null){
+         Json.Array json_array=json_node.get_array();
+         for(uint i=0;i<json_array.get_length();i++){
+           parsed_json_obj_array.append_val(new ParsedJsonObj(json_array.get_element(i),screen_name));
+         }
+       }
     }catch(Error e){
       print("%s\n",e.message);
-      return null;
     }
+    return parsed_json_obj_array;
   }
 }

@@ -2,7 +2,7 @@ using Json;
 
 namespace TwitterUtil{
   //プロファイルの解析
-  public bool parse_profile_json(string profile_json,Account account){
+  public bool parse_profile_json(Account account,string profile_json){
     try{
       Json.Parser profile_parser=new Json.Parser();
       profile_parser.load_from_data(profile_json);

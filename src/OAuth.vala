@@ -52,7 +52,7 @@ public class OAuthDialog:Gtk.Dialog{
     pin_entry.set_sensitive(false);
     auth_button.set_sensitive(false);
     
-    token_url=request_token(_account.api_proxy);
+    token_url=request_token(_account);
     
     //シグナル
     this.destroy.connect(()=>{

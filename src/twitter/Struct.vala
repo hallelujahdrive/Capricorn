@@ -1,6 +1,5 @@
 namespace TwitterUtil{
-  //urlsのコンパクトクラス
-  [Compact]
+  //urlsの構造体
   public struct urls{
     public string display_url;
     public string expanded_url;
@@ -8,7 +7,7 @@ namespace TwitterUtil{
     public int start_indices;
     public int end_indices;
   }
-  //mediaのコンパクトクラス
+  //mediaの構造体
   [Compact]
   public struct media{
     public string display_url;

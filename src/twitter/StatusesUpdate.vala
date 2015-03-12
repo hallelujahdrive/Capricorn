@@ -2,9 +2,9 @@ using Rest;
 
 namespace TwitterUtil{
   //tweetのpost
-  public bool statuses_update(OAuthProxy api_proxy,string status,string? in_reply_to_status_id){
+  public bool statuses_update(Account account,string status,string? in_reply_to_status_id){
     bool result=false;
-    ProxyCall proxy_call=api_proxy.new_call();
+    ProxyCall proxy_call=account.api_proxy.new_call();
     proxy_call.set_function(FUNCTION_STATUSES_UPDATE);
     proxy_call.set_method("POST");
     proxy_call.add_param(PARAM_STATUS,status);

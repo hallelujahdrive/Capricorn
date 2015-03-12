@@ -33,4 +33,8 @@ class EventNotifyPage:Frame{
       main_grid.attach(_tl_node_array.index(selected_account_num).event_page,0,1,1,1);
     }
   }
+  
+  public void init(int selected_account_num){
+    account_combo_box_changed(selected_account_num);
+  }
 }

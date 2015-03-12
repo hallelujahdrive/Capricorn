@@ -1,6 +1,8 @@
 using Gdk;
 using Gtk;
 
+using TwitterUtil;
+
 [GtkTemplate(ui="/org/gtk/capricorn/ui/tl_page.ui")]
 class TLPage:ScrolledWindow{
   private weak Config _config;
@@ -26,6 +28,31 @@ class TLPage:ScrolledWindow{
         delete_nodes();
       }
     });
+  }
+  
+  //home
+  public TLPage.home(Account account,Config config,SignalPipe signal_pipe){
+    this(config,signal_pipe);
+    init(statuses_home_timeline(account,config.init_node_count),account);
+  }
+  
+  //mention
+  public TLPage.mention(Account account,Config config,SignalPipe signal_pipe){
+    this(config,signal_pipe);
+   init(statuses_mention_timeline(account,config.init_node_count),account);
+  }
+  
+  //event
+  public TLPage.event(Config config,SignalPipe signal_pipe){
+    this(config,signal_pipe);
+  }
+  
+  //TLNodeを取得
+  private void init(Array<ParsedJsonObj> parsed_json_obj_array,Account account){
+    for(int i=0;i<parsed_json_obj_array.length;i++){
+      TweetNode tweet_node=new TweetNode(parsed_json_obj_array.index(i),account,_config,_signal_pipe);
+      this.add_node(tweet_node);
+    }
   }
   
   //TweetNodeの追加(append)

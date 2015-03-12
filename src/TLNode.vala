@@ -32,12 +32,12 @@ class TLNode{
     my_id=account.my_id;
         
     //TLPage
-    home_tl_page=new TLPage(_config,_signal_pipe);
-    mention_tl_page=new TLPage(_config,_signal_pipe);
-    event_page=new TLPage(_config,_signal_pipe);
+    home_tl_page=new TLPage.home(_account,_config,_signal_pipe);
+    mention_tl_page=new TLPage.mention(_account,_config,_signal_pipe);
+    event_page=new TLPage.event(_config,_signal_pipe);
     
     //UserStream
-    user_stream=new UserStream(_account.stream_proxy);
+    user_stream=new UserStream(_account);
     //tab 
     //profile_image_pixbufの取得
     try{
@@ -60,16 +60,13 @@ class TLNode{
       mention_tl_page.tab.set_from_pixbuf(pixbuf);
       profile_image_loaded=true;
     });
-    //home
-    get_tweet_by_api(_config.init_node_count,false);
-    //mention
-    get_tweet_by_api(_config.init_node_count,true);
+    
     //user_streamの開始
     user_stream.run();
     
     //シグナルハンドラ
     user_stream.callback_json.connect((json_str)=>{
-      parsed_json_obj=new ParsedJsonObj(json_str,_account.my_screen_name);
+      parsed_json_obj=new ParsedJsonObj.from_string(json_str,_account.my_screen_name);
       switch(parsed_json_obj.type){
         //tweetの削除の処理
         case ParsedJsonObjType.DELETE:signal_pipe.delete_tweet_node_event(parsed_json_obj.id_str);
@@ -96,24 +93,5 @@ class TLNode{
       print("UserStream Error:%s\n",err);
       user_stream.run();
     });
-  }
-  
-  //ツイートの取得
-  private void get_tweet_by_api(int count,bool is_mention){
-    string[] json_array;
-    TLPage tl_page;
-    if(is_mention){
-      json_array=statuses_mention_timeline(_account.api_proxy,count);
-      tl_page=mention_tl_page;
-    }else{
-      json_array=statuses_home_timeline(_account.api_proxy,count);
-      tl_page=home_tl_page;
-    }
-    for(int i=0;i<json_array.length;i++){
-      parsed_json_obj=new ParsedJsonObj((owned)json_array[i],_account.my_screen_name);
-      TweetNode tweet_node=new TweetNode(parsed_json_obj,_account,_config,_signal_pipe);
-      
-      tl_page.add_node(tweet_node);
-    }
   }
 }

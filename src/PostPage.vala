@@ -97,7 +97,7 @@ class PostPage:Frame{
     //シグナルハンドラ
     //post
     post_button.clicked.connect((already)=>{
-      if(statuses_update(_account_array.index(selected_account_num).api_proxy,buffer.text,in_reply_to_status_id_str)){
+      if(statuses_update(_account_array.index(selected_account_num),buffer.text,in_reply_to_status_id_str)){
         buffer.text="";
       }
       return true;

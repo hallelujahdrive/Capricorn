@@ -46,10 +46,10 @@ class InReplyDrawingBox:DrawingBox{
   }
     
   //reply元のツイートを取得
-  public bool draw_tweet(OAuthProxy api_proxy,string in_reply_to_status_id){
-    string json_str=statuses_show(api_proxy,in_reply_to_status_id);
+  public bool draw_tweet(Account account,string in_reply_to_status_id){
+    string json_str=statuses_show(account,in_reply_to_status_id);
     if(json_str!=null){
-      in_reply_parsed_json_obj=new ParsedJsonObj(json_str,null);
+      in_reply_parsed_json_obj=new ParsedJsonObj.from_string(json_str,null);
       
       //profile_image_pixbufの取得
       try{

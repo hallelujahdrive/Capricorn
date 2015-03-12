@@ -70,7 +70,7 @@ public class TweetNode:Grid{
     //in_reply_d_boxの追加
     if(_parsed_json_obj.in_reply_to_status_id!=null){
       var in_reply_d_box=new InReplyDrawingBox(_config,_signal_pipe);
-      if(in_reply_d_box.draw_tweet(_account.api_proxy,parsed_json_obj.in_reply_to_status_id)){
+      if(in_reply_d_box.draw_tweet(_account,parsed_json_obj.in_reply_to_status_id)){
         this.attach(in_reply_d_box,1,5,1,1);
       }
     }

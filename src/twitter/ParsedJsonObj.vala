@@ -31,125 +31,128 @@ namespace TwitterUtil{
     
     public DateTime created_at;
     
-    public ParsedJsonObj(string json_str,string? my_screen_name){
+    public ParsedJsonObj(Json.Node? json_node,string? my_screen_name){
+      if(json_node!=null){
+        Json.Object json_obj=json_node.get_object();
+        //type変更
+        type=ParsedJsonObjType.TWEET;
+        
+        //jsonを解析
+        foreach(string member in json_obj.get_members()){
+          switch(member){
+            //deleteの解析.json_objはdelete.statusから取得
+            case "delete":
+            type=ParsedJsonObjType.DELETE;
+            json_obj=(json_obj.get_object_member(member)).get_object_member("status");
+            break;
+            //eventの解析.json_objはtargetから取得
+            case "event":
+            type=ParsedJsonObjType.EVENT;
+            json_obj=json_obj.get_object_member("target");
+            break;
+            //friendsの解析(現状無視.そのうち書くかも)
+            case "friends":
+            type=ParsedJsonObjType.FRIENDS;
+            return;
+            //retweetの解析.json_objはretweet_statusから取得
+            case "retweeted_status":
+            tweet_type=TweetType.RETWEET;
+            foreach(string retweet_member in json_obj.get_members()){
+              switch(retweet_member){
+                case "retweeted_status":json_obj=json_obj.get_object_member(retweet_member);
+                break;
+                case "user":
+                Json.Object rt_user_obj=json_obj.get_object_member(retweet_member);
+                foreach(string user_member in rt_user_obj.get_members()){
+                  switch(user_member){
+                    case "name":rt_name=parse_name(rt_user_obj.get_string_member(user_member));
+                    break;
+                    case "profile_image_url":rt_profile_image_url=rt_user_obj.get_string_member(user_member);
+                    break;
+                    case "screen_name":
+                    if((rt_screen_name=rt_user_obj.get_string_member(user_member))==my_screen_name){
+                      retweeted=true;
+                    }
+                    break;
+                  }
+                }
+                break;
+              }
+            }
+            break;
+          }
+        }
+        
+        foreach(string member in json_obj.get_members()){
+          switch(member){
+            case "created_at":parse_created_at(json_obj.get_string_member(member));
+            break;
+            case "favorited":favorited=json_obj.get_boolean_member(member);
+            break;
+            case "id_str":id_str=json_obj.get_string_member(member);
+            break;
+            case "in_reply_to_status_id_str":in_reply_to_status_id=json_obj.get_string_member(member);
+            break;
+            case "retweeted":retweeted=json_obj.get_boolean_member(member);
+            break;
+            case "source":parse_source(json_obj.get_string_member(member));
+            break;
+            case "entities":
+            case "extended_entities":
+            //entitiesの解析
+            Json.Object entities_obj=json_obj.get_object_member(member);
+            foreach(string entities_member in entities_obj.get_members()){
+              switch(entities_member){
+                case "media":parse_media(entities_obj.get_array_member(entities_member));
+                break;
+                case "urls":parse_urls(entities_obj.get_array_member(entities_member));
+                break;
+              }
+            }
+            break;
+            case "text":
+            text=json_obj.get_string_member(member);
+            if(my_screen_name!=null&&text.contains(my_screen_name)){
+              tweet_type=TweetType.REPLY;
+            }
+            //debug
+            if(text.contains("#debug")){
+              //print("%s\n",json_str);
+            }
+            break;
+            case "user":
+            //userの解析
+            Json.Object user_obj=json_obj.get_object_member(member);
+            foreach(string user_member in user_obj.get_members()){
+              switch(user_member){
+                case "name":name=parse_name(user_obj.get_string_member(user_member));
+                break;
+                case "screen_name":
+                screen_name=user_obj.get_string_member(user_member);
+                if(my_screen_name==screen_name){
+                  tweet_type=TweetType.MINE;
+                }
+                break;
+                case "profile_image_url":profile_image_url=user_obj.get_string_member(user_member);
+                break;
+                case "protected":account_is_protected=user_obj.get_boolean_member(user_member);
+                break;
+              }
+            }
+            break;
+          }
+        }
+      }
+    }
+    
+    public ParsedJsonObj.from_string(string json_str,string? screen_name){
       //json_obj
       Json.Parser json_parser=new Json.Parser();
       try{
         json_parser.load_from_data(json_str);
-        Json.Node json_node=json_parser.get_root();
-        if(json_node!=null){
-          Json.Object json_obj=json_node.get_object();
-          //json_objが取得できればtype変更
-          type=ParsedJsonObjType.TWEET;
-          
-          //jsonを解析
-          foreach(string member in json_obj.get_members()){
-            switch(member){
-              //deleteの解析.json_objはdelete.statusから取得
-              case "delete":
-              type=ParsedJsonObjType.DELETE;
-              json_obj=(json_obj.get_object_member(member)).get_object_member("status");
-              break;
-              //eventの解析.json_objはtargetから取得
-              case "event":
-              type=ParsedJsonObjType.EVENT;
-              json_obj=json_obj.get_object_member("target");
-              break;
-              //friendsの解析(現状無視.そのうち書くかも)
-              case "friends":
-              type=ParsedJsonObjType.FRIENDS;
-              return;
-              //retweetの解析.json_objはretweet_statusから取得
-              case "retweeted_status":
-              tweet_type=TweetType.RETWEET;
-              foreach(string retweet_member in json_obj.get_members()){
-                switch(retweet_member){
-                  case "retweeted_status":json_obj=json_obj.get_object_member(retweet_member);
-                  break;
-                  case "user":
-                  Json.Object rt_user_obj=json_obj.get_object_member(retweet_member);
-                  foreach(string user_member in rt_user_obj.get_members()){
-                    switch(user_member){
-                      case "name":rt_name=parse_name(rt_user_obj.get_string_member(user_member));
-                      break;
-                      case "profile_image_url":rt_profile_image_url=rt_user_obj.get_string_member(user_member);
-                      break;
-                      case "screen_name":
-                      if((rt_screen_name=rt_user_obj.get_string_member(user_member))==my_screen_name){
-                        retweeted=true;
-                      }
-                      break;
-                    }
-                  }
-                  break;
-                }
-              }
-              break;
-            }
-          }
-          
-          foreach(string member in json_obj.get_members()){
-            switch(member){
-              case "created_at":parse_created_at(json_obj.get_string_member(member));
-              break;
-              case "favorited":favorited=json_obj.get_boolean_member(member);
-              break;
-              case "id_str":id_str=json_obj.get_string_member(member);
-              break;
-              case "in_reply_to_status_id_str":in_reply_to_status_id=json_obj.get_string_member(member);
-              break;
-              case "retweeted":retweeted=json_obj.get_boolean_member(member);
-              break;
-              case "source":parse_source(json_obj.get_string_member(member));
-              break;
-              case "entities":
-              case "extended_entities":
-              //entitiesの解析
-              Json.Object entities_obj=json_obj.get_object_member(member);
-              foreach(string entities_member in entities_obj.get_members()){
-                switch(entities_member){
-                  case "media":parse_media(entities_obj.get_array_member(entities_member));
-                  break;
-                  case "urls":parse_urls(entities_obj.get_array_member(entities_member));
-                  break;
-                }
-              }
-              break;
-              case "text":
-              text=json_obj.get_string_member(member);
-              if(my_screen_name!=null&&text.contains(my_screen_name)){
-                tweet_type=TweetType.REPLY;
-              }
-              //debug
-              if(text.contains("#debug")){
-                print("%s\n",json_str);
-              }
-              break;
-              case "user":
-              //userの解析
-              Json.Object user_obj=json_obj.get_object_member(member);
-              foreach(string user_member in user_obj.get_members()){
-                switch(user_member){
-                  case "name":name=parse_name(user_obj.get_string_member(user_member));
-                  break;
-                  case "screen_name":
-                  screen_name=user_obj.get_string_member(user_member);
-                  if(my_screen_name==screen_name){
-                    tweet_type=TweetType.MINE;
-                  }
-                  break;
-                  case "profile_image_url":profile_image_url=user_obj.get_string_member(user_member);
-                  break;
-                  case "protected":account_is_protected=user_obj.get_boolean_member(user_member);
-                  break;
-                }
-              }
-              break;
-            }
-          }
-        }
+        this(json_parser.get_root(),screen_name);
       }catch(Error e){
-        print("%s\n",e.message);
+        print("Error %s\n",e.message);
       }
     }
     //created_atのparse
