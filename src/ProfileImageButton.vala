@@ -2,6 +2,7 @@ using Gdk;
 using Gtk;
 
 using ImageUtil;
+using TwitterUtil;
 
 class ProfileImageButton:ImageButton{
   private weak Config _config;
@@ -29,7 +30,7 @@ class ProfileImageButton:ImageButton{
     return true;
   }
   
-  public ProfileImageButton(string screen_name,string profile_image_url,Config config,SignalPipe signal_pipe){
+  public ProfileImageButton(User user,Config config,SignalPipe signal_pipe){
     _config=config;
     _signal_pipe=signal_pipe;
     
@@ -49,7 +50,7 @@ class ProfileImageButton:ImageButton{
     }catch(Error e){
       print("IconTheme Error : %s\n",e.message);
     }
-    get_pixbuf_async.begin(_config.cache_dir_path,screen_name,profile_image_url,48,_config.profile_image_hash_table,(obj,res)=>{
+    get_pixbuf_async.begin(_config.cache_dir_path,user.screen_name,user.profile_image_url,48,_config.profile_image_hash_table,(obj,res)=>{
       image.set_from_pixbuf(get_pixbuf_async.end(res));
       profile_image_loaded=true;
     });

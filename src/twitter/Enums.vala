@@ -9,16 +9,30 @@ namespace TwitterUtil{
     TWEET;
   }
   
-  //eventのtype
+  //eventのtype.UNKNOWNは暫定
   public enum EventType{
-    FAVORITE;
+    ACCESS_REVOKED,
+    BLOCK,
+    UNBLOCK,
+    FAVORITE,
+    UNFAVORITE,
+    FOLLOW,
+    UNFOLLOW,
+    LIST_CREATED,
+    LIST_DESTROYED,
+    LIST_UPDATED,
+    LIST_MEMBER_ADDED,
+    LIST_MEMBER_REMOVED,
+    LIST_USER_SUBSCRIBED,
+    LIST_USER_UNSUBSCRIBED,
+    UNKNOWN,
+    USER_UPDATE;
   }
   
   //tweetのtype
   public enum TweetType{
-    MINE,
     NORMAL,
     REPLY,
-    RETWEET;
+    RETWEET,
   }
 }

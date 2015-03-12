@@ -9,7 +9,6 @@ using TwitterUtil;
 class InReplyDrawingBox:DrawingBox{
   private ParsedJsonObj in_reply_parsed_json_obj;
   private Surface image_surface;
-  private bool profile_image_loaded=false;
   
   //drawのcallback(override)
   protected override bool drawing_area_draw_cb(Context context){
@@ -44,34 +43,31 @@ class InReplyDrawingBox:DrawingBox{
   public InReplyDrawingBox(Config config,SignalPipe signal_pipe){
     base(config,signal_pipe);
   }
-    
+  
   //reply元のツイートを取得
   public bool draw_tweet(Account account,string in_reply_to_status_id){
     string json_str=statuses_show(account,in_reply_to_status_id);
     if(json_str!=null){
       in_reply_parsed_json_obj=new ParsedJsonObj.from_string(json_str,null);
       
+      //load中の画像のRotateSurface
+      rotate_surface_run(24);
       //profile_image_pixbufの取得
-      try{
-        //load中の画像のRotateSurface
-        RotateSurface rotate_surface=new RotateSurface(_config.icon_theme.load_icon(LOADING_ICON,24,IconLookupFlags.NO_SVG));
-        rotate_surface.run();
-        rotate_surface.update.connect((surface)=>{
-          if(!profile_image_loaded){
-            image_surface=surface;
-          }
-          //再描画
-          drawing_area.queue_draw();    
-          return !profile_image_loaded;
-        });
-      }catch(Error e){
-        print("IconTheme Error : %s\n",e.message);
-      }
-      get_pixbuf_async.begin(_config.cache_dir_path,in_reply_parsed_json_obj.screen_name,in_reply_parsed_json_obj.profile_image_url,24,_config.profile_image_hash_table,(obj,res)=>{
+      get_pixbuf_async.begin(_config.cache_dir_path,in_reply_parsed_json_obj.user.screen_name,in_reply_parsed_json_obj.user.profile_image_url,24,_config.profile_image_hash_table,(obj,res)=>{
         image_surface=cairo_surface_create_from_pixbuf(get_pixbuf_async.end(res),1,null);
         profile_image_loaded=true;
         //再描画
         drawing_area.queue_draw();
+      });
+      
+      //シグナルハンドラ
+      rotate_surface.update.connect((surface)=>{
+        if(!profile_image_loaded){
+          image_surface=surface;
+        }
+        //再描画
+        drawing_area.queue_draw();    
+        return !profile_image_loaded;
       });
       return true;
     }else{

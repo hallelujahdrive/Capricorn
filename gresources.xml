@@ -10,11 +10,11 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/main_window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/media_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/media_window.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/node.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/oauth_window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/post_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/settings_window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/tl_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/tl_settings_page.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/tweet_node.ui</file>
   </gresource>
 </gresources>

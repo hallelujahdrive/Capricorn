@@ -3,10 +3,8 @@ using Json;
 namespace TwitterUtil{
   public class ParsedJsonObj{
     //メンバ
-    public string name;
-    public string screen_name;
-    public string profile_image_url;
-    public bool account_is_protected;
+    public User user;
+    public User sub_user;
     
     public string text;
     public string source_label;
@@ -15,18 +13,16 @@ namespace TwitterUtil{
     
     public media[] media_array;
     public urls[] urls_array;
-    
-    public string rt_name;
-    public string rt_screen_name;
-    public string rt_profile_image_url;
-    
+        
     public string? in_reply_to_status_id;
     
     public bool retweeted;
     public bool favorited;
+    
+    public bool is_mine=false;
         
     public ParsedJsonObjType type=ParsedJsonObjType.NULL;
-    public EventType event_type;
+    public EventType? event_type;
     public TweetType tweet_type=TweetType.NORMAL;
     
     public DateTime created_at;
@@ -38,48 +34,68 @@ namespace TwitterUtil{
         type=ParsedJsonObjType.TWEET;
         
         //jsonを解析
-        foreach(string member in json_obj.get_members()){
-          switch(member){
-            //deleteの解析.json_objはdelete.statusから取得
-            case "delete":
-            type=ParsedJsonObjType.DELETE;
-            json_obj=(json_obj.get_object_member(member)).get_object_member("status");
+        if(json_obj.has_member("delete")){
+          //deleteの解析.json_objはdelete.statusから取得
+          type=ParsedJsonObjType.DELETE;
+          json_obj=(json_obj.get_object_member("delete")).get_object_member("status");
+        }else if(json_obj.has_member("event")){
+          //eventの解析.json_objはtargetから取得
+          type=ParsedJsonObjType.EVENT;
+          switch(json_obj.get_string_member("event")){
+            case "access_revoked":event_type=EventType.ACCESS_REVOKED;
             break;
-            //eventの解析.json_objはtargetから取得
-            case "event":
-            type=ParsedJsonObjType.EVENT;
-            json_obj=json_obj.get_object_member("target");
+            case "block":event_type=EventType.BLOCK;
             break;
-            //friendsの解析(現状無視.そのうち書くかも)
-            case "friends":
-            type=ParsedJsonObjType.FRIENDS;
-            return;
-            //retweetの解析.json_objはretweet_statusから取得
-            case "retweeted_status":
-            tweet_type=TweetType.RETWEET;
-            foreach(string retweet_member in json_obj.get_members()){
-              switch(retweet_member){
-                case "retweeted_status":json_obj=json_obj.get_object_member(retweet_member);
-                break;
-                case "user":
-                Json.Object rt_user_obj=json_obj.get_object_member(retweet_member);
-                foreach(string user_member in rt_user_obj.get_members()){
-                  switch(user_member){
-                    case "name":rt_name=parse_name(rt_user_obj.get_string_member(user_member));
-                    break;
-                    case "profile_image_url":rt_profile_image_url=rt_user_obj.get_string_member(user_member);
-                    break;
-                    case "screen_name":
-                    if((rt_screen_name=rt_user_obj.get_string_member(user_member))==my_screen_name){
-                      retweeted=true;
-                    }
-                    break;
-                  }
-                }
-                break;
-              }
+            case "unblock":event_type=EventType.UNBLOCK;
+            break;
+            case "favorite":event_type=EventType.FAVORITE;
+            break;
+            case "unfavorite":event_type=EventType.UNFAVORITE;
+            break;
+            case "follow":event_type=EventType.FOLLOW;
+            break;
+            case "unfollow":event_type=EventType.UNFOLLOW;
+            break;
+            case "list_created":event_type=EventType.LIST_CREATED;
+            break;
+            case "list_destroyed":event_type=EventType.LIST_DESTROYED;
+            break;
+            case "list_updated":event_type=EventType.LIST_UPDATED;
+            break;
+            case "list_member_added":event_type=EventType.LIST_MEMBER_ADDED;
+            break;
+            case "list_member_removed":event_type=EventType.LIST_MEMBER_REMOVED;
+            break;
+            case "list_user_subscribed":event_type=EventType.LIST_USER_SUBSCRIBED;
+            break;
+            case "list_user_unsubscribed":event_type=EventType.LIST_USER_UNSUBSCRIBED;
+            break;
+            case "user_update":event_type=EventType.USER_UPDATE;
+            break;
+            default:event_type=EventType.UNKNOWN;
+            break;
+          }
+          //sub_userの取得
+          sub_user=new User();
+          parse_user(json_obj.get_object_member("source"),sub_user,null);
+          json_obj=json_obj.get_object_member("target_object");
+        }else if(json_obj.has_member("friends")){
+          //friendsの解析(現状無視.そのうち書くかも)
+          type=ParsedJsonObjType.FRIENDS;
+          return;
+        }else if(json_obj.has_member("retweeted_status")){
+          //retweetの解析.json_objはretweet_statusから取得
+          foreach(string retweet_member in json_obj.get_members()){
+            switch(retweet_member){
+              case "retweeted_status":json_obj=json_obj.get_object_member(retweet_member);
+              break;
+              case "user":
+              //userの解析
+              tweet_type=TweetType.RETWEET;
+              sub_user=new User();
+              parse_user(json_obj.get_object_member(retweet_member),sub_user,null);
+              break;
             }
-            break;
           }
         }
         
@@ -112,33 +128,14 @@ namespace TwitterUtil{
             break;
             case "text":
             text=json_obj.get_string_member(member);
-            if(my_screen_name!=null&&text.contains(my_screen_name)){
+            if(my_screen_name!=null&&text.contains(my_screen_name)&&tweet_type!=TweetType.RETWEET){
               tweet_type=TweetType.REPLY;
             }
-            //debug
-            if(text.contains("#debug")){
-              //print("%s\n",json_str);
-            }
             break;
-            case "user":
             //userの解析
-            Json.Object user_obj=json_obj.get_object_member(member);
-            foreach(string user_member in user_obj.get_members()){
-              switch(user_member){
-                case "name":name=parse_name(user_obj.get_string_member(user_member));
-                break;
-                case "screen_name":
-                screen_name=user_obj.get_string_member(user_member);
-                if(my_screen_name==screen_name){
-                  tweet_type=TweetType.MINE;
-                }
-                break;
-                case "profile_image_url":profile_image_url=user_obj.get_string_member(user_member);
-                break;
-                case "protected":account_is_protected=user_obj.get_boolean_member(user_member);
-                break;
-              }
-            }
+            case "user":
+            user=new User();
+            parse_user(json_obj.get_object_member(member),user,my_screen_name);
             break;
           }
         }
@@ -172,6 +169,7 @@ namespace TwitterUtil{
         print("%s\n",e.message);
       }
     }
+    
     //nameの&の置換(やらないとmark upでコケる
     private string parse_name(string get_name){
       string name_regex=null;
@@ -223,6 +221,25 @@ namespace TwitterUtil{
             }
             break;
           }
+        }
+      }
+    }
+    
+    //userの解析
+    private void parse_user(Json.Object user_obj,User user,string? my_screen_name){
+      foreach(string user_member in user_obj.get_members()){
+        switch(user_member){
+          case "name":user.name=parse_name(user_obj.get_string_member(user_member));
+          break;
+          case "screen_name":
+          user.screen_name=user_obj.get_string_member(user_member);
+          //自分のtweetかどうか
+          is_mine=my_screen_name==user.screen_name;
+          break;
+          case "profile_image_url":user.profile_image_url=user_obj.get_string_member(user_member);
+          break;
+          case "protected":user.account_is_protected=user_obj.get_boolean_member(user_member);
+          break;
         }
       }
     }

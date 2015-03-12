@@ -17,9 +17,6 @@ class TLNode{
   private weak SignalPipe _signal_pipe;
   
   private UserStream user_stream;
-  
-  //json用
-  private ParsedJsonObj parsed_json_obj;
     
   //loading用
   private bool profile_image_loaded=false;
@@ -65,24 +62,31 @@ class TLNode{
     user_stream.run();
     
     //シグナルハンドラ
-    user_stream.callback_json.connect((json_str)=>{
-      parsed_json_obj=new ParsedJsonObj.from_string(json_str,_account.my_screen_name);
+    user_stream.callback_json.connect((parsed_json_obj)=>{
       switch(parsed_json_obj.type){
         //tweetの削除の処理
         case ParsedJsonObjType.DELETE:signal_pipe.delete_tweet_node_event(parsed_json_obj.id_str);
         break;
         //eventの処理
         case ParsedJsonObjType.EVENT:
+        switch(parsed_json_obj.event_type){
+          case TwitterUtil.EventType.FAVORITE:event_update(parsed_json_obj);
+          break;
+        }
         break;
         //tweetの処理
         case ParsedJsonObjType.TWEET:
-        //homeのTweetNode
-        TweetNode tweet_node=new TweetNode(parsed_json_obj,_account,_config,signal_pipe);
+        //homeのNode
+        Node tweet_node=new Node.tweet(parsed_json_obj,_account,_config,signal_pipe);
         home_tl_page.prepend_node(tweet_node);
-        //replyの作成
-        if(parsed_json_obj.tweet_type==TweetType.REPLY){
-          TweetNode reply_node=tweet_node.copy();
-          mention_tl_page.prepend_node(reply_node);
+        switch(parsed_json_obj.tweet_type){
+          //replyの作成
+          case TweetType.REPLY:mention_tl_page.prepend_node(tweet_node.copy());
+          break;
+          //rtのNode.eventの作成
+          case TweetType.RETWEET:
+          event_update(parsed_json_obj);
+          break;
         }
         break;
       }
@@ -90,8 +94,19 @@ class TLNode{
     
     //エラー処理
     user_stream.callback_error.connect((err)=>{
-      print("UserStream Error:%s\n",err);
+      print("UserStream Error:%s\n",err.message);
       user_stream.run();
     });
+  }
+  
+  //eventの処理
+  private void event_update(ParsedJsonObj parsed_json_obj){
+    if(parsed_json_obj.is_mine){
+      if(!_signal_pipe.event_update_event(parsed_json_obj)){
+        event_page.prepend_node(new Node.event(parsed_json_obj,_account,_config,_signal_pipe));
+        //シグナルハンドラだけでどうにかしようと言う魂胆
+        _signal_pipe.event_update_event(parsed_json_obj);
+      }
+    }
   }
 }

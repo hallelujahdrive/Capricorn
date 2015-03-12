@@ -10,7 +10,7 @@ public class SignalPipe{
   public signal void timeline_nodes_is_changed();
   
   //リプライの要求
-  public signal void reply_request_event(TweetNode tweet_node,int my_list_id);
+  public signal void reply_request_event(Node tweet_node,int my_list_id);
   
   //post
   public signal void post_button_click_event();
@@ -19,8 +19,11 @@ public class SignalPipe{
   public signal void url_shorting_button_click_event();
 
   //media_urlがクリックされた
-  public signal void media_url_click_event(TweetNode tweet_node,media[] media_array);
+  public signal void media_url_click_event(Node tweet_node,media[] media_array);
   
   //delete
   public signal void delete_tweet_node_event(string id_str);
+  
+  //event
+  public signal bool event_update_event(ParsedJsonObj parsed_json_obj);
 }

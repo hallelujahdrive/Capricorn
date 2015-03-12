@@ -27,7 +27,7 @@ class EventNotifyPage:Frame{
     if(_tl_node_array.length>0&&selected_account_num<=_tl_node_array.length-1){
       //子供を殺す
       if(main_grid.get_children().length()>=2){
-        main_grid.remove_column(1);
+        main_grid.remove_row(1);
       }
       _tl_node_array.index(selected_account_num).event_page.unparent();
       main_grid.attach(_tl_node_array.index(selected_account_num).event_page,0,1,1,1);

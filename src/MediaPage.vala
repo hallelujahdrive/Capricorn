@@ -53,7 +53,7 @@ public class MediaPage:Frame{
     this.destroy();
   }
   
-  public MediaPage(TweetNode tweet_node,media[] media_array){
+  public MediaPage(Node tweet_node,media[] media_array){
     _media_array=media_array;
     
     tweet_node_box.add(tweet_node);

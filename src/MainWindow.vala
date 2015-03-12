@@ -11,7 +11,7 @@ public class MainWindow:ApplicationWindow{
   private weak SignalPipe signal_pipe;
 
   //Accountの配列
-  private Array<Account> account_array;
+  private unowned Array<Account> account_array;
 
   //TLNodeの配列
   private Array<TLNode> tl_node_array=new Array<TLNode>();
@@ -88,7 +88,7 @@ public class MainWindow:ApplicationWindow{
     //TLNotebookの削除
     if(settings_window.account_is_changed){
       for(int i=0;i<tl_node_array.length;){
-        if(tl_node_array.index(i).my_id!=account_array.index(i).my_id){
+        if(i>=account_array.length||tl_node_array.index(i).my_id!=account_array.index(i).my_id){
           tl_node_array.remove_index(i);
           home_tl_notebook.remove_page(i);
           mention_tl_notebook.remove_page(i);

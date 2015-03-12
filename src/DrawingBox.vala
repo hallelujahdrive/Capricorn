@@ -2,11 +2,18 @@ using Cairo;
 using Gdk;
 using Gtk;
 
+using ImageUtil;
+
 [GtkTemplate(ui="/org/gtk/capricorn/ui/drawing_box.ui")]
 class DrawingBox:EventBox{
   protected weak Config _config;
   protected weak SignalPipe _signal_pipe;
+ 
   protected Pango.Layout layout;
+  protected RotateSurface rotate_surface;
+  
+  //rotate_surfaceの戻り値
+  protected bool profile_image_loaded=false;
   
   private RGBA clear=RGBA();
   
@@ -36,6 +43,15 @@ class DrawingBox:EventBox{
     this.override_background_color(StateFlags.NORMAL,clear);
     drawing_area.override_background_color(StateFlags.NORMAL,clear);
 
+  }
+  
+  protected void rotate_surface_run(int size){
+    try{
+      rotate_surface=new RotateSurface(_config.icon_theme.load_icon(LOADING_ICON,size,IconLookupFlags.NO_SVG));
+      rotate_surface.run();
+    }catch(Error e){
+      print("IconTheme Error : %s\n",e.message);
+    }
   }
    
   protected void context_set_source_rgba(Context context,RGBA rgba){

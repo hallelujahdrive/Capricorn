@@ -50,21 +50,21 @@ class TLPage:ScrolledWindow{
   //TLNodeを取得
   private void init(Array<ParsedJsonObj> parsed_json_obj_array,Account account){
     for(int i=0;i<parsed_json_obj_array.length;i++){
-      TweetNode tweet_node=new TweetNode(parsed_json_obj_array.index(i),account,_config,_signal_pipe);
+      Node tweet_node=new Node.tweet(parsed_json_obj_array.index(i),account,_config,_signal_pipe);
       this.add_node(tweet_node);
     }
   }
   
-  //TweetNodeの追加(append)
-  public void add_node(TweetNode tweet_node){
-    tl_list_box.add(tweet_node);
+  //Nodeの追加(append)
+  public void add_node(Node node){
+    tl_list_box.add(node);
     node_count++;
   }
   
-  //TweetNodeの追加(prepend)
-  public void prepend_node(TweetNode tweet_node){
-    tl_list_box.prepend(tweet_node);
-    //古いTweetNodeの削除
+  //Nodeの追加(prepend)
+  public void prepend_node(Node node){
+    tl_list_box.prepend(node);
+    //古いNodeの削除
     if(node_count==_config.tl_node_count){
       //ListBoxRowの取得
       tl_list_box.remove(tl_list_box.get_row_at_index(_config.tl_node_count));
@@ -73,7 +73,7 @@ class TLPage:ScrolledWindow{
     }
   }
   
-  //TweetNodeの削除
+  //Nodeの削除
   private void delete_nodes(){
     while(node_count!=_config.tl_node_count){
       //ListBoxRowの取得

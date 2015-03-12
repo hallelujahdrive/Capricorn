@@ -53,7 +53,6 @@ class IconButton:ImageButton{
     _on_icon=on_icon;
     _icon_size=icon_size;
     
-    
     image.set_from_icon_name(_default_icon,_icon_size);
   }
 }

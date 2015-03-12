@@ -15,7 +15,7 @@ class PostPage:Frame{
   private IconButton url_shorting_button;
   private AccountComboBox account_combo_box;
   
-  private TweetNode _tweet_node;
+  private Node _tweet_node;
   
   //tweet_text_view内の文字数
   private static int chars_count=140;

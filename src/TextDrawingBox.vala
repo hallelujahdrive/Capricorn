@@ -20,7 +20,7 @@ class TextDrawingBox:DrawingBox{
     //media_arrayから検索
     for(int i=0;i<_parsed_json_obj.media_array.length;i++){
       if(index_>=_parsed_json_obj.media_array[i].start_indices&&index_<_parsed_json_obj.media_array[i].end_indices){
-        _signal_pipe.media_url_click_event(((TweetNode)this.get_parent()).copy(),_parsed_json_obj.media_array);
+        _signal_pipe.media_url_click_event(((Node)this.get_parent()).copy(),_parsed_json_obj.media_array);
         break;
       }
     }

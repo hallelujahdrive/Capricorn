@@ -14,6 +14,7 @@ sources = \
 			Config.vala \
 			DisplaySettingsPage.vala \
 			DrawingBox.vala \
+			EventDrawingBox.vala \
 			EventNotifyPage.vala \
 			FontProfile.vala \
 			FooterDrawingBox.vala \
@@ -24,6 +25,7 @@ sources = \
 			MainWindow.vala \
 			MediaPage.vala \
 			MediaWindow.vala \
+			Node.vala \
 			OAuth.vala \
 			PhotoBox.vala \
 			PostPage.vala \
@@ -35,7 +37,6 @@ sources = \
 			TLNode.vala \
 			TLPage.vala \
 			TLSettingsPage.vala \
-			TweetNode.vala \
 			bitly/ShortingURL.vala \
 			bitly/Strings.vala \
 			sqlite/CountRecords.vala \
@@ -80,6 +81,7 @@ sources = \
 			twitter/StatusesUpdate.vala \
 			twitter/Strings.vala \
 			twitter/Struct.vala \
+			twitter/User.vala \
 			twitter/UserStream.vala
 
 capricorn.vapi libcapricorn_la_vala.stamp capricorn.h : $(sources)

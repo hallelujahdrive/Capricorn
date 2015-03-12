@@ -6,7 +6,7 @@ using ImageUtil;
 using TwitterUtil;
 
 class HeaderDrawingBox:DrawingBox{
-  private weak ParsedJsonObj _parsed_json_obj;
+  private unowned User _user;
   
   private StringBuilder name_sb=new StringBuilder();
   
@@ -30,25 +30,25 @@ class HeaderDrawingBox:DrawingBox{
     layout.get_pixel_size(out icon_pos,out height);
     
     //protected_icon_pixbufの描画
-    if(_parsed_json_obj.account_is_protected){
+    if(_user.account_is_protected){
       //描画位置の調整(spacer(5px))
       context.set_source_surface(image_surface,icon_pos+5,0);
       context.paint();
     }
     height/=layout.get_line_count();
-    height=!_parsed_json_obj.account_is_protected||height>16?height:16;
+    height=!_user.account_is_protected||height>16?height:16;
     layout.set_height(height);
     this.set_size_request(-1,height);
     return true;
   }
   
-  public HeaderDrawingBox(ParsedJsonObj parsed_json_obj,Config config,SignalPipe signal_pipe){
+  public HeaderDrawingBox(User user,Config config,SignalPipe signal_pipe){
     base(config,signal_pipe);
     
-    _parsed_json_obj=parsed_json_obj;
+    _user=user;
     
-    //IconThemeを作成
-    if(_parsed_json_obj.account_is_protected){
+    //iconを取得
+    if(_user.account_is_protected){
       try{
         Screen screen=Screen.get_default();
         image_surface=_config.icon_theme.load_surface(PROTECTED_ICON,16,1,screen.get_active_window(),IconLookupFlags.NO_SVG);
@@ -59,9 +59,9 @@ class HeaderDrawingBox:DrawingBox{
     
     //表示する文字列
     name_sb.append("<b>@");
-    name_sb.append(_parsed_json_obj.screen_name);
+    name_sb.append(_user.screen_name);
     name_sb.append("</b> ");
-    name_sb.append(_parsed_json_obj.name);
+    name_sb.append(_user.name);
   }
   
   //color,descriptionの設定
