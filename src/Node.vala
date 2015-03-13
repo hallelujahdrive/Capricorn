@@ -85,7 +85,7 @@ public class Node:Grid{
     //in_reply_d_boxの追加
     if(_parsed_json_obj.in_reply_to_status_id!=null){
       var in_reply_drawing_box=new InReplyDrawingBox(_config,_signal_pipe);
-      if(in_reply_drawing_box.draw_tweet(_account,parsed_json_obj.in_reply_to_status_id)){
+      if(in_reply_drawing_box.draw_tweet(_account,_parsed_json_obj.in_reply_to_status_id)){
         this.attach(in_reply_drawing_box,1,5,1,1);
       }
     }
@@ -120,7 +120,7 @@ public class Node:Grid{
   //eventの作成
   public Node.event(ParsedJsonObj parsed_json_obj,Account account,Config config,SignalPipe signal_pipe){
     this(parsed_json_obj,account,config,signal_pipe);
-    
+    //print("%u\n",this.ref_count);
     //EventDrawingBoxの作成
     var retweet_event_drawing_box=new EventDrawingBox.retweet(_parsed_json_obj,_config,_signal_pipe);
     var favorite_event_drawing_box=new EventDrawingBox.favorite(_parsed_json_obj,_config,_signal_pipe);
@@ -132,7 +132,7 @@ public class Node:Grid{
     //シグナルハンドラ
     _signal_pipe.event_update_event.connect((parsed_json_obj)=>{
       if(parsed_json_obj.id_str==id_str){
-        event_created_at=_parsed_json_obj.event_created_at.to_unix();
+        event_created_at=parsed_json_obj.event_created_at.to_unix();
         if(parsed_json_obj.type==ParsedJsonObjType.EVENT){
           favorite_event_drawing_box.add_user(parsed_json_obj.sub_user);
         }else{
