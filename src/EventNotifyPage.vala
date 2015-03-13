@@ -29,11 +29,12 @@ class EventNotifyPage:Frame{
       if(main_grid.get_children().length()>=2){
         main_grid.remove_row(1);
       }
-      _tl_node_array.index(selected_account_num).event_page.unparent();
-      main_grid.attach(_tl_node_array.index(selected_account_num).event_page,0,1,1,1);
+      _tl_node_array.index(selected_account_num).event_notify_list_box.unparent();
+      main_grid.attach(_tl_node_array.index(selected_account_num).event_notify_list_box,0,1,1,1);
     }
   }
   
+  //初期化用noedの取得
   public void init(int selected_account_num){
     account_combo_box_changed(selected_account_num);
   }

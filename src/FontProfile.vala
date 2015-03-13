@@ -1,6 +1,7 @@
 using Gdk;
 using Pango;
 
+[Compact]
 public class FontProfile{
   //FontDescription
   public FontDescription name_font_desc=new FontDescription();

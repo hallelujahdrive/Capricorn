@@ -25,6 +25,7 @@ namespace TwitterUtil{
     public EventType? event_type;
     public TweetType tweet_type=TweetType.NORMAL;
     
+    public DateTime event_created_at;
     public DateTime created_at;
     
     public ParsedJsonObj(Json.Node? json_node,string? my_screen_name){
@@ -41,43 +42,53 @@ namespace TwitterUtil{
         }else if(json_obj.has_member("event")){
           //eventの解析.json_objはtargetから取得
           type=ParsedJsonObjType.EVENT;
-          switch(json_obj.get_string_member("event")){
-            case "access_revoked":event_type=EventType.ACCESS_REVOKED;
-            break;
-            case "block":event_type=EventType.BLOCK;
-            break;
-            case "unblock":event_type=EventType.UNBLOCK;
-            break;
-            case "favorite":event_type=EventType.FAVORITE;
-            break;
-            case "unfavorite":event_type=EventType.UNFAVORITE;
-            break;
-            case "follow":event_type=EventType.FOLLOW;
-            break;
-            case "unfollow":event_type=EventType.UNFOLLOW;
-            break;
-            case "list_created":event_type=EventType.LIST_CREATED;
-            break;
-            case "list_destroyed":event_type=EventType.LIST_DESTROYED;
-            break;
-            case "list_updated":event_type=EventType.LIST_UPDATED;
-            break;
-            case "list_member_added":event_type=EventType.LIST_MEMBER_ADDED;
-            break;
-            case "list_member_removed":event_type=EventType.LIST_MEMBER_REMOVED;
-            break;
-            case "list_user_subscribed":event_type=EventType.LIST_USER_SUBSCRIBED;
-            break;
-            case "list_user_unsubscribed":event_type=EventType.LIST_USER_UNSUBSCRIBED;
-            break;
-            case "user_update":event_type=EventType.USER_UPDATE;
-            break;
-            default:event_type=EventType.UNKNOWN;
-            break;
+          foreach(string event_member in json_obj.get_members()){
+            switch(event_member){
+              case "created_at":event_created_at=parse_created_at(json_obj.get_string_member(event_member));
+              break;
+              case "event":
+              switch(json_obj.get_string_member(event_member)){
+                case "access_revoked":event_type=EventType.ACCESS_REVOKED;
+                break;
+                case "block":event_type=EventType.BLOCK;
+                break;
+                case "unblock":event_type=EventType.UNBLOCK;
+                break;
+                case "favorite":event_type=EventType.FAVORITE;
+                break;
+                case "unfavorite":event_type=EventType.UNFAVORITE;
+                break;
+                case "follow":event_type=EventType.FOLLOW;
+                break;
+                case "unfollow":event_type=EventType.UNFOLLOW;
+                break;
+                case "list_created":event_type=EventType.LIST_CREATED;
+                break;
+                case "list_destroyed":event_type=EventType.LIST_DESTROYED;
+                break;
+                case "list_updated":event_type=EventType.LIST_UPDATED;
+                break;
+                case "list_member_added":event_type=EventType.LIST_MEMBER_ADDED;
+                break;
+                case "list_member_removed":event_type=EventType.LIST_MEMBER_REMOVED;
+                break;
+                case "list_user_subscribed":event_type=EventType.LIST_USER_SUBSCRIBED;
+                break;
+                case "list_user_unsubscribed":event_type=EventType.LIST_USER_UNSUBSCRIBED;
+                break;
+                case "user_update":event_type=EventType.USER_UPDATE;
+                break;
+                default:event_type=EventType.UNKNOWN;
+                break;
+              }
+              break;
+              case "source":
+              //sub_userの取得
+              sub_user=new User();
+              parse_user(json_obj.get_object_member(event_member),sub_user,null); 
+              break;
+            }
           }
-          //sub_userの取得
-          sub_user=new User();
-          parse_user(json_obj.get_object_member("source"),sub_user,null);
           json_obj=json_obj.get_object_member("target_object");
         }else if(json_obj.has_member("friends")){
           //friendsの解析(現状無視.そのうち書くかも)
@@ -87,6 +98,8 @@ namespace TwitterUtil{
           //retweetの解析.json_objはretweet_statusから取得
           foreach(string retweet_member in json_obj.get_members()){
             switch(retweet_member){
+              case "created_at":event_created_at=parse_created_at(json_obj.get_string_member(retweet_member));
+              break;
               case "retweeted_status":json_obj=json_obj.get_object_member(retweet_member);
               break;
               case "user":
@@ -101,7 +114,7 @@ namespace TwitterUtil{
         
         foreach(string member in json_obj.get_members()){
           switch(member){
-            case "created_at":parse_created_at(json_obj.get_string_member(member));
+            case "created_at":created_at=parse_created_at(json_obj.get_string_member(member));
             break;
             case "favorited":favorited=json_obj.get_boolean_member(member);
             break;
@@ -153,10 +166,11 @@ namespace TwitterUtil{
       }
     }
     //created_atのparse
-    private void parse_created_at(string get_created_at){
+    private DateTime? parse_created_at(string created_at_str){
+      DateTime created_at=null;
       try{  //セイキヒョウゲンカッコバクショウで投稿日時を解析
         var created_at_regex_replace=new Regex("(:)");
-        string created_at_regex=created_at_regex_replace.replace(get_created_at,-1,0," ");
+        string created_at_regex=created_at_regex_replace.replace(created_at_str,-1,0," ");
         string[] created_at_split=created_at_regex.split(" ");
         int month=month_str_to_num(created_at_split[1]);
         int day=int.parse(created_at_split[2]);
@@ -168,6 +182,7 @@ namespace TwitterUtil{
       }catch(Error e){
         print("%s\n",e.message);
       }
+      return created_at;
     }
     
     //nameの&の置換(やらないとmark upでコケる

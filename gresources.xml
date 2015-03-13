@@ -5,6 +5,7 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/account_settings_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/display_settings_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/drawing_box.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/event_notify_settings_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/event_notify_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/image_button.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/main_window.ui</file>
@@ -13,8 +14,8 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/node.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/oauth_window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/post_page.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/scrolled_list_box.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/settings_window.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/tl_page.ui</file>
-    <file compressed="true" preprocess="xml-stripblanks">ui/tl_settings_page.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/time_line_settings_page.ui</file>
   </gresource>
 </gresources>

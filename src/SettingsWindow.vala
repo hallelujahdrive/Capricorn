@@ -13,7 +13,8 @@ class SettingsWindow:Dialog{
   
   private AccountSettingsPage account_settings_page;
   private DisplaySettingsPage display_settings_page;
-  private TLSettingsPage tl_settings_page;
+  private EventNotifySettingsPage event_notify_settings_page;
+  private TimeLineSettingsPage time_line_settings_page;
   
   public bool account_is_changed=false;
   
@@ -59,13 +60,22 @@ class SettingsWindow:Dialog{
       _signal_pipe.color_change_event();
     }
     
-    //ツイートの取得数の更新
-    if(tl_settings_page.changed){
-      tl_settings_page.set_timeline_nodes();
+    //eventの表示数の更新
+    if(event_notify_settings_page.changed){
+      event_notify_settings_page.get_values();
       //アップデート
-      update_timeline_node_count(_config.init_node_count,_config.tl_node_count,_config.db);
+      update_event_notify_settings(_config);
       //シグナルの発行
-      _signal_pipe.timeline_nodes_is_changed();
+      _signal_pipe.event_node_count_change_event();
+    }
+    
+    //nodeの表示数の更新
+    if(time_line_settings_page.changed){
+      time_line_settings_page.get_values();
+      //アップデート
+      update_time_line_settings(_config);
+      //シグナルの発行
+      _signal_pipe.time_line_node_count_change_event();
     }
     
     this.destroy();
@@ -96,11 +106,13 @@ class SettingsWindow:Dialog{
     
     account_settings_page=new AccountSettingsPage(_account_array,_config,this);
     display_settings_page=new DisplaySettingsPage(_config);
-    tl_settings_page=new TLSettingsPage(_config);
+    event_notify_settings_page=new EventNotifySettingsPage(_config);
+    time_line_settings_page=new TimeLineSettingsPage(_config);
     
     settings_notebook.append_page(account_settings_page,account_settings_page.tab);
     settings_notebook.append_page(display_settings_page,display_settings_page.tab);
-    settings_notebook.append_page(tl_settings_page,tl_settings_page.tab);
+    settings_notebook.append_page(event_notify_settings_page,event_notify_settings_page.tab);
+    settings_notebook.append_page(time_line_settings_page,time_line_settings_page.tab);
         
     //シグナルハンドラ
     this.destroy.connect(()=>{

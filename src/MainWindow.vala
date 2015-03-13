@@ -100,8 +100,8 @@ public class MainWindow:ApplicationWindow{
       for(uint i=tl_node_array.length;i<account_array.length;i++){
         TLNode tl_node=new TLNode(account_array.index(i),config,signal_pipe);
         tl_node_array.append_val(tl_node);
-        home_tl_notebook.append_page(tl_node_array.index(i).home_tl_page,tl_node_array.index(i).home_tl_page.tab);
-        mention_tl_notebook.append_page(tl_node_array.index(i).mention_tl_page,tl_node_array.index(i).mention_tl_page.tab);
+        home_tl_notebook.append_page(tl_node_array.index(i).home_time_line,tl_node_array.index(i).home_time_line.tab);
+        mention_tl_notebook.append_page(tl_node_array.index(i).mention_time_line,tl_node_array.index(i).mention_time_line.tab);
       }
       //account_cboxの再読み込み
       signal_pipe.account_array_change_event();
@@ -114,8 +114,8 @@ public class MainWindow:ApplicationWindow{
     for(int i=0;i<account_array.length;i++){
       TLNode tl_node=new TLNode(account_array.index(i),config,signal_pipe);
       tl_node_array.append_val(tl_node);
-      home_tl_notebook.append_page(tl_node_array.index(i).home_tl_page,tl_node_array.index(i).home_tl_page.tab);
-      mention_tl_notebook.append_page(tl_node_array.index(i).mention_tl_page,tl_node_array.index(i).mention_tl_page.tab);
+      home_tl_notebook.append_page(tl_node_array.index(i).home_time_line,tl_node_array.index(i).home_time_line.tab);
+      mention_tl_notebook.append_page(tl_node_array.index(i).mention_time_line,tl_node_array.index(i).mention_time_line.tab);
     }
     event_notify_page.init(0);
   }

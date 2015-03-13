@@ -19,6 +19,7 @@ public class Node:Grid{
   
   private ProfileImageButton profile_image_button;
   
+  public int64 event_created_at;
   public string id_str;
   public string screen_name;
   
@@ -30,6 +31,7 @@ public class Node:Grid{
   private Box action_box;
   
   public Node(ParsedJsonObj parsed_json_obj,Account account,Config config,SignalPipe signal_pipe){
+        
     _parsed_json_obj=parsed_json_obj;
     _account=account;
     _config=config;
@@ -127,19 +129,17 @@ public class Node:Grid{
     this.attach(favorite_event_drawing_box,1,5,1,1);
     
     //userの追加
-        
     //シグナルハンドラ
     _signal_pipe.event_update_event.connect((parsed_json_obj)=>{
       if(parsed_json_obj.id_str==id_str){
+        event_created_at=_parsed_json_obj.event_created_at.to_unix();
         if(parsed_json_obj.type==ParsedJsonObjType.EVENT){
           favorite_event_drawing_box.add_user(parsed_json_obj.sub_user);
         }else{
           //現状他にevent通知するつもり無いので.
           retweet_event_drawing_box.add_user(parsed_json_obj.sub_user);
         }
-        return true;
       }
-      return false;
     });
   }
   

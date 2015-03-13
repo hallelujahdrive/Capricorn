@@ -15,7 +15,9 @@ sources = \
 			DisplaySettingsPage.vala \
 			DrawingBox.vala \
 			EventDrawingBox.vala \
+			EventNotifyListBox.vala \
 			EventNotifyPage.vala \
+			EventNotifySettingsPage.vala \
 			FontProfile.vala \
 			FooterDrawingBox.vala \
 			HeaderDrawingBox.vala \
@@ -31,12 +33,13 @@ sources = \
 			PostPage.vala \
 			ProfileImageButton.vala \
 			RetweetDrawingBox.vala \
+			ScrolledListBox.vala \
 			SettingsWindow.vala \
 			SignalPipe.vala \
 			TextDrawingBox.vala \
+			TimeLine.vala \
+			TimeLineSettingsPage.vala \
 			TLNode.vala \
-			TLPage.vala \
-			TLSettingsPage.vala \
 			bitly/ShortingURL.vala \
 			bitly/Strings.vala \
 			sqlite/CountRecords.vala \
@@ -45,17 +48,20 @@ sources = \
 			sqlite/GetID.vala \
 			sqlite/InsertAccount.vala \
 			sqlite/InsertColor.vala \
+			sqlite/InsertEventNotifySettings.vala \
 			sqlite/InsertFont.vala \
-			sqlite/InsertTimelineNodeCount.vala \
+			sqlite/InsertTimeLineSettings.vala \
 			sqlite/Query.vala \
 			sqlite/SelecAccount.vala \
 			sqlite/SelectColor.vala \
+			sqlite/SelectEventNotifySettings.vala \
 			sqlite/SelectFont.vala \
-			sqlite/SelectTimelineNodeCount.vala \
+			sqlite/SelectTimeLineSettings.vala \
 			sqlite/UpdateAccountListID.vala \
 			sqlite/UpdateColor.vala \
+			sqlite/UpdateEventNotifySettings.vala \
 			sqlite/UpdateFont.vala \
-			sqlite/UpdateTimelineNodeCount.vala \
+			sqlite/UpdateTimeLineSettings.vala \
 			utils/DirPath.vala \
 			utils/FileUtil.vala \
 			utils/IconName.vala \

@@ -25,15 +25,17 @@ namespace SqliteUtil{
     }
     //tableが存在しなければ作る
     if(res){
-      for(int i=0;i<4;i++){
+      for(int i=0;i<5;i++){
         switch(i){
           case 0:query=CREATE_TABLE_ACCOUNT_QUERY;
           break;
           case 1:query=CREATE_TABLE_COLOR_QUERY;
           break;
-          case 2:query=CREATE_TABLE_FONT_QUERY;
+          case 2:query=CREATE_TABLE_EVENT_NOTIFY_SETTINGS;
           break;
-          case 3:query=CREATE_TABLE_TIMELINE_NODES_QUERY;
+          case 3:query=CREATE_TABLE_FONT_QUERY;
+          break;
+          case 4:query=CREATE_TABLE_TIME_LINE_SETTINGS_QUERY;
           break;
         }
         ec=db.exec(query,null,out errmsg);

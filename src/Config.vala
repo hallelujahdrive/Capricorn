@@ -17,7 +17,7 @@ public class Config{
   //アイコンのHashTable
   public HashTable<string,string?> profile_image_hash_table=new HashTable<string,string?>(str_hash,str_equal);
   //signal_pipe
-  private SignalPipe _signal_pipe;
+  private weak SignalPipe _signal_pipe;
   //font  
   public FontProfile font_profile=new FontProfile();
   
@@ -32,9 +32,11 @@ public class Config{
   
   public RGBA delete_bg_rgba=RGBA();
   
-  //ツイートの取得数
-  public int init_node_count;
-  public int tl_node_count;
+  //Nodeの取得数
+  public int init_time_line_node_count;
+  public int time_line_node_count;
+  
+  public int event_node_count;
   
   //時差
   public string datetime_format="%I:%M%P - %e %b %g";
@@ -67,7 +69,8 @@ public class Config{
     retweet_bg_rgba.parse("rgb(255,217,82)");
     mine_bg_rgba.parse("rgb(193,209,255)");
     
-    init_node_count=10;
-    tl_node_count=50;
+    init_time_line_node_count=10;
+    time_line_node_count=50;
+    event_node_count=20;
   }
 }

@@ -52,8 +52,9 @@ public class Capricorn:Gtk.Application{
       //insert
       insert_color(0,config);
       insert_font(0,config.font_profile,config.db);
-      insert_timeline_node_count(config.init_node_count,config.tl_node_count,config.db);
-      
+      insert_event_notify_settings(config);
+      insert_time_line_settings(config);
+
       can_window_open=true;
     }else{
       //テーブルが存在したら
@@ -61,8 +62,10 @@ public class Capricorn:Gtk.Application{
       select_color(0,config);
       //フォントの読み出し
       select_font(0,config.font_profile,config.db);
-      //ツイート取得数の読み出し
-      select_timeline_nodes(ref config.init_node_count,ref config.tl_node_count,config.db);
+      //EventNotifySettingsの読み出し
+      select_event_notify_settings(config);
+      //TimeLineSettingsの読み出し
+      select_time_line_settings(config);
       //Account情報の読み出し
       account_count=count_records(config.db,"ACCOUNT");
       for(int i=0;i<account_count;i++){
