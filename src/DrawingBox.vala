@@ -6,8 +6,8 @@ using ImageUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/drawing_box.ui")]
 class DrawingBox:EventBox{
-  protected weak Config _config;
-  protected weak SignalPipe _signal_pipe;
+  protected weak Config config;
+  protected weak SignalPipe signal_pipe;
  
   protected Pango.Layout layout;
   protected RotateSurface rotate_surface;
@@ -36,18 +36,18 @@ class DrawingBox:EventBox{
   }
    
   public DrawingBox(Config? config,SignalPipe? signal_pipe){
-    _config=config;
-    _signal_pipe=signal_pipe;
+    this.config=config;
+    this.signal_pipe=signal_pipe;
     
     clear.alpha=0;
-    this.override_background_color(StateFlags.NORMAL,clear);
+    override_background_color(StateFlags.NORMAL,clear);
     drawing_area.override_background_color(StateFlags.NORMAL,clear);
 
   }
   
   protected void rotate_surface_run(int size){
     try{
-      rotate_surface=new RotateSurface(_config.icon_theme.load_icon(LOADING_ICON,size,IconLookupFlags.NO_SVG));
+      rotate_surface=new RotateSurface(config.icon_theme.load_icon(LOADING_ICON,size,IconLookupFlags.NO_SVG));
       rotate_surface.run();
     }catch(Error e){
       print("IconTheme Error : %s\n",e.message);

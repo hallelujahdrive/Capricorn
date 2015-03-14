@@ -2,7 +2,7 @@ using Gtk;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/event_notify_settings_page.ui")]
 class EventNotifySettingsPage:Frame{
-  private weak Config _config;
+  private weak Config config;
   
   public bool changed;
   
@@ -20,16 +20,16 @@ class EventNotifySettingsPage:Frame{
   }
   
   public EventNotifySettingsPage(Config config){
-    _config=config;
+    this.config=config;
     
     //spinbuttonへの値の挿入
-    event_node_count_spin_button.set_value(_config.event_node_count);
+    event_node_count_spin_button.set_value(this.config.event_node_count);
     
     //フラグの初期化(値の挿入前にやると挿入時のシグナルでtrueになる)
     changed=false;
   }
   
   public void get_values(){
-    _config.event_node_count=event_node_count_spin_button.get_value_as_int();
+    config.event_node_count=event_node_count_spin_button.get_value_as_int();
   }
 }

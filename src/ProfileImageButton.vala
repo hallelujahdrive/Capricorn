@@ -5,8 +5,8 @@ using ImageUtil;
 using TwitterUtil;
 
 class ProfileImageButton:ImageButton{
-  private weak Config _config;
-  private weak SignalPipe _signal_pipe;
+  private weak Config config;
+  private weak SignalPipe signal_pipe;
   
   private bool profile_image_loaded=false;
   
@@ -31,12 +31,12 @@ class ProfileImageButton:ImageButton{
   }
   
   public ProfileImageButton(User user,Config config,SignalPipe signal_pipe){
-    _config=config;
-    _signal_pipe=signal_pipe;
+    this.config=config;
+    this.signal_pipe=signal_pipe;
     
     //profile_image_pixbufの取得
     try{
-      Pixbuf pixbuf=_config.icon_theme.load_icon(LOADING_ICON,48,IconLookupFlags.NO_SVG);
+      Pixbuf pixbuf=this.config.icon_theme.load_icon(LOADING_ICON,48,IconLookupFlags.NO_SVG);
       //load中の画像のRotateSurface
       image.set_from_pixbuf(pixbuf);
       RotateSurface rotate_surface=new RotateSurface(pixbuf);
@@ -50,7 +50,7 @@ class ProfileImageButton:ImageButton{
     }catch(Error e){
       print("IconTheme Error : %s\n",e.message);
     }
-    get_pixbuf_async.begin(_config.cache_dir_path,user.screen_name,user.profile_image_url,48,_config.profile_image_hash_table,(obj,res)=>{
+    get_pixbuf_async.begin(this.config.cache_dir_path,user.screen_name,user.profile_image_url,48,this.config.profile_image_hash_table,(obj,res)=>{
       image.set_from_pixbuf(get_pixbuf_async.end(res));
       profile_image_loaded=true;
     });

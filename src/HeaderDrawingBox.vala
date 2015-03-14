@@ -6,7 +6,7 @@ using ImageUtil;
 using TwitterUtil;
 
 class HeaderDrawingBox:DrawingBox{
-  private unowned User _user;
+  private unowned User user;
   
   private StringBuilder name_sb=new StringBuilder();
   
@@ -30,13 +30,13 @@ class HeaderDrawingBox:DrawingBox{
     layout.get_pixel_size(out icon_pos,out height);
     
     //protected_icon_pixbufの描画
-    if(_user.account_is_protected){
+    if(user.account_is_protected){
       //描画位置の調整(spacer(5px))
       context.set_source_surface(image_surface,icon_pos+5,0);
       context.paint();
     }
     height/=layout.get_line_count();
-    height=!_user.account_is_protected||height>16?height:16;
+    height=!user.account_is_protected||height>16?height:16;
     layout.set_height(height);
     this.set_size_request(-1,height);
     return true;
@@ -45,13 +45,13 @@ class HeaderDrawingBox:DrawingBox{
   public HeaderDrawingBox(User user,Config config,SignalPipe signal_pipe){
     base(config,signal_pipe);
     
-    _user=user;
+    this.user=user;
     
     //iconを取得
-    if(_user.account_is_protected){
+    if(this.user.account_is_protected){
       try{
         Screen screen=Screen.get_default();
-        image_surface=_config.icon_theme.load_surface(PROTECTED_ICON,16,1,screen.get_active_window(),IconLookupFlags.NO_SVG);
+        image_surface=config.icon_theme.load_surface(PROTECTED_ICON,16,1,screen.get_active_window(),IconLookupFlags.NO_SVG);
       }catch(Error e){
         print("IconTheme Error : %s\n",e.message);
       }
@@ -59,19 +59,19 @@ class HeaderDrawingBox:DrawingBox{
     
     //表示する文字列
     name_sb.append("<b>@");
-    name_sb.append(_user.screen_name);
+    name_sb.append(this.user.screen_name);
     name_sb.append("</b> ");
-    name_sb.append(_user.name);
+    name_sb.append(this.user.name);
   }
   
   //color,descriptionの設定
   private void set_font(Context context){
-    if(_config.font_profile.use_default){
-      context_set_source_rgba(context,_config.font_profile.text_font_rgba);
-      layout.set_font_description(_config.font_profile.text_font_desc);
+    if(config.font_profile.use_default){
+      context_set_source_rgba(context,config.font_profile.text_font_rgba);
+      layout.set_font_description(config.font_profile.text_font_desc);
     }else{
-      context_set_source_rgba(context,_config.font_profile.name_font_rgba);
-      layout.set_font_description(_config.font_profile.name_font_desc);
+      context_set_source_rgba(context,config.font_profile.name_font_rgba);
+      layout.set_font_description(config.font_profile.name_font_desc);
     }
   }
 }

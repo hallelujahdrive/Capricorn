@@ -2,7 +2,7 @@ using Sqlite;
 
 namespace SqliteUtil{
   //list_idの更新
-  public void update_account_list_id(int new_list_id,int old_list_id,Database db){
+  public void updateaccount_list_id(int new_list_id,int old_list_id,Database db){
     int ec;
     Statement stmt;
     

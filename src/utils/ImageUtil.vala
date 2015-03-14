@@ -17,7 +17,6 @@ namespace ImageUtil{
       return get_pixbuf_from_path(image_path,size);
     }else{
       //画像が取得されていなければ取得
-      //Soup_config.cache_dir_path
       Session session=new Session();
       Message msg=new Message("GET",image_url);
       session.queue_message(msg,(_sess,_msg)=>{

@@ -7,9 +7,9 @@ using TwitterUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/account_settings_page.ui")]
 class AccountSettingsPage:Frame{
-  private unowned GLib.Array<Account> _account_array;
+  private unowned GLib.Array<Account> account_array;
   
-  private weak Config _config;
+  private weak Config config;
 
   //AccountのCellRenderer
   private CellRendererPixbuf cell_pixbuf=new CellRendererPixbuf();
@@ -31,27 +31,27 @@ class AccountSettingsPage:Frame{
   private TreeSelection account_selection;
   private TreeIter iter;
   
-  private SettingsWindow settings_window_;
+  private SettingsWindow settings_window;
     
   //Callback
   [GtkCallback]
   private void account_add_button_clicked_cb(Button account_add_button){
     Account account=new Account(TWITTER_CONSUMER_KEY,TWITTER_CONSUMER_SECRET);
-    int len=(int)_account_array.length;
+    int len=(int)account_array.length;
     OAuthDialog oauth_dialog=new OAuthDialog(len,account);
-    oauth_dialog.set_transient_for(settings_window_);
+    oauth_dialog.set_transient_for(settings_window);
     oauth_dialog.show_all();
     
     //oauth_dialogのcallback
     oauth_dialog.destroy.connect(()=>{
       if(oauth_dialog.success){
-        settings_window_.account_is_changed=true;
-        _account_array.append_val((owned)account);
+        settings_window.account_is_changed=true;
+        account_array.append_val((owned)account);
       }
       load_acount_tree_view();
     });
     
-    if(_account_array.length==1){
+    if(account_array.length==1){
       account_remove_button.set_sensitive(false);
     }
   }
@@ -68,24 +68,24 @@ class AccountSettingsPage:Frame{
     int remove_list_id=(int)val;
     
     //list_idをずらす
-    _account_array.remove_index(remove_list_id);
-    for(int i=remove_list_id;i<_account_array.length;i++){
-      _account_array.index(i).my_list_id=i;
+    account_array.remove_index(remove_list_id);
+    for(int i=remove_list_id;i<account_array.length;i++){
+      account_array.index(i).my_list_id=i;
     }
     
-    if(_account_array.length==1){
+    if(account_array.length==1){
      account_remove_button.set_sensitive(false);
     }
    
-    settings_window_.account_is_changed=true;
+    settings_window.account_is_changed=true;
     
     load_acount_tree_view();
   }
   
   public AccountSettingsPage(GLib.Array<Account> account_array,Config config,SettingsWindow settings_window){
-    _account_array=account_array;
-    _config=config;
-    settings_window_=settings_window;
+    this.account_array=account_array;
+    this.config=config;
+    this.settings_window=settings_window;
     
     //TreeViewのload
     account_tree_view.insert_column_with_attributes(-1,"",cell_pixbuf,"pixbuf",1);
@@ -96,23 +96,24 @@ class AccountSettingsPage:Frame{
     
     account_selection=account_tree_view.get_selection();
     //remove_buttonのロック
-    if(account_array.length==1){
+    if(this.account_array.length==1){
       account_remove_button.set_sensitive(false);
     }
   }
+  
   //TreeViewのload
   private void load_acount_tree_view(){
     account_list_store.clear();
-    for(int i=0;i<_account_array.length;i++){
+    for(int i=0;i<account_array.length;i++){
       //戻り値用のbool
       bool profile_image_loaded=false;
       TreeIter iter;
       
       account_list_store.append(out iter);
-      account_list_store.set(iter,0,_account_array.index(i).my_list_id,2,_account_array.index(i).my_screen_name);
+      account_list_store.set(iter,0,account_array.index(i).my_list_id,2,account_array.index(i).my_screen_name);
       //load中の画像のRotateSurface
       try{
-        RotateSurface rotate_surface=new RotateSurface(_config.icon_theme.load_icon(LOADING_ICON,16,IconLookupFlags.NO_SVG));
+        RotateSurface rotate_surface=new RotateSurface(config.icon_theme.load_icon(LOADING_ICON,16,IconLookupFlags.NO_SVG));
         rotate_surface.run();
         rotate_surface.update.connect((surface)=>{
           if(!profile_image_loaded&&account_list_store!=null){
@@ -124,7 +125,7 @@ class AccountSettingsPage:Frame{
         print("IconTheme Error : %s\n",e.message);
       }
       //profile_imageの取得
-      get_pixbuf_async.begin(_config.cache_dir_path,_account_array.index(i).my_screen_name,_account_array.index(i).my_profile_image_url,16,_config.profile_image_hash_table,(obj,res)=>{
+      get_pixbuf_async.begin(config.cache_dir_path,account_array.index(i).my_screen_name,account_array.index(i).my_profile_image_url,16,config.profile_image_hash_table,(obj,res)=>{
         account_list_store.set(iter,1,get_pixbuf_async.end(res));
         profile_image_loaded=true;
       });

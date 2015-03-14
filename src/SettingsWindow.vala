@@ -6,10 +6,10 @@ using TwitterUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/settings_window.ui")]
 class SettingsWindow:Dialog{
-  private unowned GLib.Array<Account> _account_array;
+  private unowned GLib.Array<Account> account_array;
   
-  private weak Config _config;
-  private weak SignalPipe _signal_pipe;
+  private weak Config config;
+  private weak SignalPipe signal_pipe;
   
   private AccountSettingsPage account_settings_page;
   private DisplaySettingsPage display_settings_page;
@@ -24,58 +24,58 @@ class SettingsWindow:Dialog{
   [GtkCallback]
   private void ok_button_clicked_cb(Button ok_button){
     if(account_is_changed){
-      int account_count_records=count_records(_config.db,"ACCOUNT");
+      int account_count_records=count_records(config.db,"ACCOUNT");
       //Databaseからの削除
       for(int i=0;i<account_count_records;){
-        if(i>=_account_array.length||get_id(i,_config.db)!=_account_array.index(i).my_id){
-          delete_account(i,_config.db);
+        if(i>=account_array.length||get_id(i,config.db)!=account_array.index(i).my_id){
+          deleteaccount(i,config.db);
           account_count_records--;
           for(int j=i;j<account_count_records;j++){
-            update_account_list_id(j,j+1,_config.db);
+            updateaccount_list_id(j,j+1,config.db);
           }
         }else{
           i++;
         }
       }
       //Databaseへ追加
-      for(int i=account_count_records;i<_account_array.length;i++){
-        insert_account(_account_array.index(i),_config.db);
+      for(int i=account_count_records;i<account_array.length;i++){
+        insertaccount(account_array.index(i),config.db);
       }
     }
     //colorの更新
     if(display_settings_page.color_is_changed){
       display_settings_page.set_color();
       //アップデート
-      update_color(0,_config);
+      update_color(0,config);
       //シグナルの発行
-      _signal_pipe.color_change_event();
+      signal_pipe.color_change_event();
     }
     
     //fontの更新
     if(display_settings_page.font_is_changed){
       display_settings_page.set_font_desc();
       //アップデート
-      update_font(0,_config.font_profile,_config.db);
+      update_font(0,config.font_profile,config.db);
       //シグナルの発行
-      _signal_pipe.color_change_event();
+      signal_pipe.color_change_event();
     }
     
     //eventの表示数の更新
     if(event_notify_settings_page.changed){
       event_notify_settings_page.get_values();
       //アップデート
-      update_event_notify_settings(_config);
+      update_event_notify_settings(config);
       //シグナルの発行
-      _signal_pipe.event_node_count_change_event();
+      signal_pipe.event_node_count_change_event();
     }
     
     //nodeの表示数の更新
     if(time_line_settings_page.changed){
       time_line_settings_page.get_values();
       //アップデート
-      update_time_line_settings(_config);
+      update_time_line_settings(config);
       //シグナルの発行
-      _signal_pipe.time_line_node_count_change_event();
+      signal_pipe.time_line_node_count_change_event();
     }
     
     this.destroy();
@@ -86,13 +86,13 @@ class SettingsWindow:Dialog{
   private void cancel_button_clicked_cb(Button cancel_button){
     //account_arrayの復帰
     if(account_is_changed){
-      _account_array.remove_range(0,_account_array.length);
-      int account_count_records=count_records(_config.db,"ACCOUNT");
+      account_array.remove_range(0,account_array.length);
+      int account_count_records=count_records(config.db,"ACCOUNT");
       for(int i=0;i<account_count_records;i++){
         Account account=new Account(TWITTER_CONSUMER_KEY,TWITTER_CONSUMER_SECRET);
-        _account_array.append_val((owned)account);
-        select_account(i,_account_array.index(i),_config.db);
-        account_verify_credential(_account_array.index(i));
+        account_array.append_val((owned)account);
+        selectaccount(i,account_array.index(i),config.db);
+        account_verify_credential(account_array.index(i));
       }
     }
     account_is_changed=false;
@@ -100,14 +100,14 @@ class SettingsWindow:Dialog{
   }
   
   public SettingsWindow(GLib.Array<Account> account_array,Func func,Config config,SignalPipe signal_pipe){
-    _account_array=account_array;
-    _config=config;
-    _signal_pipe=signal_pipe;
+    this.account_array=account_array;
+    this.config=config;
+    this.signal_pipe=signal_pipe;
     
-    account_settings_page=new AccountSettingsPage(_account_array,_config,this);
-    display_settings_page=new DisplaySettingsPage(_config);
-    event_notify_settings_page=new EventNotifySettingsPage(_config);
-    time_line_settings_page=new TimeLineSettingsPage(_config);
+    account_settings_page=new AccountSettingsPage(this.account_array,this.config,this);
+    display_settings_page=new DisplaySettingsPage(this.config);
+    event_notify_settings_page=new EventNotifySettingsPage(this.config);
+    time_line_settings_page=new TimeLineSettingsPage(this.config);
     
     settings_notebook.append_page(account_settings_page,account_settings_page.tab);
     settings_notebook.append_page(display_settings_page,display_settings_page.tab);

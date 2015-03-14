@@ -50,16 +50,16 @@ class RetweetDrawingBox:DrawingBox{
     return true;
   }
   
-  public RetweetDrawingBox(User rt_user,Config config,SignalPipe signal_pipe){
+  public RetweetDrawingBox(User rtuser,Config config,SignalPipe signal_pipe){
     base(config,signal_pipe);
     
     sub_screen_name_sb.append("@");
-    sub_screen_name_sb.append(rt_user.screen_name);
+    sub_screen_name_sb.append(rtuser.screen_name);
     
     //load中の画像のRotateSurface
     rotate_surface_run(16);
     //profile_image_pixbufの取得
-    get_pixbuf_async.begin(_config.cache_dir_path,rt_user.screen_name,rt_user.profile_image_url,16,_config.profile_image_hash_table,(obj,res)=>{
+    get_pixbuf_async.begin(config.cache_dir_path,rtuser.screen_name,rtuser.profile_image_url,16,config.profile_image_hash_table,(obj,res)=>{
       image_surface=cairo_surface_create_from_pixbuf(get_pixbuf_async.end(res),1,null);
       profile_image_loaded=true;
       //再描画
@@ -79,12 +79,12 @@ class RetweetDrawingBox:DrawingBox{
   
   //color,descriptionの設定(footerの設定を使う)
   private void set_font(Context context){
-    if(_config.font_profile.use_default){
-      context_set_source_rgba(context,_config.font_profile.text_font_rgba);
-      layout.set_font_description(_config.font_profile.text_font_desc);
+    if(config.font_profile.use_default){
+      context_set_source_rgba(context,config.font_profile.text_font_rgba);
+      layout.set_font_description(config.font_profile.text_font_desc);
     }else{
-      context_set_source_rgba(context,_config.font_profile.footer_font_rgba);
-      layout.set_font_description(_config.font_profile.footer_font_desc);
+      context_set_source_rgba(context,config.font_profile.footer_font_rgba);
+      layout.set_font_description(config.font_profile.footer_font_desc);
     }
   }
 }

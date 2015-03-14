@@ -5,7 +5,7 @@ using Gtk;
 using TwitterUtil;
 
 class FooterDrawingBox:DrawingBox{
-  private weak ParsedJsonObj _parsed_json_obj;
+  private weak ParsedJsonObj parsed_json_obj;
   private DateTime created_at_local;
   private StringBuilder source_sb=new StringBuilder();
     
@@ -21,7 +21,7 @@ class FooterDrawingBox:DrawingBox{
     //fontの設定
     set_font(context);
     //タイムスタンプの描画
-    layout.set_markup(created_at_local.format(_config.datetime_format),-1);
+    layout.set_markup(created_at_local.format(config.datetime_format),-1);
     layout.set_width((int)width*Pango.SCALE);
     context.move_to(0,0);
     Pango.cairo_show_layout(context,layout);
@@ -47,22 +47,22 @@ class FooterDrawingBox:DrawingBox{
   public FooterDrawingBox(ParsedJsonObj parsed_json_obj,Config config,SignalPipe signal_pipe){
     base(config,signal_pipe);
     
-    _parsed_json_obj=parsed_json_obj;
+    this.parsed_json_obj=parsed_json_obj;
     
     source_sb.append("via ");
-    source_sb.append(_parsed_json_obj.source_label);
+    source_sb.append(parsed_json_obj.source_label);
     
-    created_at_local=_parsed_json_obj.created_at.to_local();
+    created_at_local=parsed_json_obj.created_at.to_local();
   }
   
   //color,descriptionの設定
   private void set_font(Context context){
-    if(_config.font_profile.use_default){
-      context_set_source_rgba(context,_config.font_profile.text_font_rgba);
-      layout.set_font_description(_config.font_profile.text_font_desc);
+    if(config.font_profile.use_default){
+      context_set_source_rgba(context,config.font_profile.text_font_rgba);
+      layout.set_font_description(config.font_profile.text_font_desc);
     }else{
-      context_set_source_rgba(context,_config.font_profile.name_font_rgba);
-      layout.set_font_description(_config.font_profile.footer_font_desc);
+      context_set_source_rgba(context,config.font_profile.name_font_rgba);
+      layout.set_font_description(config.font_profile.footer_font_desc);
     }
   }
 }

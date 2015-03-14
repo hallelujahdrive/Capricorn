@@ -2,7 +2,7 @@ using Sqlite;
 
 namespace SqliteUtil{
   //アカウントの削除
-  public void delete_account(int list_id,Database db){
+  public void deleteaccount(int list_id,Database db){
     int ec;
     Statement stmt;
     

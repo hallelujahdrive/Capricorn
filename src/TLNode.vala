@@ -12,9 +12,9 @@ class TLNode{
   public TimeLine mention_time_line;
   public EventNotifyListBox event_notify_list_box;
     
-  private unowned Account _account;
-  private weak Config _config;
-  private weak SignalPipe _signal_pipe;
+  private unowned Account account;
+  private weak Config config;
+  private weak SignalPipe signal_pipe;
   
   private UserStream user_stream;
     
@@ -22,24 +22,24 @@ class TLNode{
   private bool profile_image_loaded=false;
   
   public TLNode(Account account,Config config,SignalPipe signal_pipe){
-    _account=account;
-    _config=config;
-    _signal_pipe=signal_pipe;
+    this.account=account;
+    this.config=config;
+    this.signal_pipe=signal_pipe;
     
-    my_id=account.my_id;
+    my_id=this.account.my_id;
         
     //TimeLine
-    home_time_line=new TimeLine.home(_account,_config,_signal_pipe);
-    mention_time_line=new TimeLine.mention(_account,_config,_signal_pipe);
-    event_notify_list_box=new EventNotifyListBox(_config,_signal_pipe);
+    home_time_line=new TimeLine.home(this.account,this.config,this.signal_pipe);
+    mention_time_line=new TimeLine.mention(this.account,this.config,this.signal_pipe);
+    event_notify_list_box=new EventNotifyListBox(this.config,this.signal_pipe);
     
     //UserStream
-    user_stream=new UserStream(_account);
+    user_stream=new UserStream(this.account);
     //tab 
     //profile_image_pixbufの取得
     try{
       //load中の画像のRotateSurface
-      RotateSurface rotate_surface=new RotateSurface(_config.icon_theme.load_icon(LOADING_ICON,24,IconLookupFlags.NO_SVG));
+      RotateSurface rotate_surface=new RotateSurface(this.config.icon_theme.load_icon(LOADING_ICON,24,IconLookupFlags.NO_SVG));
       rotate_surface.run();
       rotate_surface.update.connect((surface)=>{
         if(!profile_image_loaded){
@@ -51,7 +51,7 @@ class TLNode{
     }catch(Error e){
       print("IconTheme Error : %s\n",e.message);
     }
-    get_pixbuf_async.begin(_config.cache_dir_path,_account.my_screen_name,_account.my_profile_image_url,24,config.profile_image_hash_table,(obj,res)=>{
+    get_pixbuf_async.begin(this.config.cache_dir_path,this.account.my_screen_name,this.account.my_profile_image_url,24,this.config.profile_image_hash_table,(obj,res)=>{
       Pixbuf pixbuf=get_pixbuf_async.end(res);
       home_time_line.tab.set_from_pixbuf(pixbuf);
       mention_time_line.tab.set_from_pixbuf(pixbuf);
@@ -65,7 +65,7 @@ class TLNode{
     user_stream.callback_json.connect((parsed_json_obj)=>{
       switch(parsed_json_obj.type){
         //tweetの削除の処理
-        case ParsedJsonObjType.DELETE:signal_pipe.delete_tweet_node_event(parsed_json_obj.id_str);
+        case ParsedJsonObjType.DELETE:this.signal_pipe.delete_tweet_node_event(parsed_json_obj.id_str);
         break;
         //eventの処理
         case ParsedJsonObjType.EVENT:
@@ -77,7 +77,7 @@ class TLNode{
         //tweetの処理
         case ParsedJsonObjType.TWEET:
         //homeのNode
-        Node tweet_node=new Node.tweet(parsed_json_obj,_account,_config,signal_pipe);
+        Node tweet_node=new Node.tweet(parsed_json_obj,this.account,this.config,this.signal_pipe);
         home_time_line.prepend_node(tweet_node);
         switch(parsed_json_obj.tweet_type){
           //replyの作成
@@ -103,10 +103,10 @@ class TLNode{
   private void event_update(ParsedJsonObj parsed_json_obj){
     if(parsed_json_obj.is_mine){
       if(!event_notify_list_box.generic_set.contains(parsed_json_obj.id_str)){
-        event_notify_list_box.prepend_node(new Node.event(parsed_json_obj,_account,_config,_signal_pipe));
+        event_notify_list_box.prepend_node(new Node.event(parsed_json_obj,account,config,signal_pipe));
         //シグナルハンドラだけでどうにかしようと言う魂胆
       }
-      _signal_pipe.event_update_event(parsed_json_obj);
+      signal_pipe.event_update_event(parsed_json_obj);
     }
   }
 }

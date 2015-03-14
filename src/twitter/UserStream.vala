@@ -3,7 +3,7 @@ using Rest;
 namespace TwitterUtil{
   //user_stream
   class UserStream{
-    private unowned Account _account;
+    private unowned Account account;
     
     private string json_frg;
     private StringBuilder json_sb=new StringBuilder();
@@ -11,12 +11,12 @@ namespace TwitterUtil{
     private ProxyCall proxy_call;
     
     public UserStream(Account account){
-      _account=account;
+      this.account=account;
     }
   
     public void run(){
       //proxy_callの設定
-      proxy_call=_account.stream_proxy.new_call();
+      proxy_call=account.stream_proxy.new_call();
       proxy_call.set_function(FUNCTION_USER);
       proxy_call.set_method("GET");
       try{
@@ -40,7 +40,7 @@ namespace TwitterUtil{
             //シグナル発行
             //debug
             //print("%s\n",json_sb.str);
-            callback_json(new ParsedJsonObj.from_string(json_sb.str,_account.my_screen_name));
+            callback_json(new ParsedJsonObj.from_string(json_sb.str,account.my_screen_name));
             //json_sbの初期化
             json_sb.erase();
           }

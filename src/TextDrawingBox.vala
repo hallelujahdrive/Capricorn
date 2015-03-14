@@ -7,7 +7,7 @@ using TwitterUtil;
 using URIUtil;
 
 class TextDrawingBox:DrawingBox{
-  private weak ParsedJsonObj _parsed_json_obj;
+  private weak ParsedJsonObj parsed_json_obj;
   private string text;
   private string parsed_text;
   
@@ -18,16 +18,16 @@ class TextDrawingBox:DrawingBox{
     int index_,trailing;
     layout.xy_to_index((int)event_button.x*Pango.SCALE,(int)event_button.y*Pango.SCALE,out index_,out trailing);
     //media_arrayから検索
-    for(int i=0;i<_parsed_json_obj.media_array.length;i++){
-      if(index_>=_parsed_json_obj.media_array[i].start_indices&&index_<_parsed_json_obj.media_array[i].end_indices){
-        _signal_pipe.media_url_click_event(((Node)this.get_parent()).copy(),_parsed_json_obj.media_array);
+    for(int i=0;i<parsed_json_obj.media_array.length;i++){
+      if(index_>=parsed_json_obj.media_array[i].start_indices&&index_<parsed_json_obj.media_array[i].end_indices){
+        signal_pipe.media_url_click_event(((Node)this.get_parent()).copy(),parsed_json_obj.media_array);
         break;
       }
     }
     //urls_arrayから検索
-    for(int i=0;i<_parsed_json_obj.urls_array.length;i++){
-      if(index_>=_parsed_json_obj.urls_array[i].start_indices&&index_<_parsed_json_obj.urls_array[i].end_indices){
-        open_url(_parsed_json_obj.urls_array[i].expanded_url);
+    for(int i=0;i<parsed_json_obj.urls_array.length;i++){
+      if(index_>=parsed_json_obj.urls_array[i].start_indices&&index_<parsed_json_obj.urls_array[i].end_indices){
+        open_url(parsed_json_obj.urls_array[i].expanded_url);
         break;
       }
     }
@@ -41,11 +41,11 @@ class TextDrawingBox:DrawingBox{
     width=this.get_allocated_width();
     
     //fontcolorの設定
-    context_set_source_rgba(context,_config.font_profile.text_font_rgba);
+    context_set_source_rgba(context,config.font_profile.text_font_rgba);
     
     layout=Pango.cairo_create_layout(context);
     //font_descriptionの設定
-    layout.set_font_description(_config.font_profile.text_font_desc);
+    layout.set_font_description(config.font_profile.text_font_desc);
     layout.set_markup(parsed_text,-1);
     layout.set_width((int)width*Pango.SCALE);
     context.move_to(0,0);
@@ -59,15 +59,15 @@ class TextDrawingBox:DrawingBox{
   public TextDrawingBox(ParsedJsonObj parsed_json_obj,Config config,SignalPipe signal_pipe){
     base(config,signal_pipe);
     
-    _parsed_json_obj=parsed_json_obj;
-    text=_parsed_json_obj.text;
+    this.parsed_json_obj=parsed_json_obj;
+    text=this.parsed_json_obj.text;
         
     //縦に広がるようにする
     this.vexpand=true;
     
     //textの整形
-    parsed_text=parse_text(ref text,_parsed_json_obj.media_array,_parsed_json_obj.urls_array);
-    get_incides(text,_parsed_json_obj.media_array,_parsed_json_obj.urls_array);
+    parsed_text=parse_text(ref text,this.parsed_json_obj.media_array,this.parsed_json_obj.urls_array);
+    get_incides(text,this.parsed_json_obj.media_array,this.parsed_json_obj.urls_array);
   }
   
   private void open_media_page(){

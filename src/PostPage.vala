@@ -7,9 +7,9 @@ using TwitterUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/post_page.ui")]
 class PostPage:Frame{
-  private unowned GLib.Array<Account> _account_array;
-  private weak Config _config;
-  private weak SignalPipe _signal_pipe;
+  private unowned GLib.Array<Account> account_array;
+  private weak Config config;
+  private weak SignalPipe signal_pipe;
   
   private IconButton post_button;
   private IconButton url_shorting_button;
@@ -76,13 +76,13 @@ class PostPage:Frame{
   }
   
   public PostPage(GLib.Array<Account> account_array,Config config,SignalPipe signal_pipe){
-    _account_array=account_array;
-    _config=config;
-    _signal_pipe=signal_pipe;
+    this.account_array=account_array;
+    this.config=config;
+    this.signal_pipe=signal_pipe;
     
     post_button=new IconButton(POST_ICON,null,null,IconSize.LARGE_TOOLBAR);
     url_shorting_button=new IconButton(URL_SHORTING_ICON,null,null,IconSize.LARGE_TOOLBAR);
-    account_combo_box=new AccountComboBox(_account_array,account_combo_box_changed,_config,_signal_pipe);
+    account_combo_box=new AccountComboBox(account_array,account_combo_box_changed,config,signal_pipe);
     
     
     //パッキング
@@ -97,7 +97,7 @@ class PostPage:Frame{
     //シグナルハンドラ
     //post
     post_button.clicked.connect((already)=>{
-      if(statuses_update(_account_array.index(selected_account_num),buffer.text,in_reply_to_status_id_str)){
+      if(statuses_update(this.account_array.index(selected_account_num),buffer.text,in_reply_to_status_id_str)){
         buffer.text="";
       }
       return true;

@@ -70,7 +70,7 @@ public class Capricorn:Gtk.Application{
       account_count=count_records(config.db,"ACCOUNT");
       for(int i=0;i<account_count;i++){
         var account=new Account(TWITTER_CONSUMER_KEY,TWITTER_CONSUMER_SECRET);
-        select_account(i,account,config.db);
+        selectaccount(i,account,config.db);
         //配列に追加
         account_array.append_val((owned)account);
         //Account情報の取得
@@ -92,7 +92,7 @@ public class Capricorn:Gtk.Application{
       oauth_dialog.destroy.connect(()=>{
         if(oauth_dialog.success){
           account_array.append_val((owned)account);
-          insert_account(account_array.index(0),config.db);
+          insertaccount(account_array.index(0),config.db);
         }
         if(account_count==count_records(config.db,"ACCOUNT")){
           window.destroy();

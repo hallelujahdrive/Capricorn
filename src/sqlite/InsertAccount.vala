@@ -4,7 +4,7 @@ using TwitterUtil;
 
 namespace SqliteUtil{
   //アカウント情報のインサート
-  public void insert_account(Account account,Database db){
+  public void insertaccount(Account account,Database db){
     int ec;
     Statement stmt;
     

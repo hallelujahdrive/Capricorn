@@ -70,7 +70,7 @@ class EventDrawingBox:DrawingBox{
     //iconを取得
     try{
       Screen screen=Screen.get_default();
-      icon_surface=_config.icon_theme.load_surface(icon_name,16,1,screen.get_active_window(),IconLookupFlags.NO_SVG);
+      icon_surface=config.icon_theme.load_surface(icon_name,16,1,screen.get_active_window(),IconLookupFlags.NO_SVG);
     }catch(Error e){
       print("IconTheme Error : %s\n",e.message);
     }
@@ -88,7 +88,7 @@ class EventDrawingBox:DrawingBox{
     image_surface_array.append_val((Surface)null);
     uint index=image_surface_array.length;
     //profile_image_pixbufの取得
-    get_pixbuf_async.begin(_config.cache_dir_path,user.screen_name,user.profile_image_url,16,_config.profile_image_hash_table,(obj,res)=>{
+    get_pixbuf_async.begin(config.cache_dir_path,user.screen_name,user.profile_image_url,16,config.profile_image_hash_table,(obj,res)=>{
 
       image_surface_array.insert_val(index-1,cairo_surface_create_from_pixbuf(get_pixbuf_async.end(res),1,null));
       image_surface_array.remove_index(index);

@@ -80,6 +80,7 @@ public class MainWindow:ApplicationWindow{
       MediaPage media_page=new MediaPage(tweet_node,media_array);
       various_notebook.append_page(media_page,media_page.tab);
       various_notebook.set_current_page(various_notebook.page_num(media_page));
+      
     });
   }
   

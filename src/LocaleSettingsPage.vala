@@ -4,7 +4,7 @@ using DateTimeUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/locale_settings_page.ui")]
 class LocaleSettingsPage:Frame{
-  private Config _config;
+  private Config config;
   
   public Label tab=new Label("Locale");
   

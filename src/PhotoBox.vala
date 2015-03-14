@@ -6,8 +6,8 @@ using ImageUtil;
 using URIUtil;
 
 class PhotoBox:DrawingBox{
-  private int _num;
-  private unowned Func<int> _func;
+  private int num;
+  private unowned Func<int> func;
     
   public Pixbuf pixbuf;
   private Pixbuf resized_pixbuf;
@@ -18,7 +18,7 @@ class PhotoBox:DrawingBox{
   protected override bool button_release_event_cb(EventButton event_button){
     base.button_release_event_cb(event_button);
     
-    _func(_num);
+    func(num);
     return true;
   }
   
@@ -42,8 +42,8 @@ class PhotoBox:DrawingBox{
   
   public PhotoBox(int num,string media_url,Func<int> func){
     base(null,null);
-    _num=num;
-    _func=func;
+    this.num=num;
+    this.func=func;
     
     this.hexpand=true;
     this.vexpand=true;

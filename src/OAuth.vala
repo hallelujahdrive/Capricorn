@@ -14,7 +14,7 @@ public class OAuthDialog:Gtk.Dialog{
   public bool success=false;
   
   //Account
-  private unowned Account _account;
+  private unowned Account account;
   
   [GtkChild]
   private Button auth_button;
@@ -47,19 +47,19 @@ public class OAuthDialog:Gtk.Dialog{
     this.destroy();
   }
   public OAuthDialog(int account_count,Account account){
-    _account=account;
+    this.account=account;
     //プロパティ
     pin_entry.set_sensitive(false);
     auth_button.set_sensitive(false);
     
-    token_url=request_token(_account);
+    token_url=request_token(this.account);
     
     //シグナル
     this.destroy.connect(()=>{
       if(success){
         //アカウント情報の取得
-        account_verify_credential(_account);
-        _account.my_list_id=account_count;
+        account_verify_credential(this.account);
+        account.my_list_id=account_count;
       }
     });
   }
@@ -68,7 +68,7 @@ public class OAuthDialog:Gtk.Dialog{
   private void send_pin(){
     string pin_code=pin_entry.get_text();
     if(pin_code!=""){
-      if(oauth_access_token(_account,pin_code)){
+      if(oauth_access_token(account,pin_code)){
         success=true;
         this.destroy();
       }

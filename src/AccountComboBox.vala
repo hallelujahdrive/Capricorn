@@ -6,9 +6,9 @@ using TwitterUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/account_combo_box.ui")]
 class AccountComboBox:ComboBox{
-  private unowned Array<Account> _account_array;
-  private unowned Func<int> _func;
-  private weak Config _config;
+  private unowned Array<Account> account_array;
+  private unowned Func<int> func;
+  private weak Config config;
   //widget
   [GtkChild]
   private ListStore account_list_store;
@@ -26,15 +26,15 @@ class AccountComboBox:ComboBox{
       account_list_store.get_value(iter,0, out val);
     
     //切り替え時に実行するFunc
-    _func((int)val);
+    func((int)val);
     
     }
   }
   
   public AccountComboBox(Array<Account> account_array,Func<int> func,Config config,SignalPipe signal_pipe){
-    _account_array=account_array;
-    _func=func;
-    _config=config;
+    this.account_array=account_array;
+    this.func=func;
+   this.config=config;
     
     //プロパティ
     this.pack_start(cell_pixbuf,false);
@@ -56,17 +56,17 @@ class AccountComboBox:ComboBox{
   //account_comboboxの読み込み
   private void load(){
     account_list_store.clear();
-    for(int i=0;i<_account_array.length;i++){
+    for(int i=0;i<account_array.length;i++){
       //RotateSurface戻り値用のbool
       bool profile_image_loaded=false;
       //iter(ローカル)
       TreeIter iter;
       
       account_list_store.append(out iter);
-      account_list_store.set(iter,0,_account_array.index(i).my_list_id,2,_account_array.index(i).my_screen_name);
+      account_list_store.set(iter,0,account_array.index(i).my_list_id,2,account_array.index(i).my_screen_name);
       //load中の画像のRotateSurface
       try{
-        RotateSurface rotate_surface=new RotateSurface(_config.icon_theme.load_icon(LOADING_ICON,16,IconLookupFlags.NO_SVG));
+        RotateSurface rotate_surface=new RotateSurface(config.icon_theme.load_icon(LOADING_ICON,16,IconLookupFlags.NO_SVG));
         rotate_surface.run();
         rotate_surface.update.connect((surface)=>{
           if(!profile_image_loaded&&account_list_store!=null){
@@ -77,7 +77,7 @@ class AccountComboBox:ComboBox{
       }catch(Error e){
         print("IconTheme Error : %s\n",e.message);
       }
-      get_pixbuf_async.begin(_config.cache_dir_path,_account_array.index(i).my_screen_name,_account_array.index(i).my_profile_image_url,16,_config.profile_image_hash_table,(obj,res)=>{
+      get_pixbuf_async.begin(config.cache_dir_path,account_array.index(i).my_screen_name,account_array.index(i).my_profile_image_url,16,config.profile_image_hash_table,(obj,res)=>{
         //profile_imageの取得
         account_list_store.set(iter,1,get_pixbuf_async.end(res));
         profile_image_loaded=true;

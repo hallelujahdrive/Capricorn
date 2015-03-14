@@ -17,7 +17,7 @@ public class Config{
   //アイコンのHashTable
   public HashTable<string,string?> profile_image_hash_table=new HashTable<string,string?>(str_hash,str_equal);
   //signal_pipe
-  private weak SignalPipe _signal_pipe;
+  private weak SignalPipe signal_pipe;
   //font  
   public FontProfile font_profile=new FontProfile();
   
@@ -46,7 +46,7 @@ public class Config{
   public Config(string cpr_dir_path,SignalPipe signal_pipe){
     cache_dir_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,cpr_dir_path,"cache");
     
-    _signal_pipe=signal_pipe;
+    this.signal_pipe=signal_pipe;
     
     //Gdk.RGBAの設定
     clear.alpha=0;

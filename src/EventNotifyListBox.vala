@@ -8,11 +8,11 @@ class EventNotifyListBox:ScrolledListBox{
   
   public EventNotifyListBox(Config config,SignalPipe signal_pipe){
     base(config,signal_pipe);
-    node_count_limit=_config.event_node_count;
+    node_count_limit=config.event_node_count;
     list_box.set_sort_func(list_box_sort_func);
     
-    _signal_pipe.event_node_count_change_event.connect(()=>{
-      node_count_limit=_config.event_node_count;
+    signal_pipe.event_node_count_change_event.connect(()=>{
+      node_count_limit=config.event_node_count;
       delete_nodes();
     });
   }

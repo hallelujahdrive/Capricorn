@@ -3,8 +3,8 @@ using Gtk;
 [GtkTemplate(ui="/org/gtk/capricorn/ui/scrolled_list_box.ui")]
 class ScrolledListBox:ScrolledWindow{
   
-  protected weak Config _config;
-  protected weak SignalPipe _signal_pipe;
+  protected weak Config config;
+  protected weak SignalPipe signal_pipe;
   
   protected int node_count_limit;
   protected int node_count=0;
@@ -14,10 +14,10 @@ class ScrolledListBox:ScrolledWindow{
   protected ListBox list_box;
       
   public ScrolledListBox(Config config,SignalPipe signal_pipe){
-    _config=config;
-    _signal_pipe=signal_pipe;
+    this.config=config;
+    this.signal_pipe=signal_pipe;
     
-    list_box.override_background_color(StateFlags.NORMAL,config.white);
+    list_box.override_background_color(StateFlags.NORMAL,this.config.white);
     
   }
   
