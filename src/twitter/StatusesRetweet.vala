@@ -1,12 +1,11 @@
 using Rest;
 
 namespace TwitterUtil{
-  //☆
-  public bool favorites_create(Account account,string id_str){
+  //retweet
+  public bool statuses_retweet(Account account,string id_str){
     ProxyCall post_call=account.api_proxy.new_call();
-    post_call.set_function(FUNCTION_FAVORITES_CREATE);
+    post_call.set_function(FUNCTION_STATUSES_RETWEET.printf(id_str));
     post_call.set_method("POST");
-    post_call.add_param(PARAM_ID,id_str);
     try{
       post_call.sync();
       return true;

@@ -74,14 +74,16 @@ sources = \
 			twitter/AccountVerifyCredential.vala \
 			twitter/Enums.vala \
 			twitter/FavoritesCreate.vala \
+			twitter/FavoritesDestroy.vala \
 			twitter/MonthStrToNum.vala \
 			twitter/OauthAccessToken.vala \
 			twitter/ParseProfileJson.vala \
 			twitter/ParsedJsonObj.vala \
 			twitter/RequestToken.vala \
-			twitter/Retweet.vala \
+			twitter/StatusesDestroy.vala \
 			twitter/StatusesHomeTimeline.vala \
 			twitter/StatusesMentionTimeline.vala \
+			twitter/StatusesRetweet.vala \
 			twitter/StatusesShow.vala \
 			twitter/StatusesTimeline.vala \
 			twitter/StatusesUpdate.vala \

@@ -40,10 +40,7 @@ class ScrolledListBox:ScrolledWindow{
   }
   
   //ListBoxRowの削除
-  protected virtual void remove_list_box_row(ListBoxRow list_box_row){
-    weak Widget child=list_box_row.get_children().data;
-    child.destroy();
-    //print("%u\n",child.ref_count);
+  public virtual void remove_list_box_row(ListBoxRow list_box_row){
     list_box.remove(list_box_row);
   }
   

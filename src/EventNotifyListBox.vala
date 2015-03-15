@@ -31,7 +31,7 @@ class EventNotifyListBox:ScrolledListBox{
   }
   
   //remove
-  protected override void remove_list_box_row(ListBoxRow list_box_row){
+  public override void remove_list_box_row(ListBoxRow list_box_row){
     //GenericSetから削除
     generic_set.remove(((Node)list_box_row.get_children().data).id_str);
     base.remove_list_box_row(list_box_row);

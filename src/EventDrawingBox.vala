@@ -8,9 +8,9 @@ using TwitterUtil;
 class EventDrawingBox:DrawingBox{
   //icon
   private Surface icon_surface;
-  //ロード中のSurface;
+  //ロード中のSurface
   private Surface loading_surface;
-  private Array<Surface?> image_surface_array=new Array<Surface?>();
+  private HashTable<string,Surface?> user_hash_table=new HashTable<string,Surface?>(str_hash,str_equal);
   
   //描画するか否か
   private bool active=false;
@@ -32,15 +32,15 @@ class EventDrawingBox:DrawingBox{
       icon_pos=26;
       
       //image_surfaceの描画
-      for(int i=0;i<image_surface_array.length;i++){
-        if(image_surface_array.index(i)!=null){
-          context.set_source_surface(image_surface_array.index(i),icon_pos,0);
+      user_hash_table.foreach((screen_name,surface)=>{
+        if(surface!=null){
+          context.set_source_surface(surface,icon_pos,0);
         }else{
           context.set_source_surface(loading_surface,icon_pos,0);
         }
         context.paint();
         icon_pos+=16;
-      }
+      });
       
       //DrawingAreaの高さの設定
   
@@ -84,14 +84,12 @@ class EventDrawingBox:DrawingBox{
       profile_image_loaded=false;
       rotate_surface_run(16);
     }
-    //image_surface_arrayに追加(ダミー)
-    image_surface_array.append_val((Surface)null);
-    uint index=image_surface_array.length;
+    //hash_tableに追加(ダミー)
+    user_hash_table.insert(user.id_str,(Surface)null);
     //profile_image_pixbufの取得
     get_pixbuf_async.begin(config.cache_dir_path,user.screen_name,user.profile_image_url,16,config.profile_image_hash_table,(obj,res)=>{
 
-      image_surface_array.insert_val(index-1,cairo_surface_create_from_pixbuf(get_pixbuf_async.end(res),1,null));
-      image_surface_array.remove_index(index);
+      user_hash_table.replace(user.id_str,cairo_surface_create_from_pixbuf(get_pixbuf_async.end(res),1,null));
       profile_image_loaded=true;
       //再描画
       drawing_area.queue_draw();
@@ -105,5 +103,20 @@ class EventDrawingBox:DrawingBox{
       drawing_area.queue_draw();    
       return !profile_image_loaded;
     });
+  }
+  
+  //userの削除
+  public void remove_user(User user){
+    if(user_hash_table.remove(user.id_str)){
+      if(user_hash_table.length==0){
+        //userが0の時、Nodeを削除(親遠すぎわろたでち)
+        weak EventNotifyListBox parent=(EventNotifyListBox)this.get_parent().get_parent().get_parent().get_parent().get_parent();
+        weak ListBoxRow child=(ListBoxRow)this.get_parent().get_parent();
+        parent.remove_list_box_row(child);
+      }else{
+        //再描画
+        drawing_area.queue_draw();
+      }
+    }
   }
 }

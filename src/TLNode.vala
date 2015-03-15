@@ -65,14 +65,19 @@ class TLNode{
     user_stream.callback_json.connect((parsed_json_obj)=>{
       switch(parsed_json_obj.type){
         //tweetの削除の処理
-        case ParsedJsonObjType.DELETE:this.signal_pipe.delete_tweet_node_event(parsed_json_obj.id_str);
+        case ParsedJsonObjType.DELETE:
+        this.signal_pipe.delete_tweet_node_event(parsed_json_obj.id_str);
+        if(parsed_json_obj.id_str!=null){
+          this.signal_pipe.event_update_event(parsed_json_obj);
+        }
         break;
         //eventの処理
         case ParsedJsonObjType.EVENT:
         switch(parsed_json_obj.event_type){
-          case TwitterUtil.EventType.FAVORITE:event_update(parsed_json_obj);
+          case TwitterUtil.EventType.FAVORITE:event_create(parsed_json_obj);
           break;
         }
+        this.signal_pipe.event_update_event(parsed_json_obj);
         break;
         //tweetの処理
         case ParsedJsonObjType.TWEET:
@@ -85,7 +90,8 @@ class TLNode{
           break;
           //rtのNode.eventの作成
           case TweetType.RETWEET:
-          event_update(parsed_json_obj);
+          event_create(parsed_json_obj);
+          this.signal_pipe.event_update_event(parsed_json_obj);
           break;
         }
         break;
@@ -100,13 +106,12 @@ class TLNode{
   }
   
   //eventの処理
-  private void event_update(ParsedJsonObj parsed_json_obj){
+  private void event_create(ParsedJsonObj parsed_json_obj){
     if(parsed_json_obj.is_mine){
       if(!event_notify_list_box.generic_set.contains(parsed_json_obj.id_str)){
         event_notify_list_box.prepend_node(new Node.event(parsed_json_obj,account,config,signal_pipe));
         //シグナルハンドラだけでどうにかしようと言う魂胆
       }
-      signal_pipe.event_update_event(parsed_json_obj);
     }
   }
 }

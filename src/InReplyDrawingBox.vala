@@ -45,8 +45,8 @@ class InReplyDrawingBox:DrawingBox{
   }
   
   //reply元のツイートを取得
-  public bool draw_tweet(Account account,string in_reply_to_status_id){
-    string json_str=statuses_show(account,in_reply_to_status_id);
+  public bool draw_tweet(Account account,string in_reply_to_status_id_str){
+    string json_str=statuses_show(account,in_reply_to_status_id_str);
     if(json_str!=null){
       in_replyparsed_json_obj=new ParsedJsonObj.from_string(json_str,null);
       

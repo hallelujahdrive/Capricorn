@@ -1,10 +1,10 @@
 using Rest;
 
 namespace TwitterUtil{
-  //☆
-  public bool favorites_create(Account account,string id_str){
+  //☆ヲ殺ス
+  public bool favorites_destroy(Account account,string id_str){
     ProxyCall post_call=account.api_proxy.new_call();
-    post_call.set_function(FUNCTION_FAVORITES_CREATE);
+    post_call.set_function(FUNCTION_FAVORITES_DESTROY);
     post_call.set_method("POST");
     post_call.add_param(PARAM_ID,id_str);
     try{
@@ -13,6 +13,6 @@ namespace TwitterUtil{
     }catch(Error e){
       print("%s\n",e.message);
       return false;
-    }
+    }    
   }
 }

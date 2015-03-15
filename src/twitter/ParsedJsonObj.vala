@@ -11,13 +11,15 @@ namespace TwitterUtil{
     public string source_url;
     public string id_str;
     
+    public string? retweeted_status_id_str;
+    
     public media[] media_array;
     public urls[] urls_array;
         
-    public string? in_reply_to_status_id;
+    public string? in_reply_to_status_id_str;
     
-    public bool retweeted;
-    public bool favorited;
+    public bool retweeted=false;
+    public bool favorited=false;
     
     public bool is_mine=false;
         
@@ -94,17 +96,23 @@ namespace TwitterUtil{
           type=ParsedJsonObjType.FRIENDS;
           return;
         }else if(json_obj.has_member("retweeted_status")){
+
           //retweetの解析.json_objはretweet_statusから取得
-          foreach(string retweet_member in json_obj.get_members()){
-            switch(retweet_member){
-              case "created_at":event_created_at=parse_created_at(json_obj.get_string_member(retweet_member));
+          foreach(string retweeted_status_member in json_obj.get_members()){
+            switch(retweeted_status_member){
+              case "created_at":event_created_at=parse_created_at(json_obj.get_string_member(retweeted_status_member));
               break;
-              case "retweeted_status":json_obj=json_obj.get_object_member(retweet_member);
+              case "id_str":retweeted_status_id_str=json_obj.get_string_member(retweeted_status_member);
+              break;
+              case "retweeted_status":json_obj=json_obj.get_object_member(retweeted_status_member);
               break;
               case "user":
               //userの解析
               tweet_type=TweetType.RETWEET;
-              sub_user=parseuser(json_obj.get_object_member(retweet_member),null);
+              sub_user=parseuser(json_obj.get_object_member(retweeted_status_member),null);
+              if(sub_user.screen_name==my_screen_name){
+                retweeted=true;
+              }
               break;
             }
           }
@@ -118,9 +126,12 @@ namespace TwitterUtil{
             break;
             case "id_str":id_str=json_obj.get_string_member(member);
             break;
-            case "in_reply_to_status_id_str":in_reply_to_status_id=json_obj.get_string_member(member);
+            case "in_reply_to_status_id_str":in_reply_to_status_id_str=json_obj.get_string_member(member);
             break;
-            case "retweeted":retweeted=json_obj.get_boolean_member(member);
+            case "retweeted":
+            if(!retweeted){
+              retweeted=json_obj.get_boolean_member(member);
+            }
             break;
             case "source":parse_source(json_obj.get_string_member(member));
             break;
@@ -147,8 +158,12 @@ namespace TwitterUtil{
             case "user":
             user=parseuser(json_obj.get_object_member(member),my_screen_name);
             break;
+            //多分だけどこれが読み出されるのはDELETEの時だけ
+            case "user_id_str":user=new User(null,null,json_obj.get_string_member(member),null,false);
+            break;
           }
         }
+
       }
     }
     
@@ -241,8 +256,9 @@ namespace TwitterUtil{
     private User parseuser(Json.Object user_obj,string? my_screen_name){
       string name=null;
       string screen_name=null;
+      string id_str=null;
       string profile_image_url=null;
-      bool account_is_protected=false;
+      bool is_protected=false;
       foreach(string user_member in user_obj.get_members()){
         switch(user_member){
           case "name":name=parse_name(user_obj.get_string_member(user_member));
@@ -252,13 +268,16 @@ namespace TwitterUtil{
           //自分のtweetかどうか
           is_mine=my_screen_name==screen_name;
           break;
+          case "id_str":id_str=user_obj.get_string_member(user_member);
+          break;
           case "profile_image_url":profile_image_url=user_obj.get_string_member(user_member);
           break;
-          case "protected":account_is_protected=user_obj.get_boolean_member(user_member);
+          case "protected":is_protected=user_obj.get_boolean_member(user_member);
           break;
+
         }
       }
-      return new User(name,screen_name,profile_image_url,account_is_protected);
+      return new User(name,screen_name,id_str,profile_image_url,is_protected);
     }
     
     //mediaの解析
