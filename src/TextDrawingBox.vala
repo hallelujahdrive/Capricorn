@@ -20,7 +20,8 @@ class TextDrawingBox:DrawingBox{
     //media_arrayから検索
     for(int i=0;i<parsed_json_obj.media_array.length;i++){
       if(index_>=parsed_json_obj.media_array[i].start_indices&&index_<parsed_json_obj.media_array[i].end_indices){
-        signal_pipe.media_url_click_event(((Node)this.get_parent()).copy(),parsed_json_obj.media_array);
+        weak TweetNode parent=(TweetNode)this.get_parent();
+        signal_pipe.media_url_click_event(parent.copy(),parsed_json_obj.media_array);
         break;
       }
     }

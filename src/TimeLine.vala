@@ -33,7 +33,7 @@ class TimeLine:ScrolledListBox{
   //Nodeを配置
   private void init(Array<ParsedJsonObj> parsed_json_obj_array,Account account){
     for(int i=0;i<parsed_json_obj_array.length;i++){
-      Node tweet_node=new Node.tweet(parsed_json_obj_array.index(i),account,config,signal_pipe);
+      TweetNode tweet_node=new TweetNode(parsed_json_obj_array.index(i),account,config,signal_pipe);
       this.add_node(tweet_node);
     }
   }

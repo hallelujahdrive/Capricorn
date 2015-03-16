@@ -51,7 +51,7 @@ public class MainWindow:ApplicationWindow{
     various_notebook.append_page(post_page,post_page.tab);
     various_notebook.append_page(event_notify_page,event_notify_page.tab);
     button_box.pack_end(settings_button,false,false,0);
-    
+
     //シグナルハンドラ
     //表示に時間かかるからあとから読み込み
     this.show.connect(()=>{

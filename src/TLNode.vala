@@ -74,26 +74,17 @@ class TLNode{
         //eventの処理
         case ParsedJsonObjType.EVENT:
         switch(parsed_json_obj.event_type){
-          case TwitterUtil.EventType.FAVORITE:event_create(parsed_json_obj);
+          case TwitterUtil.EventType.FAVORITE:create_event(parsed_json_obj);
           break;
         }
-        this.signal_pipe.event_update_event(parsed_json_obj);
+        break;
+        //retweetの処理
+        case ParsedJsonObjType.RETWEET:
+        create_tweet(parsed_json_obj);
+        create_event(parsed_json_obj);
         break;
         //tweetの処理
-        case ParsedJsonObjType.TWEET:
-        //homeのNode
-        Node tweet_node=new Node.tweet(parsed_json_obj,this.account,this.config,this.signal_pipe);
-        home_time_line.prepend_node(tweet_node);
-        switch(parsed_json_obj.tweet_type){
-          //replyの作成
-          case TweetType.REPLY:mention_time_line.prepend_node(tweet_node.copy());
-          break;
-          //rtのNode.eventの作成
-          case TweetType.RETWEET:
-          event_create(parsed_json_obj);
-          this.signal_pipe.event_update_event(parsed_json_obj);
-          break;
-        }
+        case ParsedJsonObjType.TWEET:create_tweet(parsed_json_obj);
         break;
       }
     });
@@ -105,12 +96,26 @@ class TLNode{
     });
   }
   
-  //eventの処理
-  private void event_create(ParsedJsonObj parsed_json_obj){
+  //tweetの作成
+  private void create_tweet(ParsedJsonObj parsed_json_obj){
+    TweetNode tweet_node=new TweetNode(parsed_json_obj,this.account,this.config,this.signal_pipe);
+    home_time_line.prepend_node(tweet_node);
+    switch(parsed_json_obj.tweet_type){
+      //replyの作成
+      case TweetType.REPLY:mention_time_line.prepend_node(tweet_node.copy());
+      break;
+    }
+  }
+  
+  //eventの作成
+  private void create_event(ParsedJsonObj parsed_json_obj){
     if(parsed_json_obj.is_mine){
       if(!event_notify_list_box.generic_set.contains(parsed_json_obj.id_str)){
-        event_notify_list_box.prepend_node(new Node.event(parsed_json_obj,account,config,signal_pipe));
-        //シグナルハンドラだけでどうにかしようと言う魂胆
+        event_notify_list_box.prepend_node(new EventNode.with_update(parsed_json_obj,account,config,signal_pipe));
+      }
+      Node copy_node;
+      if((copy_node=signal_pipe.event_update_event(parsed_json_obj))!=null){
+        home_time_line.prepend_node(copy_node);
       }
     }
   }

@@ -17,7 +17,8 @@ namespace SqliteUtil{
   );""";
   private const string CREATE_TABLE_EVENT_NOTIFY_SETTINGS="""
   CREATE TABLE EVENT_NOTIFY_SETTINGS(
-  event_node_count INT PRIMARY KEY NOT NULL
+  event_node_count INT PRIMARY KEY NOT NULL,
+  event_show_on_time_line TEXT NOT NULL
   );""";
   private const string CREATE_TABLE_FONT_QUERY="""
   CREATE TABLE FONT(
@@ -39,7 +40,7 @@ namespace SqliteUtil{
   );""";
   private const string INSERT_ACCOUNT_QUERY="INSERT INTO ACCOUNT VALUES($LIST_ID,$ID,$TOKEN,$TOKEN_SECRET);";
   private const string INSERT_COLOR_QUERY="INSERT INTO COLOR VALUES($ID,$DEFAULT_BG,$REPLY_BG,$RETWEET_BG,$MINE_BG);";
-  private const string INSERT_EVENT_NOTIFY_SETTINGS_QUERY="INSERT INTO EVENT_NOTIFY_SETTINGS VALUES($EVENT_NODE_COUNT);";
+  private const string INSERT_EVENT_NOTIFY_SETTINGS_QUERY="INSERT INTO EVENT_NOTIFY_SETTINGS VALUES($EVENT_NODE_COUNT,$EVENT_SHOW_ON_TIME_LINE);";
   private const string INSERT_FONT_QUERY="""
   INSERT INTO FONT VALUES(
   $ID,
@@ -62,7 +63,7 @@ namespace SqliteUtil{
   private const string DELETE_FROM_ACCOUNT_QUERY="DELETE FROM ACCOUNT WHERE list_id=$LIST_ID;";
   private const string UPDATE_ACCOUNT_ID_QUERY="UPDATE ACCOUNT SET list_id=$NEW_LIST_ID WHERE list_id=$OLD_LIST_ID;";
   private const string UPDATE_COLOR_QUERY="UPDATE COLOR SET default_bg=$DEFAULT_BG,reply_bg=$REPLY_BG,retweet_bg=$RETWEET_BG,mine_bg=$MINE_BG WHERE id=$ID;";
-  private const string UPDATE_EVENT_NOTIFY_SETTINGS_QUERY="UPDATE EVENT_NOTIFY_SETTINGS SET event_node_count=$EVENT_NODE_COUNT;";
+  private const string UPDATE_EVENT_NOTIFY_SETTINGS_QUERY="UPDATE EVENT_NOTIFY_SETTINGS SET event_node_count=$EVENT_NODE_COUNT,event_show_on_time_line=$EVENT_SHOW_ON_TIME_LINE;";
   private const string UPDATE_FONT_QUERY="""
   UPDATE FONT SET 
   use_default=$USE_DEFAULT,

@@ -37,6 +37,7 @@ public class Config{
   public int time_line_node_count;
   
   public int event_node_count;
+  public bool event_show_on_time_line;
   
   //時差
   public string datetime_format="%I:%M%P - %e %b %g";
@@ -72,5 +73,7 @@ public class Config{
     init_time_line_node_count=10;
     time_line_node_count=50;
     event_node_count=20;
+    
+    event_show_on_time_line=false;
   }
 }

@@ -4,7 +4,7 @@ using TwitterUtil;
 
 namespace SqliteUtil{
   //accountの読み出し
-  public void selectaccount(int id,Account account,Database db){
+  public void select_account(int id,Account account,Database db){
     int ec;
     Statement stmt;
     

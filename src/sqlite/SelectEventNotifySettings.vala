@@ -18,6 +18,8 @@ namespace SqliteUtil{
         switch(i){
           case 0:config.event_node_count=stmt.column_int(i);
           break;
+          case 1:config.event_show_on_time_line=bool.parse(stmt.column_text(i));
+          break;
         }
       }
     }

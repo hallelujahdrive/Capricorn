@@ -6,6 +6,7 @@ namespace TwitterUtil{
     EVENT,
     FRIENDS,
     NULL,
+    RETWEET,
     TWEET;
   }
   
@@ -25,14 +26,14 @@ namespace TwitterUtil{
     LIST_MEMBER_REMOVED,
     LIST_USER_SUBSCRIBED,
     LIST_USER_UNSUBSCRIBED,
-    UNKNOWN,
-    USER_UPDATE;
+    USER_UPDATE,
+    NULL;
   }
   
   //tweetのtype
   public enum TweetType{
     NORMAL,
-    REPLY,
-    RETWEET,
+    NULL,
+    REPLY;
   }
 }

@@ -19,7 +19,7 @@ class EventNotifyListBox:ScrolledListBox{
   
   //sort_func
   private int list_box_sort_func(ListBoxRow list_box_row1,ListBoxRow list_box_row2){
-    return (int)(((Node)list_box_row1.get_children().data).event_created_at-((Node)list_box_row2.get_children().data).event_created_at);
+    return (int)(((EventNode)list_box_row1.get_children().data).event_created_at-((EventNode)list_box_row2.get_children().data).event_created_at);
   }
   
   //prepend

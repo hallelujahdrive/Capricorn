@@ -91,7 +91,7 @@ class SettingsWindow:Dialog{
       for(int i=0;i<account_count_records;i++){
         Account account=new Account(TWITTER_CONSUMER_KEY,TWITTER_CONSUMER_SECRET);
         account_array.append_val((owned)account);
-        selectaccount(i,account_array.index(i),config.db);
+        select_account(i,account_array.index(i),config.db);
         account_verify_credential(account_array.index(i));
       }
     }

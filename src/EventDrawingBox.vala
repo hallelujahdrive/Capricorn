@@ -10,7 +10,7 @@ class EventDrawingBox:DrawingBox{
   private Surface icon_surface;
   //ロード中のSurface
   private Surface loading_surface;
-  private HashTable<string,Surface?> user_hash_table=new HashTable<string,Surface?>(str_hash,str_equal);
+  public HashTable<string,Surface?> user_hash_table=new HashTable<string,Surface?>(str_hash,str_equal);
   
   //描画するか否か
   private bool active=false;
@@ -117,6 +117,14 @@ class EventDrawingBox:DrawingBox{
         //再描画
         drawing_area.queue_draw();
       }
+    }
+  }
+  
+  //user_hash_tableの更新
+  public void update_hash_table(HashTable user_hash_table){
+    if(user_hash_table.length>0){
+      this.user_hash_table=user_hash_table;
+      active=true;
     }
   }
 }

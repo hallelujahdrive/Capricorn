@@ -11,6 +11,9 @@ class EventNotifySettingsPage:Frame{
   private SpinButton event_node_count_spin_button;
   
   [GtkChild]
+  private CheckButton event_show_on_time_line_check_button;
+  
+  [GtkChild]
   public Image tab;
   
   //Callback
@@ -19,11 +22,13 @@ class EventNotifySettingsPage:Frame{
     changed=true;
   }
   
+  
   public EventNotifySettingsPage(Config config){
     this.config=config;
     
     //spinbuttonへの値の挿入
     event_node_count_spin_button.set_value(this.config.event_node_count);
+    event_show_on_time_line_check_button.set_active(this.config.event_show_on_time_line);
     
     //フラグの初期化(値の挿入前にやると挿入時のシグナルでtrueになる)
     changed=false;
@@ -31,5 +36,6 @@ class EventNotifySettingsPage:Frame{
   
   public void get_values(){
     config.event_node_count=event_node_count_spin_button.get_value_as_int();
+    config.event_show_on_time_line=event_show_on_time_line_check_button.get_active();
   }
 }

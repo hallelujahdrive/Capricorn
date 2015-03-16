@@ -15,6 +15,7 @@ sources = \
 			DisplaySettingsPage.vala \
 			DrawingBox.vala \
 			EventDrawingBox.vala \
+			EventNode.vala \
 			EventNotifyListBox.vala \
 			EventNotifyPage.vala \
 			EventNotifySettingsPage.vala \
@@ -40,6 +41,7 @@ sources = \
 			TimeLine.vala \
 			TimeLineSettingsPage.vala \
 			TLNode.vala \
+			TweetNode.vala \
 			bitly/ShortingURL.vala \
 			bitly/Strings.vala \
 			sqlite/CountRecords.vala \

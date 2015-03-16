@@ -3,7 +3,7 @@ using Rest;
 
 namespace TwitterUtil{
   private GLib.Array<ParsedJsonObj> statuses_timeline(ProxyCall proxy_call,string screen_name){
-    //取得とセイキヒョウゲンカッコバクショウ
+    //取得
     GLib.Array<ParsedJsonObj> parsed_json_obj_array=new GLib.Array<ParsedJsonObj>();
     try{
       proxy_call.run();

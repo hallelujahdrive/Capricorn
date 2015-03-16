@@ -8,7 +8,6 @@ namespace TwitterUtil{
     public int end_indices;
   }
   //mediaの構造体
-  [Compact]
   public struct media{
     public string display_url;
     public string expanded_url;

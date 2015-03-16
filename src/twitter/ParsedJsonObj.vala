@@ -24,8 +24,8 @@ namespace TwitterUtil{
     public bool is_mine=false;
         
     public ParsedJsonObjType type=ParsedJsonObjType.NULL;
-    public EventType? event_type;
-    public TweetType tweet_type=TweetType.NORMAL;
+    public EventType? event_type=EventType.NULL;
+    public TweetType tweet_type=TweetType.NULL;
     
     public DateTime event_created_at;
     public DateTime created_at;
@@ -33,9 +33,6 @@ namespace TwitterUtil{
     public ParsedJsonObj(Json.Node? json_node,string? my_screen_name){
       if(json_node!=null){
         Json.Object json_obj=json_node.get_object();
-        //type変更
-        type=ParsedJsonObjType.TWEET;
-        
         //jsonを解析
         if(json_obj.has_member("delete")){
           //deleteの解析.json_objはdelete.statusから取得
@@ -80,8 +77,6 @@ namespace TwitterUtil{
                 break;
                 case "user_update":event_type=EventType.USER_UPDATE;
                 break;
-                default:event_type=EventType.UNKNOWN;
-                break;
               }
               break;
               case "source":
@@ -96,7 +91,6 @@ namespace TwitterUtil{
           type=ParsedJsonObjType.FRIENDS;
           return;
         }else if(json_obj.has_member("retweeted_status")){
-
           //retweetの解析.json_objはretweet_statusから取得
           foreach(string retweeted_status_member in json_obj.get_members()){
             switch(retweeted_status_member){
@@ -108,7 +102,7 @@ namespace TwitterUtil{
               break;
               case "user":
               //userの解析
-              tweet_type=TweetType.RETWEET;
+              type=ParsedJsonObjType.RETWEET;
               sub_user=parseuser(json_obj.get_object_member(retweeted_status_member),null);
               if(sub_user.screen_name==my_screen_name){
                 retweeted=true;
@@ -150,7 +144,10 @@ namespace TwitterUtil{
             break;
             case "text":
             text=json_obj.get_string_member(member);
-            if(my_screen_name!=null&&text.contains(my_screen_name)&&tweet_type!=TweetType.RETWEET){
+            if(type==ParsedJsonObjType.NULL){
+              type=ParsedJsonObjType.TWEET;
+            }
+            if(my_screen_name!=null&&text.contains(my_screen_name)){
               tweet_type=TweetType.REPLY;
             }
             break;
