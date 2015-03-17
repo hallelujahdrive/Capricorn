@@ -11,7 +11,7 @@ class EventNotifyListBox:ScrolledListBox{
     node_count_limit=config.event_node_count;
     list_box.set_sort_func(list_box_sort_func);
     
-    signal_pipe.event_node_count_change_event.connect(()=>{
+    signal_pipe.event_notify_settings_change_event.connect(()=>{
       node_count_limit=config.event_node_count;
       delete_nodes();
     });

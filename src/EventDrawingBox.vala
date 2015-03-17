@@ -10,10 +10,10 @@ class EventDrawingBox:DrawingBox{
   private Surface icon_surface;
   //ロード中のSurface
   private Surface loading_surface;
-  public HashTable<string,Surface?> user_hash_table=new HashTable<string,Surface?>(str_hash,str_equal);
+  private HashTable<string,Surface?> user_hash_table=new HashTable<string,Surface?>(str_hash,str_equal);
   
   //描画するか否か
-  private bool active=false;
+  public bool active=false;
   
   //アイコンの描画位置
   private int icon_pos;
@@ -32,9 +32,9 @@ class EventDrawingBox:DrawingBox{
       icon_pos=26;
       
       //image_surfaceの描画
-      user_hash_table.foreach((screen_name,surface)=>{
-        if(surface!=null){
-          context.set_source_surface(surface,icon_pos,0);
+      user_hash_table.foreach((hash_key,hash_value)=>{
+        if(hash_value!=null){
+          context.set_source_surface(hash_value,icon_pos,0);
         }else{
           context.set_source_surface(loading_surface,icon_pos,0);
         }
@@ -109,22 +109,10 @@ class EventDrawingBox:DrawingBox{
   public void remove_user(User user){
     if(user_hash_table.remove(user.id_str)){
       if(user_hash_table.length==0){
-        //userが0の時、Nodeを削除(親遠すぎわろたでち)
-        weak EventNotifyListBox parent=(EventNotifyListBox)this.get_parent().get_parent().get_parent().get_parent().get_parent();
-        weak ListBoxRow child=(ListBoxRow)this.get_parent().get_parent();
-        parent.remove_list_box_row(child);
-      }else{
-        //再描画
-        drawing_area.queue_draw();
+        active=false;
       }
-    }
-  }
-  
-  //user_hash_tableの更新
-  public void update_hash_table(HashTable user_hash_table){
-    if(user_hash_table.length>0){
-      this.user_hash_table=user_hash_table;
-      active=true;
+      //再描画
+      drawing_area.queue_draw();
     }
   }
 }

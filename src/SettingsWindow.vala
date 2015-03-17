@@ -66,7 +66,7 @@ class SettingsWindow:Dialog{
       //アップデート
       update_event_notify_settings(config);
       //シグナルの発行
-      signal_pipe.event_node_count_change_event();
+      signal_pipe.event_notify_settings_change_event();
     }
     
     //nodeの表示数の更新

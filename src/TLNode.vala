@@ -73,10 +73,11 @@ class TLNode{
         break;
         //eventの処理
         case ParsedJsonObjType.EVENT:
-        switch(parsed_json_obj.event_type){
-          case TwitterUtil.EventType.FAVORITE:create_event(parsed_json_obj);
+        create_event(parsed_json_obj);
+        /*switch(parsed_json_obj.event_type){
+          case TwitterUtil.EventType.FAVORITE:
           break;
-        }
+        }*/
         break;
         //retweetの処理
         case ParsedJsonObjType.RETWEET:
@@ -113,9 +114,8 @@ class TLNode{
       if(!event_notify_list_box.generic_set.contains(parsed_json_obj.id_str)){
         event_notify_list_box.prepend_node(new EventNode.with_update(parsed_json_obj,account,config,signal_pipe));
       }
-      Node copy_node;
-      if((copy_node=signal_pipe.event_update_event(parsed_json_obj))!=null){
-        home_time_line.prepend_node(copy_node);
+      if(signal_pipe.event_update_event(parsed_json_obj)){
+        home_time_line.prepend_node(new EventNode.no_update(parsed_json_obj,account,config,signal_pipe));
       }
     }
   }
