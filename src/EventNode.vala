@@ -26,12 +26,19 @@ class EventNode:Node{
     
     //シグナルハンドラ
     this.signal_pipe.event_update_event.connect((parsed_json_obj)=>{
+      bool res=false;
       if(parsed_json_obj.id_str==id_str){
-        return event_node_update(parsed_json_obj)&&this.config.event_show_on_time_line;
+        res=event_node_update(parsed_json_obj)&&this.config.event_show_on_time_line;
       }else if(parsed_json_obj.type==ParsedJsonObjType.DELETE){
         retweet_event_drawing_box.remove_user(parsed_json_obj.user);
       }
-      return false;
+      if(!favorite_event_drawing_box.active&&!retweet_event_drawing_box.active){
+        //userが0の時、Nodeを削除(親遠すぎわろたでち)
+        weak EventNotifyListBox parent=(EventNotifyListBox)this.get_parent().get_parent().get_parent().get_parent();
+        weak ListBoxRow child=(ListBoxRow)this.get_parent();
+        parent.remove_list_box_row(child);
+      }
+      return res;
     });
   }
   
@@ -70,12 +77,6 @@ class EventNode:Node{
       retweet_event_drawing_box.add_user(parsed_json_obj.sub_user);
       add=true;
       break;
-    }
-    if(!favorite_event_drawing_box.active&&!retweet_event_drawing_box.active){
-      //userが0の時、Nodeを削除(親遠すぎわろたでち)
-      weak EventNotifyListBox parent=(EventNotifyListBox)this.get_parent().get_parent().get_parent().get_parent();
-      weak ListBoxRow child=(ListBoxRow)this.get_parent();
-      parent.remove_list_box_row(child);
     }
     return add;
   }

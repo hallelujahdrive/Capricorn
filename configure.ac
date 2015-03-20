@@ -62,7 +62,9 @@ prefix=${prefix}/local
 AC_SUBST(CPR_CFLAGS)
 AC_SUBST(CPR_LIBS)
 AC_SUBST(CPR_VALA_FLAGS)
+AC_SUBST(bindir)
 AC_SUBST(datadir)
+AC_SUBST(prefix)
 
 AC_CHECK_FUNCS([atexit memchr memset setlocale strstr])
 
