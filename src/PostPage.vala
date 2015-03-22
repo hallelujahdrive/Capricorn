@@ -54,12 +54,12 @@ class PostPage:Frame{
     chars_count=140-buffer.get_char_count();
     chars_count_label.set_text(chars_count.to_string());
     //post_buttonのプロパティ
+    if(chars_count==140){
+      url_shorting_button.set_sensitive(false);
+      reply_reset();
+    }
     if(chars_count==140||chars_count<0){
       post_button.set_sensitive(false);
-      url_shorting_button.set_sensitive(false);
-      if(chars_count==140){
-        reply_reset();
-      }
     }else{
       post_button.set_sensitive(true);
       url_shorting_button.set_sensitive(true);
