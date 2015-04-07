@@ -12,6 +12,7 @@ class TimeLine:ScrolledListBox{
     
     node_count_limit=config.time_line_node_count;
     
+    //シグナルハンドラ
     signal_pipe.time_line_node_count_change_event.connect(()=>{
       node_count_limit=config.time_line_node_count;
       delete_nodes();
@@ -21,13 +22,19 @@ class TimeLine:ScrolledListBox{
   //home
   public TimeLine.home(Account account,Config config,SignalPipe signal_pipe){
     this(config,signal_pipe);
-    init(statuses_home_timeline(account,config.init_time_line_node_count),account);
+    //シグナルハンドラ
+    this.signal_pipe.show.connect(()=>{
+      init(statuses_home_timeline(account,config.init_time_line_node_count),account);
+    });
   }
   
   //mention
   public TimeLine.mention(Account account,Config config,SignalPipe signal_pipe){
     this(config,signal_pipe);
-    init(statuses_mention_timeline(account,config.init_time_line_node_count),account);
+    //シグナルハンドラ
+    this.signal_pipe.show.connect(()=>{
+      init(statuses_mention_timeline(account,config.init_time_line_node_count),account);
+    });
   }
   
   //Nodeを配置

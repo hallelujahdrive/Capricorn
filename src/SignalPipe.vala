@@ -6,6 +6,8 @@ public class SignalPipe{
   //colorが変更された
   public signal void color_change_event();
   
+  public signal void show();
+  
   //timeline_node_conutが変更された
   public signal void time_line_node_count_change_event();
   

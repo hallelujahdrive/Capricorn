@@ -51,11 +51,13 @@ public class MainWindow:ApplicationWindow{
     various_notebook.append_page(post_page,post_page.tab);
     various_notebook.append_page(event_notify_page,event_notify_page.tab);
     button_box.pack_end(settings_button,false,false,0);
-
+    
+    init();
+    
     //シグナルハンドラ
     //表示に時間かかるからあとから読み込み
     this.show.connect(()=>{
-      load_notebooks();
+      signal_pipe.show();
     });
     
     //アクティブなTLとPostアカウントの同期
@@ -110,8 +112,8 @@ public class MainWindow:ApplicationWindow{
     settings_button.set_sensitive(true);
   }
   
-  private void load_notebooks(){
-    //TLのロード
+  private void init(){
+    //TLの();ロード
     for(int i=0;i<account_array.length;i++){
       TLNode tl_node=new TLNode(account_array.index(i),config,signal_pipe);
       tl_node_array.append_val(tl_node);
@@ -124,6 +126,7 @@ public class MainWindow:ApplicationWindow{
   //初回起動時,認証後に再読込する
   public void load_all(){
     signal_pipe.account_array_change_event();
-    load_notebooks();
+    init();
+    signal_pipe.show();
   }
 }
