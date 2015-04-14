@@ -14,8 +14,8 @@ class EventNode:Node{
     base(parsed_json_obj,account,config,signal_pipe);
     
     //EventDrawingBoxの作成
-    retweet_event_drawing_box=new EventDrawingBox.retweet(this.parsed_json_obj,this.config,this.signal_pipe);
-    favorite_event_drawing_box=new EventDrawingBox.favorite(this.parsed_json_obj,this.config,this.signal_pipe);
+    retweet_event_drawing_box=new EventDrawingBox.retweet(this.config,this.signal_pipe);
+    favorite_event_drawing_box=new EventDrawingBox.favorite(this.config,this.signal_pipe);
     
     this.attach(retweet_event_drawing_box,1,4,1,1);
     this.attach(favorite_event_drawing_box,1,5,1,1);    
@@ -66,7 +66,7 @@ class EventNode:Node{
       case ParsedJsonObjType.EVENT:
       switch(parsed_json_obj.event_type){
         case TwitterUtil.EventType.FAVORITE:
-        favorite_event_drawing_box.add_user(parsed_json_obj.sub_user);
+        favorite_event_drawing_box.add_user(parsed_json_obj.sub_user,parsed_json_obj.favorite_count);
         add=true;
         break;
         case TwitterUtil.EventType.UNFAVORITE:favorite_event_drawing_box.remove_user(parsed_json_obj.sub_user);
@@ -74,7 +74,7 @@ class EventNode:Node{
       }
       break;
       case ParsedJsonObjType.RETWEET:
-      retweet_event_drawing_box.add_user(parsed_json_obj.sub_user);
+      retweet_event_drawing_box.add_user(parsed_json_obj.sub_user,parsed_json_obj.retweet_count);
       add=true;
       break;
     }

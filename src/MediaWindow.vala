@@ -25,7 +25,7 @@ class MediaWindow:Gtk.Window{
   private ComboBox combobox;
   
   [GtkChild]
-  private ListStore liststore;
+  private Gtk.ListStore liststore;
   private TreeIter iter;
   
   [GtkChild]

@@ -23,7 +23,7 @@ class TweetNode:Node{
     
     //rt_drawing_boxの追加
     if(this.parsed_json_obj.type==ParsedJsonObjType.RETWEET){
-      var rt_drawing_box=new RetweetDrawingBox(this.parsed_json_obj.sub_user,this.config,signal_pipe);
+      var rt_drawing_box=new RetweetDrawingBox(this.parsed_json_obj.sub_user,this.parsed_json_obj.retweet_count,this.config,signal_pipe);
       this.attach(rt_drawing_box,1,4,1,1);
     }
     

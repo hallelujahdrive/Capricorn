@@ -11,7 +11,7 @@ class AccountComboBox:ComboBox{
   private weak Config config;
   //widget
   [GtkChild]
-  private ListStore account_list_store;
+  private Gtk.ListStore account_list_store;
   
   private CellRendererPixbuf cell_pixbuf=new CellRendererPixbuf();
   private CellRendererText cell_text=new CellRendererText();

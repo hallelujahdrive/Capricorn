@@ -16,23 +16,40 @@ class EventDrawingBox:DrawingBox{
   public bool active=false;
   
   //アイコンの描画位置
+  private int offset;
   private int icon_pos;
+  //カウント
+  private string text;
   
   public override bool drawing_area_draw_cb(Context context){
     base.drawing_area_draw_cb(context);
     if(active){
       width=this.get_allocated_width();
       
+      layout=Pango.cairo_create_layout(context);
+
+      //fontの設定
+      set_font(context);
+      
+      //textの描画
+      layout.set_markup(text,-1);
+      layout.set_width((int)width*Pango.SCALE);
+      //offset
+      context.move_to(offset,0);
+      Pango.cairo_show_layout(context,layout);
+      layout.get_pixel_size(out icon_pos,null);
+      
       //iconの描画
       if(icon_surface!=null){
         context.set_source_surface(icon_surface,0,0);
         context.paint();
       }
-      //描画位置の調整(16+spacer(10px)=26)
-      icon_pos=26;
+      
+      //描画位置の調整(offset+spacer=10)
+      icon_pos=icon_pos+offset+10;
       
       //image_surfaceの描画
-      user_hash_table.foreach((hash_key,hash_value)=>{
+      user_hash_table.for_each((hash_key,hash_value)=>{
         if(hash_value!=null){
           context.set_source_surface(hash_value,icon_pos,0);
         }else{
@@ -49,19 +66,21 @@ class EventDrawingBox:DrawingBox{
     return true;
   }
   
-  public EventDrawingBox(ParsedJsonObj parsed_json_obj,Config config,SignalPipe signal_pipe){
+  public EventDrawingBox(Config config,SignalPipe signal_pipe){
     base(config,signal_pipe);
   }
   
   //RT
-  public EventDrawingBox.retweet(ParsedJsonObj parsed_json_obj,Config config,SignalPipe signal_pipe){
-    this(parsed_json_obj,config,signal_pipe);
+  public EventDrawingBox.retweet(Config config,SignalPipe signal_pipe){
+    this(config,signal_pipe);
+    offset=20;
     init(RETWEET_ON_ICON);
   }
   
   //☆
-  public EventDrawingBox.favorite(ParsedJsonObj parsed_json_obj,Config config,SignalPipe signal_pipe){
-    this(parsed_json_obj,config,signal_pipe);
+  public EventDrawingBox.favorite(Config config,SignalPipe signal_pipe){
+    this(config,signal_pipe);
+    offset=16;
     init(FAVORITE_ON_ICON);
   }
   
@@ -77,8 +96,9 @@ class EventDrawingBox:DrawingBox{
   }
   
   //追加
-  public void add_user(User user){
+  public void add_user(User user,int64 count){
     active=true;
+    text=count.to_string();
     //rotate_surfaceの起動
     if(!profile_image_loaded){
       profile_image_loaded=false;
@@ -113,6 +133,17 @@ class EventDrawingBox:DrawingBox{
       }
       //再描画
       drawing_area.queue_draw();
+    }
+   } 
+  
+  //color,descriptionの設定
+  private void set_font(Context context){
+    if(config.font_profile.use_default){
+      context_set_source_rgba(context,config.font_profile.text_font_rgba);
+      layout.set_font_description(config.font_profile.text_font_desc);
+    }else{
+      context_set_source_rgba(context,config.font_profile.footer_font_rgba);
+      layout.set_font_description(config.font_profile.footer_font_desc);
     }
   }
 }

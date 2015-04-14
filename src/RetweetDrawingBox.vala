@@ -7,7 +7,7 @@ using TwitterUtil;
 
 class RetweetDrawingBox:DrawingBox{ 
   private const string retweet_text="Retweeted by";
-  private StringBuilder sub_screen_name_sb=new StringBuilder();
+  private string text;
   private Surface image_surface;
   
   //アイコンの描画位置
@@ -29,8 +29,8 @@ class RetweetDrawingBox:DrawingBox{
     Pango.cairo_show_layout(context,layout);
     layout.get_pixel_size(out icon_pos,null);
     
-    //sub_screen_nameの描画
-    layout.set_markup(sub_screen_name_sb.str,-1);
+    //textの描画
+    layout.set_markup(text,-1);
     //描画位置の調整(spacer(5px)+pixuf(16px)+spacer(5px)=26px)
     context.move_to(icon_pos+26,0);
     Pango.cairo_show_layout(context,layout);
@@ -50,16 +50,15 @@ class RetweetDrawingBox:DrawingBox{
     return true;
   }
   
-  public RetweetDrawingBox(User rtuser,Config config,SignalPipe signal_pipe){
+  public RetweetDrawingBox(User rt_user,int64 retweet_count,Config config,SignalPipe signal_pipe){
     base(config,signal_pipe);
     
-    sub_screen_name_sb.append("@");
-    sub_screen_name_sb.append(rtuser.screen_name);
+    text="@%s (%lld)".printf(rt_user.screen_name,retweet_count);
     
     //load中の画像のRotateSurface
     rotate_surface_run(16);
     //profile_image_pixbufの取得
-    get_pixbuf_async.begin(config.cache_dir_path,rtuser.screen_name,rtuser.profile_image_url,16,config.profile_image_hash_table,(obj,res)=>{
+    get_pixbuf_async.begin(config.cache_dir_path,rt_user.screen_name,rt_user.profile_image_url,16,config.profile_image_hash_table,(obj,res)=>{
       image_surface=cairo_surface_create_from_pixbuf(get_pixbuf_async.end(res),1,null);
       profile_image_loaded=true;
       //再描画

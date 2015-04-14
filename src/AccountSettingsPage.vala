@@ -20,7 +20,7 @@ class AccountSettingsPage:Frame{
   private TreeView account_tree_view;
   
   [GtkChild]
-  private ListStore account_list_store;
+  private Gtk.ListStore account_list_store;
   
   [GtkChild]
   private Button account_remove_button;

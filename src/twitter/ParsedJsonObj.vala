@@ -21,6 +21,9 @@ namespace TwitterUtil{
     public bool retweeted=false;
     public bool favorited=false;
     
+    public int64 retweet_count=0;
+    public int64 favorite_count=0;
+    
     public bool is_mine=false;
         
     public ParsedJsonObjType type=ParsedJsonObjType.NULL;
@@ -118,6 +121,8 @@ namespace TwitterUtil{
             break;
             case "favorited":favorited=json_obj.get_boolean_member(member);
             break;
+            case "favorite_count":favorite_count=json_obj.get_int_member(member);
+            break;
             case "id_str":id_str=json_obj.get_string_member(member);
             break;
             case "in_reply_to_status_id_str":in_reply_to_status_id_str=json_obj.get_string_member(member);
@@ -126,6 +131,8 @@ namespace TwitterUtil{
             if(!retweeted){
               retweeted=json_obj.get_boolean_member(member);
             }
+            break;
+            case "retweet_count":retweet_count=json_obj.get_int_member(member);
             break;
             case "source":parse_source(json_obj.get_string_member(member));
             break;

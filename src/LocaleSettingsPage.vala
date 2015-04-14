@@ -19,7 +19,7 @@ class LocaleSettingsPage:Frame{
   private ComboBox timezone_cbox;
   
   [GtkChild]
-  private ListStore timezone_list_store;
+  private Gtk.ListStore timezone_list_store;
   private TreeIter iter;
   
   [GtkCallback]
