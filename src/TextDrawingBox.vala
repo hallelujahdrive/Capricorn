@@ -18,17 +18,17 @@ class TextDrawingBox:DrawingBox{
     int index_,trailing;
     layout.xy_to_index((int)event_button.x*Pango.SCALE,(int)event_button.y*Pango.SCALE,out index_,out trailing);
     //media_arrayから検索
-    for(int i=0;i<parsed_json_obj.media_array.length;i++){
-      if(index_>=parsed_json_obj.media_array[i].start_indices&&index_<parsed_json_obj.media_array[i].end_indices){
+    for(int i=0;i<parsed_json_obj.media.length;i++){
+      if(index_>=parsed_json_obj.media[i].start_indices&&index_<parsed_json_obj.media[i].end_indices){
         weak TweetNode parent=(TweetNode)this.get_parent();
-        signal_pipe.media_url_click_event(parent.copy(),parsed_json_obj.media_array);
+        signal_pipe.media_url_click_event(parent.copy(),parsed_json_obj.media);
         break;
       }
     }
     //urls_arrayから検索
-    for(int i=0;i<parsed_json_obj.urls_array.length;i++){
-      if(index_>=parsed_json_obj.urls_array[i].start_indices&&index_<parsed_json_obj.urls_array[i].end_indices){
-        open_url(parsed_json_obj.urls_array[i].expanded_url);
+    for(int i=0;i<parsed_json_obj.urls.length;i++){
+      if(index_>=parsed_json_obj.urls[i].start_indices&&index_<parsed_json_obj.urls[i].end_indices){
+        open_url(parsed_json_obj.urls[i].expanded_url);
         break;
       }
     }
@@ -67,8 +67,8 @@ class TextDrawingBox:DrawingBox{
     this.vexpand=true;
     
     //textの整形
-    parsed_text=parse_text(ref text,this.parsed_json_obj.media_array,this.parsed_json_obj.urls_array);
-    get_incides(text,this.parsed_json_obj.media_array,this.parsed_json_obj.urls_array);
+    parsed_text=parse_text(ref text,this.parsed_json_obj.media,this.parsed_json_obj.urls);
+    get_incides(text,this.parsed_json_obj.media,this.parsed_json_obj.urls);
   }
   
   private void open_media_page(){

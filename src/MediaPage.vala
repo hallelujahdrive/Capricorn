@@ -8,7 +8,7 @@ using URIUtil;
 [Compact]
 [GtkTemplate(ui="/org/gtk/capricorn/ui/media_page.ui")]
 public class MediaPage:Frame{
-  private unowned media[] media_array;
+  private unowned url[] media_array;
 
   private Array<PhotoBox> photo_box_array=new Array<PhotoBox>();
   
@@ -53,7 +53,7 @@ public class MediaPage:Frame{
     this.destroy();
   }
   
-  public MediaPage(Node tweet_node,media[] media_array){
+  public MediaPage(Node tweet_node,url[] media_array){
     this.media_array=media_array;
     
     tweet_node_box.add(tweet_node);

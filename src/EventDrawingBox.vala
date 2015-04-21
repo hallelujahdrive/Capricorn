@@ -16,7 +16,6 @@ class EventDrawingBox:DrawingBox{
   public bool active=false;
   
   //アイコンの描画位置
-  private int offset;
   private int icon_pos;
   //カウント
   private string text;
@@ -35,7 +34,7 @@ class EventDrawingBox:DrawingBox{
       layout.set_markup(text,-1);
       layout.set_width((int)width*Pango.SCALE);
       //offset
-      context.move_to(offset,0);
+      context.move_to(20,0);
       Pango.cairo_show_layout(context,layout);
       layout.get_pixel_size(out icon_pos,null);
       
@@ -46,7 +45,7 @@ class EventDrawingBox:DrawingBox{
       }
       
       //描画位置の調整(offset+spacer=10)
-      icon_pos=icon_pos+offset+10;
+      icon_pos=icon_pos+30;
       
       //image_surfaceの描画
       user_hash_table.for_each((hash_key,hash_value)=>{
@@ -73,14 +72,12 @@ class EventDrawingBox:DrawingBox{
   //RT
   public EventDrawingBox.retweet(Config config,SignalPipe signal_pipe){
     this(config,signal_pipe);
-    offset=20;
     init(RETWEET_ON_ICON);
   }
   
   //☆
   public EventDrawingBox.favorite(Config config,SignalPipe signal_pipe){
     this(config,signal_pipe);
-    offset=16;
     init(FAVORITE_ON_ICON);
   }
   

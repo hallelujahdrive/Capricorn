@@ -24,7 +24,7 @@ public class SignalPipe{
   public signal void url_shorting_button_click_event();
 
   //media_urlがクリックされた
-  public signal void media_url_click_event(Node tweet_node,media[] media_array);
+  public signal void media_url_click_event(Node tweet_node,url[] media_array);
   
   //delete
   public signal void delete_tweet_node_event(string id_str);

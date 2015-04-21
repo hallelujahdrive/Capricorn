@@ -4,7 +4,7 @@ using URIUtil;
 
 namespace StringUtil{
   //textの整形(ほとんどurlだけ)
-  public string parse_text(ref string text,media[] media_array,urls[] urls_array){
+  public string parse_text(ref string text,url[] media_array,url[] urls_array){
     string parsed_text=text;
     //urlを置換
     try{
@@ -31,7 +31,7 @@ namespace StringUtil{
   }
   
   //urlのincidesを取得
-  public void get_incides(string text,media[] media_array,urls[] urls_array){
+  public void get_incides(string text,url[] media_array,url[] urls_array){
    int start_index=0;
    for(int i=0;i<media_array.length;i++){
      media_array[i].start_indices=text.index_of(media_array[i].display_url,start_index);

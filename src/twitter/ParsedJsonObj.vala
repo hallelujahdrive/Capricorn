@@ -13,8 +13,9 @@ namespace TwitterUtil{
     
     public string? retweeted_status_id_str;
     
-    public media[] media_array;
-    public urls[] urls_array;
+    public hashtag[] hashtags;
+    public url[] media;
+    public url[] urls;
         
     public string? in_reply_to_status_id_str;
     
@@ -80,6 +81,8 @@ namespace TwitterUtil{
                 break;
                 case "user_update":event_type=EventType.USER_UPDATE;
                 break;
+                default :print("%s\n",event_member);
+                break;
               }
               break;
               case "source":
@@ -123,6 +126,8 @@ namespace TwitterUtil{
             break;
             case "favorite_count":favorite_count=json_obj.get_int_member(member);
             break;
+            case "hashtags":parse_hashtags(json_obj.get_array_member(member));
+            break;
             case "id_str":id_str=json_obj.get_string_member(member);
             break;
             case "in_reply_to_status_id_str":in_reply_to_status_id_str=json_obj.get_string_member(member);
@@ -141,10 +146,15 @@ namespace TwitterUtil{
             //entitiesの解析
             Json.Object entities_obj=json_obj.get_object_member(member);
             foreach(string entities_member in entities_obj.get_members()){
+              var json_array=entities_obj.get_array_member(entities_member);
               switch(entities_member){
-                case "media":parse_media(entities_obj.get_array_member(entities_member));
+                case "media":
+                media=new url[json_array.get_length()];
+                parse_url(media,json_array);
                 break;
-                case "urls":parse_urls(entities_obj.get_array_member(entities_member));
+                case "urls":
+                urls=new url[json_array.get_length()];
+                parse_url(urls,json_array);
                 break;
               }
             }
@@ -201,6 +211,24 @@ namespace TwitterUtil{
       return created_at;
     }
     
+    //hashtagの解析
+    private void parse_hashtags(Json.Array hashtags_json_array){
+      hashtags=new hashtag[hashtags_json_array.get_length()];
+      for(int i=0;i<hashtags_json_array.get_length();i++){
+        Json.Object hashtag_json_obj=hashtags_json_array.get_object_element(i);
+        foreach(string hashtag_member in hashtag_json_obj.get_members()){
+          switch(hashtag_member){
+            case "end_indices":hashtags[i].end_indices=(int)hashtag_json_obj.get_int_member(hashtag_member);
+            break;
+            case "start_indices":hashtags[i].start_indices=(int)hashtag_json_obj.get_int_member(hashtag_member); 
+            break;
+            case "text":hashtags[i].text=hashtag_json_obj.get_string_member(hashtag_member);
+            break;
+          }
+        }
+      }
+    }
+    
     //nameの&の置換(やらないとmark upでコケる
     private string parse_name(string get_name){
       string name_regex=null;
@@ -228,25 +256,28 @@ namespace TwitterUtil{
     }
   
     //urlの解析
-    private void parse_urls(Json.Array urls_json_array){
-      urls_array=new urls[urls_json_array.get_length()];
-      for(int i=0;i<urls_json_array.get_length();i++){
-        Json.Object urls_json_obj=urls_json_array.get_object_element(i);
-        foreach(string member in urls_json_obj.get_members()){
+    private void parse_url(url[] url_array,Json.Array url_json_array){
+      for(int i=0;i<url_json_array.get_length();i++){
+        Json.Object url_json_obj=url_json_array.get_object_element(i);
+        foreach(string member in url_json_obj.get_members()){
           switch(member){
-            case "display_url":urls_array[i].display_url=urls_json_obj.get_string_member(member);
+            case "display_url":url_array[i].display_url=url_json_obj.get_string_member(member);
             break;
-            case "expanded_url":urls_array[i].expanded_url=urls_json_obj.get_string_member(member);
+            case "expanded_url":url_array[i].expanded_url=url_json_obj.get_string_member(member);
             break;
-            case "url":urls_array[i].url=urls_json_obj.get_string_member(member);
+            case "media_url":url_array[i].media_url=url_json_obj.get_string_member(member);
+            break;
+            case "media_url_https":url_array[i].media_url_https=url_json_obj.get_string_member(member);
+            break;
+            case "url":url_array[i].url=url_json_obj.get_string_member(member);
             break;
             case "indices":
-            Json.Array indices_json_array=urls_json_obj.get_array_member(member);
+            Json.Array indices_json_array=url_json_obj.get_array_member(member);
             for(int j=0;j<2;j++){
               switch(j){
-                case 0:urls_array[i].start_indices=(int)indices_json_array.get_int_element(j);
+                case 0:url_array[i].start_indices=(int)indices_json_array.get_int_element(j);
                 break;
-                case 1:urls_array[i].end_indices=(int)indices_json_array.get_int_element(j);
+                case 1:url_array[i].end_indices=(int)indices_json_array.get_int_element(j);
                 break;
               }
             }
@@ -282,39 +313,6 @@ namespace TwitterUtil{
         }
       }
       return new User(name,screen_name,id_str,profile_image_url,is_protected);
-    }
-    
-    //mediaの解析
-    private void parse_media(Json.Array media_json_array){
-      media_array=new media[media_json_array.get_length()];
-      for(int i=0;i<media_json_array.get_length();i++){
-        Json.Object media_json_obj=media_json_array.get_object_element(i);
-        foreach(string member in media_json_obj.get_members()){
-          switch(member){
-            case "display_url":media_array[i].display_url=media_json_obj.get_string_member(member);
-            break;
-            case "expanded_url":media_array[i].expanded_url=media_json_obj.get_string_member(member);
-            break;
-            case "media_url":media_array[i].media_url=media_json_obj.get_string_member(member);
-            break;
-            case "media_url_https":media_array[i].media_url_https=media_json_obj.get_string_member(member);
-            break;
-            case "url":media_array[i].url=media_json_obj.get_string_member(member);
-            break;
-            case "indices":
-            Json.Array indices_json_array=media_json_obj.get_array_member(member);
-            for(int j=0;j<2;j++){
-              switch(j){
-                case 0:media_array[i].start_indices=(int)indices_json_array.get_int_element(j);
-                break;
-                case 1:media_array[i].end_indices=(int)indices_json_array.get_int_element(j);
-                break;
-              }
-            }
-            break;
-          }
-        }
-      }
     }
   }
 }
