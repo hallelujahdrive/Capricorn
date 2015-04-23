@@ -8,6 +8,7 @@ using URIUtil;
 
 class TextDrawingBox:DrawingBox{
   private weak ParsedJsonObj parsed_json_obj;
+  private weak Account account;
   private string text;
   private string parsed_text;
   
@@ -17,7 +18,14 @@ class TextDrawingBox:DrawingBox{
     
     int index_,trailing;
     layout.xy_to_index((int)event_button.x*Pango.SCALE,(int)event_button.y*Pango.SCALE,out index_,out trailing);
-    //media_arrayから検索
+    //hashtagsから検索
+    for(int i=0;i<parsed_json_obj.hashtags.length;i++){
+      if(index_>=parsed_json_obj.hashtags[i].indices[0]&&index_<parsed_json_obj.hashtags[i].indices[1]){
+        signal_pipe.add_text_event(" #%s".printf(parsed_json_obj.hashtags[i].text),null,account.my_list_id);
+        break;
+      }
+    }
+    //mediaから検索
     for(int i=0;i<parsed_json_obj.media.length;i++){
       if(index_>=parsed_json_obj.media[i].indices[0]&&index_<parsed_json_obj.media[i].indices[1]){
         weak TweetNode parent=(TweetNode)this.get_parent();
@@ -25,7 +33,7 @@ class TextDrawingBox:DrawingBox{
         break;
       }
     }
-    //urls_arrayから検索
+    //urlsから検索
     for(int i=0;i<parsed_json_obj.urls.length;i++){
       if(index_>=parsed_json_obj.urls[i].indices[0]&&index_<parsed_json_obj.urls[i].indices[1]){
         open_url(parsed_json_obj.urls[i].expanded_url);
@@ -57,10 +65,11 @@ class TextDrawingBox:DrawingBox{
     return true;
   }
   
-  public TextDrawingBox(ParsedJsonObj parsed_json_obj,Config config,SignalPipe signal_pipe){
+  public TextDrawingBox(ParsedJsonObj parsed_json_obj,Account account,Config config,SignalPipe signal_pipe){
     base(config,signal_pipe);
     
     this.parsed_json_obj=parsed_json_obj;
+    this.account=account;
     text=this.parsed_json_obj.text;
         
     //縦に広がるようにする

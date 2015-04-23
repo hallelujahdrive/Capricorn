@@ -14,8 +14,8 @@ public class SignalPipe{
   //event_node_node_conutが変更された
   public signal void event_notify_settings_change_event();
   
-  //リプライの要求
-  public signal void reply_request_event(Node tweet_node,int my_list_id);
+  //textviewに文字列を追加
+  public signal void add_text_event(string text,Node? tweet_node,int my_list_id);
   
   //post
   public signal void post_button_click_event();

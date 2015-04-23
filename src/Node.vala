@@ -40,7 +40,7 @@ public class Node:Grid{
     screen_name=this.parsed_json_obj.user.screen_name;
     
     header_drawing_box=new HeaderDrawingBox(this.parsed_json_obj.user,this.config,this.signal_pipe);
-    text_drawing_box=new TextDrawingBox(this.parsed_json_obj,this.config,this.signal_pipe);
+    text_drawing_box=new TextDrawingBox(this.parsed_json_obj,this.account,this.config,this.signal_pipe);
     footer_drawing_box=new FooterDrawingBox(this.parsed_json_obj,this.config,this.signal_pipe);
     
     profile_image_button=new ProfileImageButton(this.parsed_json_obj.user,this.config,this.signal_pipe);

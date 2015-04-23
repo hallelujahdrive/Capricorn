@@ -47,7 +47,7 @@ class TweetNode:Node{
     
     //reply
     reply_button.clicked.connect((already)=>{
-      this.signal_pipe.reply_request_event(this.copy(),this.account.my_list_id);
+      this.signal_pipe.add_text_event("@%s ".printf(this.parsed_json_obj.user.screen_name),this.copy(),this.account.my_list_id);
       return true;
     });
     

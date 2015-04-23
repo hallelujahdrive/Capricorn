@@ -110,15 +110,17 @@ class PostPage:Frame{
       return true;
     });
     
-    //リプライのリクエスト
-    signal_pipe.reply_request_event.connect((tweet_node,my_list_id)=>{
+    //add_text
+    signal_pipe.add_text_event.connect((text,tweet_node,my_list_id)=>{
       //buffer.txtが更新されるときreply_resetが呼ばれる
-      buffer.text=buffer.text+"@"+tweet_node.screen_name+" ";
-      in_reply_to_status_id_str=tweet_node.id_str;
-      _tweet_node=tweet_node;
-      main_grid.attach(_tweet_node,0,3,2,1);
+      buffer.text=buffer.text+text;
       account_combo_box.active=my_list_id;
-      
+      if(tweet_node!=null){
+        in_reply_to_status_id_str=tweet_node.id_str;
+        _tweet_node=tweet_node;
+        main_grid.attach(_tweet_node,0,3,2,1);
+      }
+            
       tweet_text_view.grab_focus();
     });
     
