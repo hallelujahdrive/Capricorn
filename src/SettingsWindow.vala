@@ -14,6 +14,7 @@ class SettingsWindow:Dialog{
   private AccountSettingsPage account_settings_page;
   private DisplaySettingsPage display_settings_page;
   private EventNotifySettingsPage event_notify_settings_page;
+  private NetworkSettingsPage network_settings_page;
   private TimeLineSettingsPage time_line_settings_page;
   
   public bool account_is_changed=false;
@@ -107,11 +108,13 @@ class SettingsWindow:Dialog{
     account_settings_page=new AccountSettingsPage(this.account_array,this.config,this);
     display_settings_page=new DisplaySettingsPage(this.config);
     event_notify_settings_page=new EventNotifySettingsPage(this.config);
+    network_settings_page=new NetworkSettingsPage(this.config);
     time_line_settings_page=new TimeLineSettingsPage(this.config);
     
     settings_notebook.append_page(account_settings_page,account_settings_page.tab);
     settings_notebook.append_page(display_settings_page,display_settings_page.tab);
     settings_notebook.append_page(event_notify_settings_page,event_notify_settings_page.tab);
+    settings_notebook.append_page(network_settings_page,network_settings_page.tab);
     settings_notebook.append_page(time_line_settings_page,time_line_settings_page.tab);
         
     //シグナルハンドラ

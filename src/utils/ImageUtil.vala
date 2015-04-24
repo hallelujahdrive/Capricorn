@@ -8,7 +8,7 @@ namespace ImageUtil{
   //URLからのPixbufの取得
   async Pixbuf get_pixbuf_async(string image_path_root,string screen_name,string image_url,int size,HashTable<string,string?> profile_image_hash_table){
     //imageのpath
-    string image_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,image_path_root,screen_name+".png");
+    string image_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,image_path_root,"%s.png".printf(screen_name));
     //戻り値のPixbuf
     Pixbuf pixbuf=null;
     string? image_url_from_hash=profile_image_hash_table.get(screen_name);

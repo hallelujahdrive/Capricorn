@@ -11,6 +11,7 @@
     <file compressed="true" preprocess="xml-stripblanks">ui/main_window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/media_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/media_window.ui</file>
+    <file compressed="true" preprocess="xml-stripblanks">ui/network_settings_page.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/node.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/oauth_window.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">ui/post_page.ui</file>

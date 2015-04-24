@@ -8,6 +8,8 @@ namespace TwitterUtil{
     try{
       proxy_call.run();
       string jsons_str=proxy_call.get_payload();
+      //debug
+      //print("%s\n",jsons_str);
       //json_obj
       Json.Parser json_parser=new Json.Parser();
       json_parser.load_from_data(jsons_str);

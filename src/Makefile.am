@@ -28,6 +28,7 @@ sources = \
 			MainWindow.vala \
 			MediaPage.vala \
 			MediaWindow.vala \
+			NetworkSettingsPage.vala \
 			Node.vala \
 			OAuth.vala \
 			PhotoBox.vala \

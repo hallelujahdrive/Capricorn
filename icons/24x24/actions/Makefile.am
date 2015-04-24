@@ -5,6 +5,7 @@ icon_DATA = \
 					capricorn-event-notify.png \
 					capricorn-loading.png \
 					capricorn-medias.png \
+					capricorn-network.png \
 					capricorn-next.png \
 					capricorn-post.png \
 					capricorn-prev.png \
