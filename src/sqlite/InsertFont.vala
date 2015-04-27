@@ -2,7 +2,7 @@ using Sqlite;
 
 namespace SqliteUtil{
   //fontのinsert
-   void insert_font(int id,FontProfile font_profile,Database db){
+  public void insert_font(int id,FontProfile font_profile,Database db){
     int ec;
     Sqlite.Statement stmt;
     

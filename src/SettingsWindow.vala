@@ -43,10 +43,11 @@ class SettingsWindow:Dialog{
         insertaccount(account_array.index(i),config.db);
       }
     }
+    
     //colorの更新
     if(display_settings_page.color_is_changed){
-      display_settings_page.set_color();
-      //アップデート
+      display_settings_page.update_color_settings();
+      //データベースのアップデート
       update_color(0,config);
       //シグナルの発行
       signal_pipe.color_change_event();
@@ -54,8 +55,8 @@ class SettingsWindow:Dialog{
     
     //fontの更新
     if(display_settings_page.font_is_changed){
-      display_settings_page.set_font_desc();
-      //アップデート
+      display_settings_page.update_font_desc_settings();
+      //データベースのアップデート
       update_font(0,config.font_profile,config.db);
       //シグナルの発行
       signal_pipe.color_change_event();
@@ -63,17 +64,24 @@ class SettingsWindow:Dialog{
     
     //eventの表示数の更新
     if(event_notify_settings_page.changed){
-      event_notify_settings_page.get_values();
-      //アップデート
+      event_notify_settings_page.update_settings();
+      //データベースのアップデート
       update_event_notify_settings(config);
       //シグナルの発行
       signal_pipe.event_notify_settings_change_event();
     }
     
+    //network設定の更新
+    if(network_settings_page.changed){
+      network_settings_page.update_settings();
+      //データベースのアップデート
+      update_network_settings(config);
+    }
+    
     //nodeの表示数の更新
     if(time_line_settings_page.changed){
-      time_line_settings_page.get_values();
-      //アップデート
+      time_line_settings_page.update_settings();
+      //データベースのアップデート
       update_time_line_settings(config);
       //シグナルの発行
       signal_pipe.time_line_node_count_change_event();

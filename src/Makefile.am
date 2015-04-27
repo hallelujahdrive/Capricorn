@@ -53,17 +53,20 @@ sources = \
 			sqlite/InsertColor.vala \
 			sqlite/InsertEventNotifySettings.vala \
 			sqlite/InsertFont.vala \
+			sqlite/InsertNetworkSettings.vala \
 			sqlite/InsertTimeLineSettings.vala \
 			sqlite/Query.vala \
 			sqlite/SelecAccount.vala \
 			sqlite/SelectColor.vala \
 			sqlite/SelectEventNotifySettings.vala \
 			sqlite/SelectFont.vala \
+			sqlite/SelectNetworkSettings.vala \
 			sqlite/SelectTimeLineSettings.vala \
 			sqlite/UpdateAccountListID.vala \
 			sqlite/UpdateColor.vala \
 			sqlite/UpdateEventNotifySettings.vala \
 			sqlite/UpdateFont.vala \
+			sqlite/UpdateNetworkSettings.vala \
 			sqlite/UpdateTimeLineSettings.vala \
 			utils/DirPath.vala \
 			utils/FileUtil.vala \

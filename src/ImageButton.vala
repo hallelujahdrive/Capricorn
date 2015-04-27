@@ -34,5 +34,5 @@ public class ImageButton:EventBox{
   }
   
   //clickのシグナル
-  public signal bool clicked(bool already);
+  public signal void clicked(ImageButton image_button);
 }

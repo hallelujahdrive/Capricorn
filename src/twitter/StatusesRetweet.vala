@@ -2,16 +2,22 @@ using Rest;
 
 namespace TwitterUtil{
   //retweet
-  public bool statuses_retweet(Account account,string id_str){
+  async bool statuses_retweet(Account account,string id_str){
+    bool res;
     ProxyCall post_call=account.api_proxy.new_call();
     post_call.set_function(FUNCTION_STATUSES_RETWEET.printf(id_str));
     post_call.set_method("POST");
+    
+    Idle.add(statuses_retweet.callback);
+    
     try{
-      post_call.sync();
-      return true;
+      res=post_call.sync();
     }catch(Error e){
       print("%s\n",e.message);
-      return false;
+      res=false;
     }
+    
+    yield;
+    return res;
   }
 }

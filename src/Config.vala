@@ -1,6 +1,7 @@
 using Gdk;
 using Gtk;
 using Pango;
+using Soup;
 using Sqlite;
 
 using ImageUtil;
@@ -44,6 +45,10 @@ public class Config{
   public int time_deff_hour=9;
   public int time_deff_min=0;
   
+  //Proxy
+  public int use_proxy;
+  public URI proxy_uri;
+  
   public Config(string cpr_dir_path,SignalPipe signal_pipe){
     cache_dir_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,cpr_dir_path,"cache");
     
@@ -75,5 +80,8 @@ public class Config{
     event_node_count=20;
     
     event_show_on_time_line=false;
+    
+    use_proxy=0;
+    proxy_uri=new URI(null);
   }
 }

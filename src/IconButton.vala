@@ -7,17 +7,14 @@ class IconButton:ImageButton{
   private string on_icon;
   private IconSize icon_size;
   
-  private bool already;
+  public bool already;
 
   //button_release_event_cbのCallack(override)
   protected override bool button_release_event_cb(EventButton event_button){
     base.button_release_event_cb(event_button);
     
-    if(clicked(already)){
-      already=!already;
-      icon_set();
-    }
-    return already;
+    (clicked(this));
+    return true;
   }
   
   //enter_notify_eventのCallback(override)
@@ -49,10 +46,10 @@ class IconButton:ImageButton{
     this.icon_size=icon_size;
     this.already=already;
     
-    icon_set();
+    update();
   }
   
-  private void icon_set(){
+  public void update(){
     if(already&&on_icon!=null) {
       image.set_from_icon_name(on_icon,icon_size);
     }else{

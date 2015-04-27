@@ -46,26 +46,47 @@ class TweetNode:Node{
     });
     
     //reply
-    reply_button.clicked.connect((already)=>{
+    reply_button.clicked.connect(()=>{
       this.signal_pipe.add_text_event("@%s ".printf(this.parsed_json_obj.user.screen_name),this.copy(),this.account.my_list_id);
-      return true;
     });
     
     //retweet
-    retweet_button.clicked.connect((already)=>{
-      if(already){
-        return statuses_destroy(this.account,this.parsed_json_obj.retweeted_status_id_str);
+    retweet_button.clicked.connect((image_button)=>{
+      weak IconButton icon_button=(IconButton)image_button;
+      if(icon_button.already){
+        statuses_destroy.begin(this.account,this.parsed_json_obj.id_str,(obj,res)=>{
+          if(statuses_destroy.end(res)){
+            icon_button.already=!icon_button.already;
+            icon_button.update();
+          }
+        });
       }else{
-        return statuses_retweet(this.account,this.parsed_json_obj.id_str);
+        statuses_retweet.begin(this.account,this.parsed_json_obj.id_str,(obj,res)=>{
+          if(statuses_retweet.end(res)){
+            icon_button.already=!icon_button.already;
+            icon_button.update();
+          }
+        });
       }
     });
     
     //favorite
-    favorite_button.clicked.connect((already)=>{
-      if(already){
-        return favorites_destroy(this.account,this.parsed_json_obj.id_str);
+    favorite_button.clicked.connect((image_button)=>{
+      weak IconButton icon_button=(IconButton)image_button;
+      if(icon_button.already){
+        favorites_destroy.begin(this.account,this.parsed_json_obj.id_str,(obj,res)=>{
+          if(favorites_destroy.end(res)){
+            icon_button.already=!icon_button.already;
+            icon_button.update();
+          }
+        });
       }else{
-        return favorites_create(this.account,this.parsed_json_obj.id_str);
+        favorites_create.begin(this.account,this.parsed_json_obj.id_str,(obj,res)=>{
+          if(favorites_create.end(res)){
+            icon_button.already=!icon_button.already;
+            icon_button.update();
+          }
+        });
       }
     });
   }

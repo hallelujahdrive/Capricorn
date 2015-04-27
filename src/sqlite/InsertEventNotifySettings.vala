@@ -1,7 +1,7 @@
 using Sqlite;
 
 namespace SqliteUtil{
-  //get_timeline_nodesのinsert
+  //eventの通知設定のinsert
   public void insert_event_notify_settings(Config config){
     int ec;
     Sqlite.Statement stmt;

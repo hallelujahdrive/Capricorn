@@ -1,7 +1,7 @@
 using Sqlite;
 
 namespace SqliteUtil{
-  //get_timeline_nodesのinsert
+  //timelineの設定のinsert
   public void insert_time_line_settings(Config config){
     int ec;
     Sqlite.Statement stmt;

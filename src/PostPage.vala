@@ -68,11 +68,7 @@ class PostPage:Frame{
   
   [GtkCallback]
   private void tl_link_cbutton_toggled_cb(){
-    if(tl_link_cbutton.active){
-      tl_is_linked=true;
-    }else{
-      tl_is_linked=false;
-    }
+    tl_is_linked=tl_link_cbutton.get_active();
   }
   
   public PostPage(GLib.Array<Account> account_array,Config config,SignalPipe signal_pipe){
@@ -96,18 +92,18 @@ class PostPage:Frame{
         
     //シグナルハンドラ
     //post
-    post_button.clicked.connect((already)=>{
-      if(statuses_update(this.account_array.index(selected_account_num),buffer.text,in_reply_to_status_id_str)){
-        buffer.text="";
-      }
-      return true;
+    post_button.clicked.connect(()=>{
+      statuses_update.begin(this.account_array.index(selected_account_num),buffer.text,in_reply_to_status_id_str,(obj,res)=>{
+        if(statuses_update.end(res)){
+          buffer.text="";
+        }
+      });
     });
     
     //URLの短縮
-    url_shorting_button.clicked.connect((already)=>{
+    url_shorting_button.clicked.connect(()=>{
       string parsed_text=parse_post_text(buffer.text);
       buffer.text=parsed_text;
-      return true;
     });
     
     //add_text

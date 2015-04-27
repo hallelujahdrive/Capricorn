@@ -48,7 +48,7 @@ class PhotoBox:DrawingBox{
     this.hexpand=true;
     this.vexpand=true;
     
-    get_media_pixbuf_async(media_url,(obj,res)=>{
+    get_media_pixbuf_async.begin(media_url,(obj,res)=>{
       pixbuf=get_media_pixbuf_async.end(res);
       //再描画
       drawing_area.queue_draw();

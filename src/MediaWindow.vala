@@ -80,14 +80,12 @@ class MediaWindow:Gtk.Window{
       this.num-=1;
       set_default_size_pixbuf();
       set_button_sensitive();
-      return true;
     });
     
     next_button.clicked.connect(()=>{
       this.num+=1;
       set_default_size_pixbuf();
       set_button_sensitive();
-      return true;
     });
   }
   

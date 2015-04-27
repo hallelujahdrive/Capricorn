@@ -18,10 +18,9 @@ class EventNotifySettingsPage:Frame{
   
   //Callback
   [GtkCallback]
-  private void value_changed_cb(){
+  private void changed_cb(){
     changed=true;
   }
-  
   
   public EventNotifySettingsPage(Config config){
     this.config=config;
@@ -34,7 +33,7 @@ class EventNotifySettingsPage:Frame{
     changed=false;
   }
   
-  public void get_values(){
+  public void update_settings(){
     config.event_node_count=event_node_count_spin_button.get_value_as_int();
     config.event_show_on_time_line=event_show_on_time_line_check_button.get_active();
   }

@@ -33,7 +33,7 @@ class TimeLineSettingsPage:Frame{
     changed=false;
   }
   
-  public void get_values(){
+  public void update_settings(){
     config.init_time_line_node_count=init_time_line_node_count_spin_button.get_value_as_int();
     config.time_line_node_count=time_line_node_count_spin_button.get_value_as_int();
   }

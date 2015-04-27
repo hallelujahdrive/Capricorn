@@ -33,6 +33,12 @@ namespace SqliteUtil{
   in_reply_font_desc TEXT NOT NULL,
   in_reply_font_rgba TEXT NOT NULL
   );""";
+  private const string CREATE_TABLE_NETWORK_SETTINGS_QUERY="""
+  CREATE TABLE NETWORK_SETTINGS(
+  use_proxy INT NOT NULL,
+  proxy_uri TEXT,
+  proxy_password TEXT
+  );""";
   private const string CREATE_TABLE_TIME_LINE_SETTINGS_QUERY="""
   CREATE TABLE TIME_LINE_SETTINGS(
   init_time_line_node_count INT NOT NULL,
@@ -54,11 +60,13 @@ namespace SqliteUtil{
   $IN_REPLY_FD,
   $IN_REPLY_FR
   );""";
+  private const string INSERT_NETWORK_SETTINGS_QUERY="INSERT INTO NETWORK_SETTINGS VALUES($USE_PROXY,$PROXY_URI,$PROXY_PASSWORD);";
   private const string INSERT_TIME_LINE_SETTINGS_QUERY="INSERT INTO TIME_LINE_SETTINGS VALUES($INIT_TIME_LINE_NODE_COUNT,$TIME_LINE_NODE_COUNT);";
   private const string SELECT_FROM_ACCOUNT_QUERY="SELECT * FROM ACCOUNT WHERE list_id=$LIST_ID;";
   private const string SELECT_FROM_COLOR_QUERY="SELECT * FROM COLOR WHERE id=$ID;";
   private const string SELECT_FROM_EVENT_NOTIFY_SETTINGS_QUERY="SELECT * FROM EVENT_NOTIFY_SETTINGS;";
   private const string SELECT_FROM_FONT_QUERY="SELECT * FROM FONT WHERE id=$ID;";
+  private const string SELECT_FROM_NETWORK_SETTINGS_QUERY="SELECT * FROM NETWORK_SETTINGS;";
   private const string SELECT_FROM_TIME_LINE_SETTINGS_QUERY="SELECT * FROM TIME_LINE_SETTINGS;";
   private const string DELETE_FROM_ACCOUNT_QUERY="DELETE FROM ACCOUNT WHERE list_id=$LIST_ID;";
   private const string UPDATE_ACCOUNT_ID_QUERY="UPDATE ACCOUNT SET list_id=$NEW_LIST_ID WHERE list_id=$OLD_LIST_ID;";
@@ -77,6 +85,7 @@ namespace SqliteUtil{
   in_reply_font_rgba=$IN_REPLY_FR 
   WHERE id=$ID;
   """;
+  private const string UPDATE_NETWORK_SETTINGS_QUERY="UPDATE NETWORK_SETTINGS SET use_proxy=$USE_PROXY,proxy_uri=$PROXY_URI,proxy_password=$PROXY_PASSWORD;";
   private const string UPDATE_TIMELINE_TIME_LINE_SETTINGS_QUERY="UPDATE TIME_LINE_SETTINGS SET init_time_line_node_count=$INIT_TIME_LINE_NODE_COUNT,time_line_node_count=$TIME_LINE_NODE_COUNT;";
   private const string SELECT_ID_FORM_ACCOUNT_QUERY="SELECT id FROM ACCOUNT WHERE list_id=$LIST_ID;";
 }

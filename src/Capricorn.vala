@@ -1,4 +1,5 @@
 using Gtk;
+using Soup;
 using Sqlite;
 
 using FileUtil;
@@ -48,23 +49,21 @@ public class Capricorn:Gtk.Application{
       //configの初期化
       config.init();
       config.font_profile.init();
-      
       //insert
       insert_color(0,config);
-      insert_font(0,config.font_profile,config.db);
       insert_event_notify_settings(config);
+      insert_font(0,config.font_profile,config.db);
+      insert_network_settings(config);
       insert_time_line_settings(config);
 
       can_window_open=true;
     }else{
       //テーブルが存在したら
-      //colorの読み出し
+      //select
       select_color(0,config);
-      //フォントの読み出し
-      select_font(0,config.font_profile,config.db);
-      //EventNotifySettingsの読み出し
       select_event_notify_settings(config);
-      //TimeLineSettingsの読み出し
+      select_font(0,config.font_profile,config.db);
+      select_network_settings(config);
       select_time_line_settings(config);
       //Account情報の読み出し
       account_count=count_records(config.db,"ACCOUNT");

@@ -67,14 +67,12 @@ public class MainWindow:ApplicationWindow{
     });
     
     //SettingsWindowを開く
-    settings_button.clicked.connect((already)=>{
+    settings_button.clicked.connect(()=>{
       settings_button.sensitive=false;
       
       settings_window=new SettingsWindow(account_array,reload_settings,config,signal_pipe);
       settings_window.set_transient_for(this);
       settings_window.show_all();
-      
-      return true;
     });
     
     //Mediasのopen
@@ -82,7 +80,6 @@ public class MainWindow:ApplicationWindow{
       MediaPage media_page=new MediaPage(tweet_node,media_array);
       various_notebook.append_page(media_page,media_page.tab);
       various_notebook.set_current_page(various_notebook.page_num(media_page));
-      
     });
   }
   

@@ -127,7 +127,7 @@ class DisplaySettingsPage:Frame{
     in_reply_font_button.set_font_desc(this.config.font_profile.in_reply_font_desc);
   }
   
-  public void set_color(){
+  public void update_color_settings(){
     config.default_bg_rgba=default_bg_color_button.get_rgba();
     config.reply_bg_rgba=reply_bg_color_button.get_rgba();
     config.retweet_bg_rgba=retweet_bg_color_button.get_rgba();
@@ -143,7 +143,7 @@ class DisplaySettingsPage:Frame{
     }
   }
   
-  public void set_font_desc(){
+  public void update_font_desc_settings(){
     config.font_profile.name_font_desc=name_font_button.get_font_desc();
     config.font_profile.text_font_desc=text_font_button.get_font_desc();
     config.font_profile.footer_font_desc=footer_font_button.get_font_desc();

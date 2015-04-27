@@ -25,7 +25,7 @@ namespace SqliteUtil{
     }
     //tableが存在しなければ作る
     if(res){
-      for(int i=0;i<5;i++){
+      for(int i=0;i<6;i++){
         switch(i){
           case 0:query=CREATE_TABLE_ACCOUNT_QUERY;
           break;
@@ -35,7 +35,9 @@ namespace SqliteUtil{
           break;
           case 3:query=CREATE_TABLE_FONT_QUERY;
           break;
-          case 4:query=CREATE_TABLE_TIME_LINE_SETTINGS_QUERY;
+          case 4:query=CREATE_TABLE_NETWORK_SETTINGS_QUERY;
+          break;
+          case 5:query=CREATE_TABLE_TIME_LINE_SETTINGS_QUERY;
           break;
         }
         ec=db.exec(query,null,out errmsg);
