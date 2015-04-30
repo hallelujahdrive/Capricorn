@@ -30,9 +30,12 @@ class TweetNode:Node{
     //in_reply_drawing_boxの追加
     if(parsed_json_obj.in_reply_to_status_id_str!=null){
       var in_reply_drawing_box=new InReplyDrawingBox(this.config,this.signal_pipe);
-      if(in_reply_drawing_box.draw_tweet(this.account,this.parsed_json_obj.in_reply_to_status_id_str)){
-        this.attach(in_reply_drawing_box,1,5,1,1);
-      }
+      
+      in_reply_drawing_box.draw_tweet.begin(this.account,this.parsed_json_obj.in_reply_to_status_id_str,(obj,res)=>{
+        if(in_reply_drawing_box.draw_tweet.begin.end(res)){
+          this.attach(in_reply_drawing_box,1,5,1,1);
+        }
+      });
     }
     
     //シグナルハンドラ

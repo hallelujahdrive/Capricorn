@@ -1,8 +1,10 @@
+using Soup;
+
 using BitlyUtil;
 using TwitterUtil;
 using URIUtil;
 
-namespace StringUtil{
+namespace StringUtil{    
   //textの整形(ほとんどurlだけ)
   public string parse_text(ref string text,hashtag[] hashtags,url[] media,url[] urls){
     string parsed_text=text;
@@ -40,21 +42,28 @@ namespace StringUtil{
   }
   
   //urlのincidesを取得
-  public void get_incides(string text,url[] media_array,url[] urls_array){
-   int start_index=0;
-   for(int i=0;i<media_array.length;i++){
-     media_array[i].indices[0]=text.index_of(media_array[i].display_url,start_index);
-     media_array[i].indices[1]=media_array[i].indices[0]+media_array[i].display_url.char_count();
-     start_index=media_array[i].indices[1];
-   }
-   start_index=0;
-    for(int i=0;i<urls_array.length;i++){
-      urls_array[i].indices[0]=text.index_of(urls_array[i].display_url,start_index);
-      urls_array[i].indices[1]=urls_array[i].indices[0]+urls_array[i].display_url.char_count();
-      start_index=urls_array[i].indices[1]; 
+  public void update_indices(string text,hashtag[] hashtags,url[] media,url[] urls){
+    int start_index=0;
+    for(int i=0;i<hashtags.length;i++){
+      hashtags[i].indices[0]=text.index_of("#%s".printf(hashtags[i].text),start_index);
+      start_index=hashtags[i].indices[0]+hashtags[i].text.char_count();
+      int end_indices=text.index_of(" ",start_index);
+      hashtags[i].indices[1]=end_indices>0?end_indices:text.index_of_char('\0',start_index);
+      //print("%d: %d \n",hashtags[i].indices[0],hashtags[i].indices[1]);
     }
-  }
-  
+    start_index=0;
+    for(int i=0;i<media.length;i++){
+      media[i].indices[0]=text.index_of(media[i].display_url,start_index);
+      media[i].indices[1]=media[i].indices[0]+media[i].display_url.char_count();
+      start_index=media[i].indices[1];
+    }
+    start_index=0;
+    for(int i=0;i<urls.length;i++){
+      urls[i].indices[0]=text.index_of(urls[i].display_url,start_index);
+      urls[i].indices[1]=urls[i].indices[0]+urls[i].display_url.char_count();
+      start_index=urls[i].indices[1];
+    }
+  }  
   //urlの短縮
   public string parse_post_text(string old_text){
     string parsed_text=old_text;
@@ -79,5 +88,17 @@ namespace StringUtil{
       print("%s\n",e.message);
     }
     return parsed_text;
+  }
+  
+  //URIの整形
+  public string parse_uri(URI proxy_uri){
+    string proxy_uri_str=proxy_uri.to_string(false);
+    try{
+      var port_regex=new Regex(":%u/".printf(proxy_uri.get_port()));
+      proxy_uri_str=port_regex.replace(proxy_uri_str,-1,0,"");
+    }catch(Error e){
+      print("%s\n",e.message);
+    }
+    return proxy_uri_str;
   }
 }

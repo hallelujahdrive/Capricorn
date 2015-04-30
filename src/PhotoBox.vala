@@ -29,7 +29,7 @@ class PhotoBox:DrawingBox{
     
     if(pixbuf!=null){
       width=this.get_allocated_width();
-      resized_pixbuf=scale_pixbuf(width,height,pixbuf);
+      resized_pixbuf=scale_pixbuf(pixbuf,width,height);
       height=resized_pixbuf.height;
       
       image_surface=cairo_surface_create_from_pixbuf(resized_pixbuf,1,null);
@@ -48,8 +48,8 @@ class PhotoBox:DrawingBox{
     this.hexpand=true;
     this.vexpand=true;
     
-    get_media_pixbuf_async.begin(media_url,(obj,res)=>{
-      pixbuf=get_media_pixbuf_async.end(res);
+    get_pixbuf_async.begin(media_url,null,(obj,res)=>{
+      pixbuf=get_pixbuf_async.end(res);
       //再描画
       drawing_area.queue_draw();
     });

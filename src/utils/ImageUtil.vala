@@ -5,76 +5,77 @@ using Soup;
 using FileUtil;
 
 namespace ImageUtil{
-  //URLからのPixbufの取得
-  async Pixbuf get_pixbuf_async(string image_path_root,string screen_name,string image_url,int size,HashTable<string,string?> profile_image_hash_table){
-    //imageのpath
-    string image_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,image_path_root,"%s.png".printf(screen_name));
-    //戻り値のPixbuf
+  //profile_imageの取得
+  async Pixbuf? get_profile_image_async(string screen_name,string profile_image_url,int size,Config config){
     Pixbuf pixbuf=null;
-    string? image_url_from_hash=profile_image_hash_table.get(screen_name);
+    //imageのpath
+    string image_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,config.cache_dir_path,"%s.png".printf(screen_name));
+    string? image_url_from_hash=config.profile_image_hash_table.get(screen_name);
     //hashtableから取得したurlと一致すれば取得
-    if(image_url_from_hash!=null&&image_url_from_hash==image_url){
-      return get_pixbuf_from_path(image_path,size);
+    if(image_url_from_hash!=null&&image_url_from_hash==profile_image_url){
+      return scale_pixbuf(get_pixbuf_from_path(image_path),size,size);
     }else{
-      //画像が取得されていなければ取得
-      Session session=new Session();
-      Message msg=new Message("GET",image_url);
-      session.queue_message(msg,(_sess,_msg)=>{
+      get_pixbuf_async.begin(profile_image_url,config.use_proxy==1?config.proxy_uri:null,(obj,res)=>{
+        pixbuf=get_pixbuf_async.end(res);
+        //アイコンの切り出し
+        Cairo.ImageSurface surface=new Cairo.ImageSurface(Cairo.Format.ARGB32,pixbuf.width,pixbuf.height);
+        Cairo.Context context=new Cairo.Context(surface);
+        context.arc(pixbuf.width/2,pixbuf.height/2,pixbuf.width>=pixbuf.height?pixbuf.width/2:pixbuf.height/2,0,2*Math.PI);
+        context.clip();
+        context.new_path();
+        context.scale(1,1);
+        Cairo.Surface image=cairo_surface_create_from_pixbuf(pixbuf,1,null);
+        context.set_source_surface(image,0,0);
+        context.paint();
+          
+        pixbuf=pixbuf_get_from_surface(surface,0,0,pixbuf.width,pixbuf.height);
+          
+        //保存
         try{
-          var memory_stream=new MemoryInputStream.from_data(_msg.response_body.data,null);
-          pixbuf=new Pixbuf.from_stream_at_scale(memory_stream,48,48,false);
-          
-          //アイコンの切り出し
-          Cairo.ImageSurface surface=new Cairo.ImageSurface(Cairo.Format.ARGB32,48,48);
-          Cairo.Context context=new Cairo.Context(surface);
-          context.arc(24,24,24,0,2*Math.PI);
-          context.clip();
-          context.new_path();
-          context.scale(1,1);
-          Cairo.Surface image=cairo_surface_create_from_pixbuf(pixbuf,1,null);
-          context.set_source_surface(image,0,0);
-          context.paint();
-          
-          pixbuf=pixbuf_get_from_surface(surface,0,0,48,48);
-          //保存
           pixbuf.save(image_path,"png");
-          //HashTableへの追加
-          profile_image_hash_table.insert(screen_name,image_url);
-          
-          memory_stream.close();
-          get_pixbuf_async.callback();
         }catch(Error e){
-          print("Error:%s\n",e.message);
+          print("Error : %s\n",e.message);
         }
+                  
+        //リサイズ
+        pixbuf=pixbuf.scale_simple(size,size,InterpType.BILINEAR);
+        
+        //HashTableへの追加
+        config.profile_image_hash_table.insert(screen_name,profile_image_url);
+          
+        get_profile_image_async.callback();
       });
     }
     yield;
-    return pixbuf.scale_simple(size,size,InterpType.BILINEAR);
+    return pixbuf;
   }
   
-  //URLからのpixbufの取得(media)
-  async Pixbuf get_media_pixbuf_async(string image_url){
-    //戻り値のPixbuf
+  //URLからのPixbufの取得
+  async Pixbuf? get_pixbuf_async(string image_url,URI? proxy_uri=null){
     Pixbuf pixbuf=null;
+    //画像が取得されていなければ取得
     Session session=new Session();
+    //proxy_uriのセット
+    if(proxy_uri!=null){
+      session.proxy_uri=proxy_uri;
+    }
     Message msg=new Message("GET",image_url);
     session.queue_message(msg,(_sess,_msg)=>{
       try{
         var memory_stream=new MemoryInputStream.from_data(_msg.response_body.data,null);
         pixbuf=new Pixbuf.from_stream(memory_stream);
         memory_stream.close();
-        get_media_pixbuf_async.callback();
       }catch(Error e){
-        print("Error:%s\n",e.message);
+        print("Error : %s\n",e.message);
       }
+      get_pixbuf_async.callback();
     });
     yield;
     return pixbuf;
   }
   
-  
   //pixbufのリサイズ
-  public Pixbuf scale_pixbuf(int dst_width,int? dst_height,Pixbuf pixbuf){
+  public Pixbuf scale_pixbuf(Pixbuf pixbuf,int dst_width,int? dst_height){
     if(pixbuf.width>dst_width||pixbuf.height>(dst_height!=null?dst_height:pixbuf.height)){
       int width;
       int height;
@@ -99,15 +100,15 @@ namespace ImageUtil{
   }
   
   //pathからのpixbufの生成
-  public Pixbuf get_pixbuf_from_path(string image_path,int size){
+  public Pixbuf get_pixbuf_from_path(string image_path){
     Pixbuf pixbuf=null;
     try{
       var image=File.new_for_path(image_path);
       var image_stream=image.read();
-      pixbuf=new Pixbuf.from_stream_at_scale(image_stream,size,size,true,null);
+      pixbuf=new Pixbuf.from_stream(image_stream);
       image_stream.close();
     }catch(Error e){
-      print("%s\n",e.message);
+      print("Error : %s\n",e.message);
     }
     return pixbuf;
   }

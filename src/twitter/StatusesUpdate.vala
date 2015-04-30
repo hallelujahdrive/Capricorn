@@ -2,7 +2,7 @@ using Rest;
 
 namespace TwitterUtil{
   //tweetのpost
-  async bool statuses_update(Account account,string status,string? in_reply_to_status_id_str){    
+  public async bool statuses_update(Account account,string status,string? in_reply_to_status_id_str){    
     bool result=false;
     ProxyCall proxy_call=account.api_proxy.new_call();
     proxy_call.set_function(FUNCTION_STATUSES_UPDATE);

@@ -125,8 +125,8 @@ class AccountSettingsPage:Frame{
         print("IconTheme Error : %s\n",e.message);
       }
       //profile_imageの取得
-      get_pixbuf_async.begin(config.cache_dir_path,account_array.index(i).my_screen_name,account_array.index(i).my_profile_image_url,16,config.profile_image_hash_table,(obj,res)=>{
-        account_list_store.set(iter,1,get_pixbuf_async.end(res));
+      get_profile_image_async.begin(account_array.index(i).my_screen_name,account_array.index(i).my_profile_image_url,16,config,(obj,res)=>{
+        account_list_store.set(iter,1,get_profile_image_async.end(res));
         profile_image_loaded=true;
       });
     }

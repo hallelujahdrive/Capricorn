@@ -51,8 +51,8 @@ class TLNode{
     }catch(Error e){
       print("IconTheme Error : %s\n",e.message);
     }
-    get_pixbuf_async.begin(this.config.cache_dir_path,this.account.my_screen_name,this.account.my_profile_image_url,24,this.config.profile_image_hash_table,(obj,res)=>{
-      Pixbuf pixbuf=get_pixbuf_async.end(res);
+    get_profile_image_async.begin(this.account.my_screen_name,this.account.my_profile_image_url,24,this.config,(obj,res)=>{
+      Pixbuf pixbuf=get_profile_image_async.end(res);
       home_time_line.tab.set_from_pixbuf(pixbuf);
       mention_time_line.tab.set_from_pixbuf(pixbuf);
       profile_image_loaded=true;

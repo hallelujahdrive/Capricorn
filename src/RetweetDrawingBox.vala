@@ -58,8 +58,8 @@ class RetweetDrawingBox:DrawingBox{
     //load中の画像のRotateSurface
     rotate_surface_run(16);
     //profile_image_pixbufの取得
-    get_pixbuf_async.begin(config.cache_dir_path,rt_user.screen_name,rt_user.profile_image_url,16,config.profile_image_hash_table,(obj,res)=>{
-      image_surface=cairo_surface_create_from_pixbuf(get_pixbuf_async.end(res),1,null);
+    get_profile_image_async.begin(rt_user.screen_name,rt_user.profile_image_url,16,config,(obj,res)=>{
+      image_surface=cairo_surface_create_from_pixbuf(get_profile_image_async.end(res),1,null);
       profile_image_loaded=true;
       //再描画
       drawing_area.queue_draw();

@@ -104,9 +104,9 @@ class EventDrawingBox:DrawingBox{
     //hash_tableに追加(ダミー)
     user_hash_table.insert(user.id_str,(Surface)null);
     //profile_image_pixbufの取得
-    get_pixbuf_async.begin(config.cache_dir_path,user.screen_name,user.profile_image_url,16,config.profile_image_hash_table,(obj,res)=>{
+    get_profile_image_async.begin(user.screen_name,user.profile_image_url,16,config,(obj,res)=>{
 
-      user_hash_table.replace(user.id_str,cairo_surface_create_from_pixbuf(get_pixbuf_async.end(res),1,null));
+      user_hash_table.replace(user.id_str,cairo_surface_create_from_pixbuf(get_profile_image_async.end(res),1,null));
       profile_image_loaded=true;
       //再描画
       drawing_area.queue_draw();

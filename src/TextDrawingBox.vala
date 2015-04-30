@@ -77,6 +77,6 @@ class TextDrawingBox:DrawingBox{
     
     //textの整形
     parsed_text=parse_text(ref text,this.parsed_json_obj.hashtags,this.parsed_json_obj.media,this.parsed_json_obj.urls);
-    get_incides(text,this.parsed_json_obj.media,this.parsed_json_obj.urls);
+    update_indices(text,this.parsed_json_obj.hashtags,this.parsed_json_obj.media,this.parsed_json_obj.urls);
   }
 }

@@ -1,6 +1,8 @@
 using Gtk;
 using Soup;
 
+using StringUtil;
+
 [GtkTemplate(ui="/org/gtk/capricorn/ui/network_settings_page.ui")]
 class NetworkSettingsPage:Frame{
   private weak Config config;
@@ -44,7 +46,7 @@ class NetworkSettingsPage:Frame{
     
     //proxyの設定の挿入
     if(this.config.proxy_uri!=null){
-      http_proxy_entry_buffer.set_text((uint8[])this.config.proxy_uri.to_string(false));
+      http_proxy_entry_buffer.set_text((uint8[])parse_uri(this.config.proxy_uri));
       http_proxy_port_entry_buffer.set_text((uint8[])this.config.proxy_uri.get_port().to_string());
     }
     

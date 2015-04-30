@@ -50,8 +50,8 @@ class ProfileImageButton:ImageButton{
     }catch(Error e){
       print("IconTheme Error : %s\n",e.message);
     }
-    get_pixbuf_async.begin(this.config.cache_dir_path,user.screen_name,user.profile_image_url,48,this.config.profile_image_hash_table,(obj,res)=>{
-      image.set_from_pixbuf(get_pixbuf_async.end(res));
+    get_profile_image_async.begin(user.screen_name,user.profile_image_url,48,this.config,(obj,res)=>{
+      image.set_from_pixbuf(get_profile_image_async.end(res));
       profile_image_loaded=true;
     });
   }
