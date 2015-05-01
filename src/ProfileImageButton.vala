@@ -51,8 +51,11 @@ class ProfileImageButton:ImageButton{
       print("IconTheme Error : %s\n",e.message);
     }
     get_profile_image_async.begin(user.screen_name,user.profile_image_url,48,this.config,(obj,res)=>{
-      image.set_from_pixbuf(get_profile_image_async.end(res));
-      profile_image_loaded=true;
+      Pixbuf pixbuf=get_profile_image_async.end(res);
+      if(pixbuf!=null){
+        image.set_from_pixbuf(pixbuf);
+        profile_image_loaded=true;
+      }
     });
   }
 }

@@ -81,7 +81,7 @@ namespace TwitterUtil{
                 break;
                 case "user_update":event_type=EventType.USER_UPDATE;
                 break;
-                default :print("Event : %s\n",event_member);
+                default :print("Event : %s\n",json_obj.get_string_member(event_member));
                 break;
               }
               break;

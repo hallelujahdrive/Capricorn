@@ -79,8 +79,11 @@ class AccountComboBox:ComboBox{
       }
       get_profile_image_async.begin(account_array.index(i).my_screen_name,account_array.index(i).my_profile_image_url,16,config,(obj,res)=>{
         //profile_imageの取得
-        account_list_store.set(iter,1,get_profile_image_async.end(res));
-        profile_image_loaded=true;
+        Pixbuf pixbuf=get_profile_image_async.end(res);
+        if(pixbuf!=null){
+          account_list_store.set(iter,1,pixbuf);
+          profile_image_loaded=true;
+        }
       });
     }
     //デフォで0のアカウントを表示

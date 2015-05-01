@@ -16,33 +16,33 @@ namespace ImageUtil{
       return scale_pixbuf(get_pixbuf_from_path(image_path),size,size);
     }else{
       get_pixbuf_async.begin(profile_image_url,config.use_proxy==1?config.proxy_uri:null,(obj,res)=>{
-        pixbuf=get_pixbuf_async.end(res);
-        //アイコンの切り出し
-        Cairo.ImageSurface surface=new Cairo.ImageSurface(Cairo.Format.ARGB32,pixbuf.width,pixbuf.height);
-        Cairo.Context context=new Cairo.Context(surface);
-        context.arc(pixbuf.width/2,pixbuf.height/2,pixbuf.width>=pixbuf.height?pixbuf.width/2:pixbuf.height/2,0,2*Math.PI);
-        context.clip();
-        context.new_path();
-        context.scale(1,1);
-        Cairo.Surface image=cairo_surface_create_from_pixbuf(pixbuf,1,null);
-        context.set_source_surface(image,0,0);
-        context.paint();
+        if((pixbuf=get_pixbuf_async.end(res))!=null){
+          //アイコンの切り出し
+          Cairo.ImageSurface surface=new Cairo.ImageSurface(Cairo.Format.ARGB32,pixbuf.width,pixbuf.height);
+          Cairo.Context context=new Cairo.Context(surface);
+          context.arc(pixbuf.width/2,pixbuf.height/2,pixbuf.width>=pixbuf.height?pixbuf.width/2:pixbuf.height/2,0,2*Math.PI);
+          context.clip();
+          context.new_path();
+          context.scale(1,1);
+          Cairo.Surface image=cairo_surface_create_from_pixbuf(pixbuf,1,null);
+          context.set_source_surface(image,0,0);
+          context.paint();
+            
+          pixbuf=pixbuf_get_from_surface(surface,0,0,pixbuf.width,pixbuf.height);
+            
+          //保存
+          try{
+            pixbuf.save(image_path,"png");
+          }catch(Error e){
+            print("Error : %s\n",e.message);
+          }
+                    
+          //リサイズ
+          pixbuf=pixbuf.scale_simple(size,size,InterpType.BILINEAR);
           
-        pixbuf=pixbuf_get_from_surface(surface,0,0,pixbuf.width,pixbuf.height);
-          
-        //保存
-        try{
-          pixbuf.save(image_path,"png");
-        }catch(Error e){
-          print("Error : %s\n",e.message);
+          //HashTableへの追加
+          config.profile_image_hash_table.insert(screen_name,profile_image_url);
         }
-                  
-        //リサイズ
-        pixbuf=pixbuf.scale_simple(size,size,InterpType.BILINEAR);
-        
-        //HashTableへの追加
-        config.profile_image_hash_table.insert(screen_name,profile_image_url);
-          
         get_profile_image_async.callback();
       });
     }
