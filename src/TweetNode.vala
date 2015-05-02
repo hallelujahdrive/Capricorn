@@ -56,7 +56,7 @@ class TweetNode:Node{
     retweet_button.clicked.connect((image_button)=>{
       weak IconButton icon_button=(IconButton)image_button;
       if(icon_button.already){
-        statuses_destroy.begin(this.account,this.parsed_json_obj.id_str,(obj,res)=>{
+        statuses_destroy.begin(this.account,this.parsed_json_obj.retweeted_status_id_str,(obj,res)=>{
           if(statuses_destroy.end(res)){
             icon_button.already=!icon_button.already;
             icon_button.update();
