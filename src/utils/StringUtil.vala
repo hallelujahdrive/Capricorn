@@ -1,7 +1,7 @@
+using Ruribitaki;
 using Soup;
 
 using BitlyUtil;
-using TwitterUtil;
 using URIUtil;
 
 namespace StringUtil{    

@@ -2,8 +2,8 @@ using Cairo;
 using Gdk;
 using Gtk;
 using Rest;
+using Ruribitaki;
 
-using TwitterUtil;
 using URIUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/node.ui")]

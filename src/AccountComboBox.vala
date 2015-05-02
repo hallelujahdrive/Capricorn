@@ -1,8 +1,8 @@
 using Gdk;
 using Gtk;
+using Ruribitaki;
 
 using ImageUtil;
-using TwitterUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/account_combo_box.ui")]
 class AccountComboBox:ComboBox{

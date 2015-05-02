@@ -1,7 +1,6 @@
 using Gdk;
 using Gtk;
-
-using TwitterUtil;
+using Ruribitaki;
 
 class TimeLine:ScrolledListBox{
   //tab

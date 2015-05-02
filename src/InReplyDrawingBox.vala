@@ -2,9 +2,9 @@ using Cairo;
 using Gdk;
 using Gtk;
 using Rest;
+using Ruribitaki;
 
 using ImageUtil;
-using TwitterUtil;
 
 class InReplyDrawingBox:DrawingBox{
   private ParsedJsonObj in_reply_parsed_json_obj;

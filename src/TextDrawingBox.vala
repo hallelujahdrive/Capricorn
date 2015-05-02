@@ -1,9 +1,9 @@
 using Cairo;
 using Gdk;
 using Gtk;
+using Ruribitaki;
 
 using StringUtil;
-using TwitterUtil;
 using URIUtil;
 
 class TextDrawingBox:DrawingBox{

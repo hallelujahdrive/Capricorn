@@ -1,8 +1,8 @@
 using Gdk;
 using Gtk;
+using Ruribitaki;
 
 using SqliteUtil;
-using TwitterUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/settings_window.ui")]
 class SettingsWindow:Dialog{

@@ -1,9 +1,9 @@
 using Gdk;
 using Gtk;
+using Ruribitaki;
 
 using ImageUtil;
 using SqliteUtil;
-using TwitterUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/account_settings_page.ui")]
 class AccountSettingsPage:Frame{

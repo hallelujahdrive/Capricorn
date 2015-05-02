@@ -1,8 +1,8 @@
 using Gdk;
 using Gtk;
+using Ruribitaki;
 
 using ImageUtil;
-using TwitterUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/media_window.ui")]
 class MediaWindow:Gtk.Window{

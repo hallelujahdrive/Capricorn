@@ -1,9 +1,9 @@
 using Cairo;
 using Gdk;
 using Gtk;
+using Ruribitaki;
 
 using ImageUtil;
-using TwitterUtil;
 
 class EventDrawingBox:DrawingBox{
   //icon

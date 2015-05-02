@@ -1,9 +1,9 @@
 using Gdk;
 using Gtk;
+using Ruribitaki;
 
 using ImageUtil;
 using StringUtil;
-using TwitterUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/post_page.ui")]
 class PostPage:Frame{

@@ -1,9 +1,9 @@
 using Cairo;
 using Gdk;
 using Gtk;
+using Ruribitaki;
 
 using ImageUtil;
-using TwitterUtil;
 
 class RetweetDrawingBox:DrawingBox{ 
   private const string retweet_text="Retweeted by";

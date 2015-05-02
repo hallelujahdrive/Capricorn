@@ -1,8 +1,8 @@
 using Gtk;
 using Sqlite;
+using Ruribitaki;
 
 using SqliteUtil;
-using TwitterUtil;
 using URIUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/oauth_window.ui")]

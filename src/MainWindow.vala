@@ -1,9 +1,9 @@
 using Gdk;
 using Gtk;
 using Sqlite;
+using Ruribitaki;
 
 using ImageUtil;
-using TwitterUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/main_window.ui")]
 public class MainWindow:ApplicationWindow{

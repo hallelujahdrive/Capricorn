@@ -75,28 +75,7 @@ sources = \
 			utils/Keys.vala \
 			utils/RotateSueface.vala \
 			utils/StringUtil.vala \
-			utils/UriUtil.vala \
-			twitter/Account.vala \
-			twitter/AccountVerifyCredential.vala \
-			twitter/Enums.vala \
-			twitter/FavoritesCreate.vala \
-			twitter/FavoritesDestroy.vala \
-			twitter/MonthStrToNum.vala \
-			twitter/OauthAccessToken.vala \
-			twitter/ParseProfileJson.vala \
-			twitter/ParsedJsonObj.vala \
-			twitter/RequestToken.vala \
-			twitter/StatusesDestroy.vala \
-			twitter/StatusesHomeTimeline.vala \
-			twitter/StatusesMentionTimeline.vala \
-			twitter/StatusesRetweet.vala \
-			twitter/StatusesShow.vala \
-			twitter/StatusesTimeline.vala \
-			twitter/StatusesUpdate.vala \
-			twitter/Strings.vala \
-			twitter/Struct.vala \
-			twitter/User.vala \
-			twitter/UserStream.vala
+			utils/UriUtil.vala
 
 capricorn.vapi libcapricorn_la_vala.stamp capricorn.h : $(sources)
 	@$(VALAC) $^ --vapi=capricorn.vapi -C --header capricorn.h @CPR_VALA_FLAGS@

@@ -1,6 +1,5 @@
+using Ruribitaki;
 using Sqlite;
-
-using TwitterUtil;
 
 namespace SqliteUtil{
   //accountのinsert

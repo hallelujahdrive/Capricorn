@@ -1,10 +1,10 @@
 using Gtk;
 using Soup;
 using Sqlite;
+using Ruribitaki;
 
 using FileUtil;
 using SqliteUtil;
-using TwitterUtil;
 
 public class Capricorn:Gtk.Application{
   //ApplicationWindow

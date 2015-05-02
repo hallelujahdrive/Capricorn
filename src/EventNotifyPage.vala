@@ -1,7 +1,6 @@
 using Gdk;
 using Gtk;
-
-using TwitterUtil;
+using Ruribitaki;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/event_notify_page.ui")]
 class EventNotifyPage:Frame{

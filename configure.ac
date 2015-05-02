@@ -27,6 +27,7 @@ pkg_modules="
 	libsoup-2.4
 	pango
 	rest-0.7
+  ruribitaki
 	sqlite3
 	"
 
@@ -51,6 +52,7 @@ CPR_VALA_FLAGS=" \
 	--pkg libsoup-2.4 \
 	--pkg pango \
 	--pkg rest-0.7 \
+  --pkg ruribitaki \
 	--pkg sqlite3 \
 	--target-glib=2.38 \
 	--gresources=\$(top_srcdir)/gresources.xml

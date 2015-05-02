@@ -1,8 +1,7 @@
 using Cairo;
 using Gdk;
 using Gtk;
-
-using TwitterUtil;
+using Ruribitaki;
 
 class FooterDrawingBox:DrawingBox{
   private weak ParsedJsonObj parsed_json_obj;

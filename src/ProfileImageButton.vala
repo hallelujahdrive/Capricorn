@@ -1,8 +1,8 @@
 using Gdk;
 using Gtk;
+using Ruribitaki;
 
 using ImageUtil;
-using TwitterUtil;
 
 class ProfileImageButton:ImageButton{
   private weak Config config;

@@ -1,4 +1,4 @@
-using TwitterUtil;
+using Ruribitaki;
 
 namespace URIUtil{
   //urlを開く

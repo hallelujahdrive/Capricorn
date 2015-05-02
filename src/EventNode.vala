@@ -1,6 +1,5 @@
 using Gtk;
-
-using TwitterUtil;
+using Ruribitaki;
 
 class EventNode:Node{
   
@@ -65,11 +64,11 @@ class EventNode:Node{
     switch(parsed_json_obj.type){
       case ParsedJsonObjType.EVENT:
       switch(parsed_json_obj.event_type){
-        case TwitterUtil.EventType.FAVORITE:
+        case Ruribitaki.EventType.FAVORITE:
         favorite_event_drawing_box.add_user(parsed_json_obj.sub_user,parsed_json_obj.favorite_count);
         add=true;
         break;
-        case TwitterUtil.EventType.UNFAVORITE:favorite_event_drawing_box.remove_user(parsed_json_obj.sub_user);
+        case Ruribitaki.EventType.UNFAVORITE:favorite_event_drawing_box.remove_user(parsed_json_obj.sub_user);
         break;
       }
       break;

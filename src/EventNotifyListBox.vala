@@ -1,6 +1,5 @@
 using Gtk;
-
-using TwitterUtil;
+using Ruribitaki;
 
 class EventNotifyListBox:ScrolledListBox{
   //NodeのGenericSet

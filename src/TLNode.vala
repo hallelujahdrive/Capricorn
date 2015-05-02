@@ -1,9 +1,9 @@
 using Gdk;
 using Gtk;
-using Rest;
+using Ruribitaki;
+
 
 using ImageUtil;
-using TwitterUtil;
 
 class TLNode{
   public int my_id;
@@ -77,7 +77,7 @@ class TLNode{
         case ParsedJsonObjType.EVENT:
         create_event(parsed_json_obj);
         /*switch(parsed_json_obj.event_type){
-          case TwitterUtil.EventType.FAVORITE:
+          case Ruribitaki.EventType.FAVORITE:
           break;
         }*/
         break;
