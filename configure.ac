@@ -23,10 +23,8 @@ pkg_modules="
 	gdk-3.0
 	glib-2.0
 	gtk+-3.0
-	json-glib-1.0
 	libsoup-2.4
 	pango
-	rest-0.7
   ruribitaki
 	sqlite3
 	"
