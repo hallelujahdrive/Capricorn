@@ -46,7 +46,7 @@ public class OAuthDialog:Gtk.Dialog{
   private void cancel_button_clicked_cb(Button cancel_button){
     this.destroy();
   }
-  public OAuthDialog(int account_count,Account account){
+  public OAuthDialog(Account account){
     this.account=account;
     //プロパティ
     pin_entry.set_sensitive(false);
@@ -59,7 +59,6 @@ public class OAuthDialog:Gtk.Dialog{
       if(success){
         //アカウント情報の取得
         account_verify_credential(this.account);
-        account.my_list_id=account_count;
       }
     });
   }

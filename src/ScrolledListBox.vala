@@ -1,7 +1,7 @@
 using Gtk;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/scrolled_list_box.ui")]
-class ScrolledListBox:ScrolledWindow{
+public class ScrolledListBox:ScrolledWindow{
   
   protected weak Config config;
   protected weak SignalPipe signal_pipe;
@@ -17,7 +17,7 @@ class ScrolledListBox:ScrolledWindow{
     this.config=config;
     this.signal_pipe=signal_pipe;
     
-    list_box.override_background_color(StateFlags.NORMAL,this.config.white);
+    list_box.override_background_color(StateFlags.NORMAL,this.config.color_profile.white);
     
   }
   

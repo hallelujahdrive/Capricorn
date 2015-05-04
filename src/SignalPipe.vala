@@ -15,7 +15,7 @@ public class SignalPipe{
   public signal void event_notify_settings_change_event();
   
   //textviewに文字列を追加
-  public signal void add_text_event(string text,Node? tweet_node,int my_list_id);
+  public signal void add_text_event(string text,Node? tweet_node,int list_id);
   
   //post
   public signal void post_button_click_event();

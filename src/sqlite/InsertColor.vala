@@ -2,14 +2,14 @@ using Sqlite;
 
 namespace SqliteUtil{
   //colorのinsert
-  public void insert_color(int id,Config config){
+  public void insert_color(int id,ColorProfile color_profile,Database db){
     int ec;
     Sqlite.Statement stmt;
     
     string prepared_query_str=INSERT_COLOR_QUERY;
-    ec=config.db.prepare_v2(prepared_query_str,prepared_query_str.length,out stmt);
+    ec=db.prepare_v2(prepared_query_str,prepared_query_str.length,out stmt);
     if(ec!=Sqlite.OK){
-      print("Error:%d:%s\n",config.db.errcode(),config.db.errmsg());
+      print("Error:%d:%s\n",db.errcode(),db.errmsg());
     }
     //パラメータの設定
     int id_param_position=stmt.bind_parameter_index("$ID");
@@ -20,10 +20,10 @@ namespace SqliteUtil{
     
     //インサート
     stmt.bind_int(id_param_position,id);
-    stmt.bind_text(default_bg_param_position,config.default_bg_rgba.to_string());
-    stmt.bind_text(reply_bg_param_position,config.reply_bg_rgba.to_string());
-    stmt.bind_text(retweet_bg_param_position,config.retweet_bg_rgba.to_string());
-    stmt.bind_text(mine_bg_param_position,config.mine_bg_rgba.to_string());
+    stmt.bind_text(default_bg_param_position,color_profile.default_bg_rgba.to_string());
+    stmt.bind_text(reply_bg_param_position,color_profile.reply_bg_rgba.to_string());
+    stmt.bind_text(retweet_bg_param_position,color_profile.retweet_bg_rgba.to_string());
+    stmt.bind_text(mine_bg_param_position,color_profile.mine_bg_rgba.to_string());
     
     while(stmt.step()!=Sqlite.DONE);
     stmt.reset();

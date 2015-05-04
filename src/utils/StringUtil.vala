@@ -4,7 +4,19 @@ using Soup;
 using BitlyUtil;
 using URIUtil;
 
-namespace StringUtil{    
+namespace StringUtil{
+  //nameの&の置換(やらないとmark upでコケる
+  public string parse_name(string get_name){
+    string name_regex=null;
+    try{  //セイキヒョウゲンカッコバクショウでクライアント名とURLを解析
+      var name_regex_replace=new Regex("(&)");
+      name_regex=name_regex_replace.replace(get_name,-1,0,"&amp;");
+    }catch(Error e){
+      print("%s\n",e.message);
+    }
+    return name_regex;
+  }
+    
   //textの整形(ほとんどurlだけ)
   public string parse_text(ref string text,hashtag[] hashtags,url[] media,url[] urls){
     string parsed_text=text;

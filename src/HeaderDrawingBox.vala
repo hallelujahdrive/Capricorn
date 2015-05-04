@@ -4,6 +4,7 @@ using Gtk;
 using Ruribitaki;
 
 using ImageUtil;
+using StringUtil;
 
 class HeaderDrawingBox:DrawingBox{
   private unowned User user;
@@ -61,7 +62,7 @@ class HeaderDrawingBox:DrawingBox{
     name_sb.append("<b>@");
     name_sb.append(this.user.screen_name);
     name_sb.append("</b> ");
-    name_sb.append(this.user.name);
+    name_sb.append(parse_name(this.user.name));
   }
   
   //color,descriptionの設定

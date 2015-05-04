@@ -107,10 +107,10 @@ class DisplaySettingsPage:Frame{
     }
     
     //ColorButtonの設定
-    default_bg_color_button.set_rgba(this.config.default_bg_rgba);
-    reply_bg_color_button.set_rgba(this.config.reply_bg_rgba);
-    retweet_bg_color_button.set_rgba(this.config.retweet_bg_rgba);
-    mine_bg_color_button.set_rgba(this.config.mine_bg_rgba);
+    default_bg_color_button.set_rgba(this.config.color_profile.default_bg_rgba);
+    reply_bg_color_button.set_rgba(this.config.color_profile.reply_bg_rgba);
+    retweet_bg_color_button.set_rgba(this.config.color_profile.retweet_bg_rgba);
+    mine_bg_color_button.set_rgba(this.config.color_profile.mine_bg_rgba);
     
     default_font_color_button.set_rgba(this.config.font_profile.text_font_rgba);
     name_font_color_button.set_rgba(this.config.font_profile.name_font_rgba);
@@ -128,10 +128,10 @@ class DisplaySettingsPage:Frame{
   }
   
   public void update_color_settings(){
-    config.default_bg_rgba=default_bg_color_button.get_rgba();
-    config.reply_bg_rgba=reply_bg_color_button.get_rgba();
-    config.retweet_bg_rgba=retweet_bg_color_button.get_rgba();
-    config.mine_bg_rgba=mine_bg_color_button.get_rgba();
+    config.color_profile.default_bg_rgba=default_bg_color_button.get_rgba();
+    config.color_profile.reply_bg_rgba=reply_bg_color_button.get_rgba();
+    config.color_profile.retweet_bg_rgba=retweet_bg_color_button.get_rgba();
+    config.color_profile.mine_bg_rgba=mine_bg_color_button.get_rgba();
     
     if(config.font_profile.use_default){
       config.font_profile.text_font_rgba=default_font_color_button.get_rgba();

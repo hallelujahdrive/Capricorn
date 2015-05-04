@@ -8,7 +8,7 @@ using URIUtil;
 
 class TextDrawingBox:DrawingBox{
   private weak ParsedJsonObj parsed_json_obj;
-  private weak Account account;
+  private weak CapricornAccount cpr_account;
   private string text;
   private string parsed_text;
   
@@ -21,7 +21,7 @@ class TextDrawingBox:DrawingBox{
     //hashtagsから検索
     for(int i=0;i<parsed_json_obj.hashtags.length;i++){
       if(index_>=parsed_json_obj.hashtags[i].indices[0]&&index_<parsed_json_obj.hashtags[i].indices[1]){
-        signal_pipe.add_text_event(" #%s".printf(parsed_json_obj.hashtags[i].text),null,account.my_list_id);
+        signal_pipe.add_text_event(" #%s".printf(parsed_json_obj.hashtags[i].text),null,cpr_account.list_id);
         break;
       }
     }
@@ -65,11 +65,11 @@ class TextDrawingBox:DrawingBox{
     return true;
   }
   
-  public TextDrawingBox(ParsedJsonObj parsed_json_obj,Account account,Config config,SignalPipe signal_pipe){
+  public TextDrawingBox(ParsedJsonObj parsed_json_obj,CapricornAccount cpr_account,Config config,SignalPipe signal_pipe){
     base(config,signal_pipe);
     
     this.parsed_json_obj=parsed_json_obj;
-    this.account=account;
+    this.cpr_account=cpr_account;
     text=this.parsed_json_obj.text;
         
     //縦に広がるようにする

@@ -2,40 +2,53 @@ using Gdk;
 using Gtk;
 using Ruribitaki;
 
-
 using ImageUtil;
 
-class TLNode{
-  public int my_id;
+[Compact]
+public class CapricornAccount:Account{
+  private weak Config config;
+  private weak SignalPipe signal_pipe;
+  
+  public int list_id;
+  
   //TLScrolled
   public TimeLine home_time_line;
   public TimeLine mention_time_line;
   public EventNotifyListBox event_notify_list_box;
-    
-  private unowned Account account;
-  private weak Config config;
-  private weak SignalPipe signal_pipe;
   
   private UserStream user_stream;
     
   //loading用
   private bool profile_image_loaded=false;
   
-  public TLNode(Account account,Config config,SignalPipe signal_pipe){
-    this.account=account;
+  public CapricornAccount(Config config,SignalPipe signal_pipe,Account ?account=null){
+    base(TWITTER_CONSUMER_KEY,TWITTER_CONSUMER_SECRET);
+    
+    if(account!=null){
+      this.id=account.id;
+      this.id_str=account.id_str;
+      this.profile_image_url=account.profile_image_url;
+      this.screen_name=account.screen_name;
+      this.time_zone=account.time_zone;
+      this.api_proxy.set_token(account.api_proxy.get_token());
+      this.api_proxy.set_token_secret(account.api_proxy.get_token_secret());
+      this.stream_proxy.set_token(account.stream_proxy.get_token());
+      this.stream_proxy.set_token_secret(account.stream_proxy.get_token_secret());
+    }
+    
     this.config=config;
     this.signal_pipe=signal_pipe;
-    
-    my_id=this.account.my_id;
-        
+  }
+  
+  public void init(){
     //TimeLine
-    home_time_line=new TimeLine.home(this.account,this.config,this.signal_pipe);
-    mention_time_line=new TimeLine.mention(this.account,this.config,this.signal_pipe);
+    home_time_line=new TimeLine.home(this,this.config,this.signal_pipe);
+    mention_time_line=new TimeLine.mention(this,this.config,this.signal_pipe);
     event_notify_list_box=new EventNotifyListBox(this.config,this.signal_pipe);
     
     //UserStream
-    user_stream=new UserStream(this.account);
-    //tab 
+    user_stream=new UserStream(this as Account);
+    //tab
     //profile_image_pixbufの取得
     try{
       //load中の画像のRotateSurface
@@ -51,7 +64,7 @@ class TLNode{
     }catch(Error e){
       print("IconTheme Error : %s\n",e.message);
     }
-    get_profile_image_async.begin(this.account.my_screen_name,this.account.my_profile_image_url,24,this.config,(obj,res)=>{
+    get_profile_image_async.begin(this.screen_name,this.profile_image_url,24,this.config,(obj,res)=>{
       Pixbuf pixbuf=get_profile_image_async.end(res);
       if(pixbuf!=null){
         home_time_line.tab.set_from_pixbuf(pixbuf);
@@ -101,7 +114,7 @@ class TLNode{
   
   //tweetの作成
   private void create_tweet(ParsedJsonObj parsed_json_obj){
-    TweetNode tweet_node=new TweetNode(parsed_json_obj,this.account,this.config,this.signal_pipe);
+    TweetNode tweet_node=new TweetNode(parsed_json_obj,this,this.config,this.signal_pipe);
     home_time_line.prepend_node(tweet_node);
     switch(parsed_json_obj.tweet_type){
       //replyの作成
@@ -114,11 +127,18 @@ class TLNode{
   private void create_event(ParsedJsonObj parsed_json_obj){
     if(parsed_json_obj.is_mine){
       if(!event_notify_list_box.generic_set.contains(parsed_json_obj.id_str)){
-        event_notify_list_box.prepend_node(new EventNode.with_update(parsed_json_obj,account,config,signal_pipe));
+        event_notify_list_box.prepend_node(new EventNode.with_update(parsed_json_obj,this,config,signal_pipe));
       }
       if(signal_pipe.event_update_event(parsed_json_obj)){
-        home_time_line.prepend_node(new EventNode.no_update(parsed_json_obj,account,config,signal_pipe));
+        home_time_line.prepend_node(new EventNode.no_update(parsed_json_obj,this,config,signal_pipe));
       }
     }
+  }
+  
+  //オブジェクトの削除
+  public void destroy(){
+    home_time_line.destroy();
+    mention_time_line.destroy();
+    event_notify_list_box.destroy();
   }
 }

@@ -7,7 +7,7 @@ using SqliteUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/account_settings_page.ui")]
 class AccountSettingsPage:Frame{
-  private unowned GLib.Array<Account> account_array;
+  public GLib.Array<Account> account_array=new Array<Account>();
   
   private weak Config config;
 
@@ -37,8 +37,7 @@ class AccountSettingsPage:Frame{
   [GtkCallback]
   private void account_add_button_clicked_cb(Button account_add_button){
     Account account=new Account(TWITTER_CONSUMER_KEY,TWITTER_CONSUMER_SECRET);
-    int len=(int)account_array.length;
-    OAuthDialog oauth_dialog=new OAuthDialog(len,account);
+    OAuthDialog oauth_dialog=new OAuthDialog(account);
     oauth_dialog.set_transient_for(settings_window);
     oauth_dialog.show_all();
     
@@ -46,14 +45,14 @@ class AccountSettingsPage:Frame{
     oauth_dialog.destroy.connect(()=>{
       if(oauth_dialog.success){
         settings_window.account_is_changed=true;
-        account_array.append_val((owned)account);
+        account_array.append_val(account);
+        load_acount_tree_view();
+        
+        if(account_array.length!=1){
+          account_remove_button.set_sensitive(true);
+        }
       }
-      load_acount_tree_view();
     });
-    
-    if(account_array.length==1){
-      account_remove_button.set_sensitive(false);
-    }
   }
   
   
@@ -66,12 +65,7 @@ class AccountSettingsPage:Frame{
     account_list_store.get_value(iter,0,out val);
     
     int remove_list_id=(int)val;
-    
-    //list_idをずらす
     account_array.remove_index(remove_list_id);
-    for(int i=remove_list_id;i<account_array.length;i++){
-      account_array.index(i).my_list_id=i;
-    }
     
     if(account_array.length==1){
      account_remove_button.set_sensitive(false);
@@ -82,10 +76,19 @@ class AccountSettingsPage:Frame{
     load_acount_tree_view();
   }
   
-  public AccountSettingsPage(GLib.Array<Account> account_array,Config config,SettingsWindow settings_window){
-    this.account_array=account_array;
+  public AccountSettingsPage(GLib.Array<CapricornAccount> cpr_account_array,Config config,SettingsWindow settings_window){
     this.config=config;
     this.settings_window=settings_window;
+    
+    //account_arrayをコピー
+    for(int i=0;i<cpr_account_array.length;i++){
+      var account=new Account(TWITTER_CONSUMER_KEY,TWITTER_CONSUMER_SECRET);
+      account_array.append_val(account);
+      //これだけの情報がコピーできれば問題ない
+      account_array.index(i).id=cpr_account_array.index(i).id;
+      account_array.index(i).profile_image_url=cpr_account_array.index(i).profile_image_url;
+      account_array.index(i).screen_name=cpr_account_array.index(i).screen_name;
+    }
     
     //TreeViewのload
     account_tree_view.insert_column_with_attributes(-1,"",cell_pixbuf,"pixbuf",1);
@@ -110,7 +113,7 @@ class AccountSettingsPage:Frame{
       TreeIter iter;
       
       account_list_store.append(out iter);
-      account_list_store.set(iter,0,account_array.index(i).my_list_id,2,account_array.index(i).my_screen_name);
+      account_list_store.set(iter,0,i,2,account_array.index(i).screen_name);
       //load中の画像のRotateSurface
       try{
         RotateSurface rotate_surface=new RotateSurface(config.icon_theme.load_icon(LOADING_ICON,16,IconLookupFlags.NO_SVG));
@@ -125,7 +128,7 @@ class AccountSettingsPage:Frame{
         print("IconTheme Error : %s\n",e.message);
       }
       //profile_imageの取得
-      get_profile_image_async.begin(account_array.index(i).my_screen_name,account_array.index(i).my_profile_image_url,16,config,(obj,res)=>{
+      get_profile_image_async.begin(account_array.index(i).screen_name,account_array.index(i).profile_image_url,16,config,(obj,res)=>{
         account_list_store.set(iter,1,get_profile_image_async.end(res));
         profile_image_loaded=true;
       });

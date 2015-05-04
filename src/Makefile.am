@@ -11,6 +11,8 @@ sources = \
 			AccountComboBox.vala \
 			AccountSettingsPage.vala \
 			Capricorn.vala \
+			CapricornAccount.vala \
+			ColorProfile.vala \
 			Config.vala \
 			DisplaySettingsPage.vala \
 			DrawingBox.vala \
@@ -30,7 +32,7 @@ sources = \
 			MediaWindow.vala \
 			NetworkSettingsPage.vala \
 			Node.vala \
-			OAuth.vala \
+			OAuthDialog.vala \
 			PhotoBox.vala \
 			PostPage.vala \
 			ProfileImageButton.vala \
@@ -41,7 +43,6 @@ sources = \
 			TextDrawingBox.vala \
 			TimeLine.vala \
 			TimeLineSettingsPage.vala \
-			TLNode.vala \
 			TweetNode.vala \
 			bitly/ShortingURL.vala \
 			bitly/Strings.vala \

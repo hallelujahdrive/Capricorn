@@ -21,17 +21,8 @@ public class Config{
   private weak SignalPipe signal_pipe;
   //font  
   public FontProfile font_profile=new FontProfile();
-  
-  //Gdk.RGBA
-  public RGBA default_bg_rgba=RGBA();
-  public RGBA reply_bg_rgba=RGBA();
-  public RGBA retweet_bg_rgba=RGBA();
-  public RGBA mine_bg_rgba=RGBA();
-    
-  public RGBA clear=RGBA();
-  public RGBA white=RGBA();
-  
-  public RGBA delete_bg_rgba=RGBA();
+  //color
+  public ColorProfile color_profile=new ColorProfile();
   
   //Nodeの取得数
   public int init_time_line_node_count;
@@ -54,34 +45,20 @@ public class Config{
     
     this.signal_pipe=signal_pipe;
     
-    //Gdk.RGBAの設定
-    clear.alpha=0;
-    white.parse("rgb(255,255,255)");
-    delete_bg_rgba.parse("rgb(255,0,0)");
-    
-    default_bg_rgba.alpha=1;
-    reply_bg_rgba.alpha=1;
-    retweet_bg_rgba.alpha=1;
-    mine_bg_rgba.alpha=1;
-    
     //IconThemeの読み込み
     icon_theme.set_custom_theme("hicolor");
   }
   
-  //defaultのcolor
+  //初期化
   public void init(){
-    default_bg_rgba.parse("rgb(255,255,255)");
-    reply_bg_rgba.parse("rgb(204,255,128)");
-    retweet_bg_rgba.parse("rgb(255,217,82)");
-    mine_bg_rgba.parse("rgb(193,209,255)");
-    
     init_time_line_node_count=10;
     time_line_node_count=50;
     event_node_count=20;
-    
     event_show_on_time_line=false;
-    
     use_proxy=0;
     proxy_uri=new URI(null);
+    
+    font_profile.init();
+    color_profile.init();
   }
 }

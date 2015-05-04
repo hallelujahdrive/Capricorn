@@ -10,11 +10,8 @@ public class Capricorn:Gtk.Application{
   //ApplicationWindow
   private MainWindow window;
   
-  //Account数
-  private static int account_count=0;
-  
   //Accountの配列
-  public GLib.Array<Account> account_array=new GLib.Array<Account>();
+  public GLib.Array<CapricornAccount> cpr_account_array=new GLib.Array<CapricornAccount>();
   
   //Path
   private static string CPR_DIR_PATH=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,GLib.Environment.get_home_dir(),".capricorn");
@@ -48,9 +45,8 @@ public class Capricorn:Gtk.Application{
       //テーブルが新規に作成されたら
       //configの初期化
       config.init();
-      config.font_profile.init();
       //insert
-      insert_color(0,config);
+      insert_color(0,config.color_profile,config.db);
       insert_event_notify_settings(config);
       insert_font(0,config.font_profile,config.db);
       insert_network_settings(config);
@@ -60,20 +56,20 @@ public class Capricorn:Gtk.Application{
     }else{
       //テーブルが存在したら
       //select
-      select_color(0,config);
+      select_color(0,config.color_profile,config.db);
       select_event_notify_settings(config);
       select_font(0,config.font_profile,config.db);
       select_network_settings(config);
       select_time_line_settings(config);
       //Account情報の読み出し
-      account_count=count_records(config.db,"ACCOUNT");
+      int account_count=count_records(config.db,"ACCOUNT");
       for(int i=0;i<account_count;i++){
-        var account=new Account(TWITTER_CONSUMER_KEY,TWITTER_CONSUMER_SECRET);
-        select_account(i,account,config.db);
+        var cpr_account=new CapricornAccount(config,signal_pipe);
         //配列に追加
-        account_array.append_val((owned)account);
+        cpr_account_array.append_val(cpr_account);
+        select_account(i,cpr_account_array.index(i),config.db);
         //Account情報の取得
-        can_window_open=account_verify_credential(account_array.index(i));
+        can_window_open=account_verify_credential(cpr_account_array.index(i));
       }
     }
   }
@@ -82,18 +78,18 @@ public class Capricorn:Gtk.Application{
     base.startup();
     
     //Accountが0なら,認証windowを開く
-    if(account_count==0){
-      Account account=new Account(TWITTER_CONSUMER_KEY,TWITTER_CONSUMER_SECRET);
-      OAuthDialog oauth_dialog=new OAuthDialog(account_count,account);
+    if(cpr_account_array.length==0){
+      var cpr_account=new CapricornAccount(config,signal_pipe);
+      OAuthDialog oauth_dialog=new OAuthDialog(cpr_account);
       oauth_dialog.show_all();
       
       //シグナルハンドラ
       oauth_dialog.destroy.connect(()=>{
         if(oauth_dialog.success){
-          account_array.append_val((owned)account);
-          insertaccount(account_array.index(0),config.db);
+          cpr_account_array.append_val(cpr_account);
+          insert_account(cpr_account_array.index(0),config.db);
         }
-        if(account_count==count_records(config.db,"ACCOUNT")){
+        if(count_records(config.db,"ACCOUNT")==0){
           window.destroy();
         }else{
           window.load_all();

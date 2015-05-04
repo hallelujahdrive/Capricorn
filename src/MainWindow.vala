@@ -4,17 +4,15 @@ using Sqlite;
 using Ruribitaki;
 
 using ImageUtil;
+using SqliteUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/main_window.ui")]
 public class MainWindow:ApplicationWindow{
   private unowned Config config;
   private weak SignalPipe signal_pipe;
 
-  //Accountの配列
-  private unowned Array<Account> account_array;
-
-  //TLNodeの配列
-  private Array<TLNode> tl_node_array=new Array<TLNode>();
+  //CapricornAccountの配列
+  private unowned Array<CapricornAccount> cpr_account_array;
   
   private PostPage post_page;
   private EventNotifyPage event_notify_page;
@@ -40,10 +38,10 @@ public class MainWindow:ApplicationWindow{
     
     config=capricorn.config;
     signal_pipe=capricorn.signal_pipe;
-    account_array=capricorn.account_array;
-    
-    post_page=new PostPage(account_array,config,signal_pipe);
-    event_notify_page=new EventNotifyPage(account_array,tl_node_array,config,signal_pipe);
+    cpr_account_array=capricorn.cpr_account_array;
+        
+    post_page=new PostPage(cpr_account_array,config,signal_pipe);
+    event_notify_page=new EventNotifyPage(cpr_account_array,config,signal_pipe);
     
     settings_button=new IconButton(SETTINGS_ICON,null,null,IconSize.LARGE_TOOLBAR);
         
@@ -70,7 +68,7 @@ public class MainWindow:ApplicationWindow{
     settings_button.clicked.connect(()=>{
       settings_button.sensitive=false;
       
-      settings_window=new SettingsWindow(account_array,reload_settings,config,signal_pipe);
+      settings_window=new SettingsWindow(cpr_account_array,reload_settings,config,signal_pipe);
       settings_window.set_transient_for(this);
       settings_window.show_all();
     });
@@ -84,38 +82,50 @@ public class MainWindow:ApplicationWindow{
   }
   
   //設定の再読み込み
-  private void reload_settings(){
-    //TLNotebookの削除
+  private void reload_settings(Array<Account> account_array){
+    //CapricornAccountの削除
     if(settings_window.account_is_changed){
-      for(int i=0;i<tl_node_array.length;){
-        if(i>=account_array.length||tl_node_array.index(i).my_id!=account_array.index(i).my_id){
-          tl_node_array.remove_index(i);
-          home_tl_notebook.remove_page(i);
-          mention_tl_notebook.remove_page(i);
+      for(int i=0;i<cpr_account_array.length;){
+        if(i>=account_array.length||cpr_account_array.index(i).id!=account_array.index(i).id){
+          delete_account(i,config.db);
+          cpr_account_array.index(i).destroy();  
+          weak CapricornAccount del_account=cpr_account_array.index(i);
+          cpr_account_array.remove_index(i);
+          //print("%u\n",del_account.get_user_stream_ref_count());
+          //list_idの更新
+          for(int j=i;j<cpr_account_array.length;j++){
+            cpr_account_array.index(j).list_id=j;
+            update_account_list_id(j,j+1,config.db);
+          }
         }else{
           i++;
         }
       }
       //追加
-      for(uint i=tl_node_array.length;i<account_array.length;i++){
-        TLNode tl_node=new TLNode(account_array.index(i),config,signal_pipe);
-        tl_node_array.append_val(tl_node);
-        home_tl_notebook.append_page(tl_node_array.index(i).home_time_line,tl_node_array.index(i).home_time_line.tab);
-        mention_tl_notebook.append_page(tl_node_array.index(i).mention_time_line,tl_node_array.index(i).mention_time_line.tab);
+      for(uint i=cpr_account_array.length;i<account_array.length;i++){
+        CapricornAccount cpr_account=new CapricornAccount(config,signal_pipe,account_array.index(i));
+        cpr_account_array.append_val(cpr_account);
+        cpr_account_array.index(i).list_id=(int)i;
+        cpr_account_array.index(i).init();
+        insert_account(cpr_account_array.index(i),config.db);
+        
+        home_tl_notebook.append_page(cpr_account_array.index(i).home_time_line,cpr_account_array.index(i).home_time_line.tab);
+        mention_tl_notebook.append_page(cpr_account_array.index(i).mention_time_line,cpr_account_array.index(i).mention_time_line.tab);
+        
       }
       //account_cboxの再読み込み
       signal_pipe.account_array_change_event();
+      signal_pipe.show();
     }
     settings_button.set_sensitive(true);
   }
   
   private void init(){
     //TLの();ロード
-    for(int i=0;i<account_array.length;i++){
-      TLNode tl_node=new TLNode(account_array.index(i),config,signal_pipe);
-      tl_node_array.append_val(tl_node);
-      home_tl_notebook.append_page(tl_node_array.index(i).home_time_line,tl_node_array.index(i).home_time_line.tab);
-      mention_tl_notebook.append_page(tl_node_array.index(i).mention_time_line,tl_node_array.index(i).mention_time_line.tab);
+    for(int i=0;i<cpr_account_array.length;i++){
+      cpr_account_array.index(i).init();
+      home_tl_notebook.append_page(cpr_account_array.index(i).home_time_line,cpr_account_array.index(i).home_time_line.tab);
+      mention_tl_notebook.append_page(cpr_account_array.index(i).mention_time_line,cpr_account_array.index(i).mention_time_line.tab);
     }
     event_notify_page.init(0);
   }

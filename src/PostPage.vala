@@ -7,7 +7,7 @@ using StringUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/post_page.ui")]
 class PostPage:Frame{
-  private unowned GLib.Array<Account> account_array;
+  private unowned Array<CapricornAccount> cpr_account_array;
   private weak Config config;
   private weak SignalPipe signal_pipe;
   
@@ -71,14 +71,14 @@ class PostPage:Frame{
     tl_is_linked=tl_link_cbutton.get_active();
   }
   
-  public PostPage(GLib.Array<Account> account_array,Config config,SignalPipe signal_pipe){
-    this.account_array=account_array;
+  public PostPage(Array<CapricornAccount> cpr_account_array,Config config,SignalPipe signal_pipe){
+    this.cpr_account_array=cpr_account_array;
     this.config=config;
     this.signal_pipe=signal_pipe;
     
     post_button=new IconButton(POST_ICON,null,null,IconSize.LARGE_TOOLBAR);
     url_shorting_button=new IconButton(URL_SHORTING_ICON,null,null,IconSize.LARGE_TOOLBAR);
-    account_combo_box=new AccountComboBox(account_array,account_combo_box_changed,config,signal_pipe);
+    account_combo_box=new AccountComboBox(cpr_account_array,account_combo_box_changed,config,signal_pipe);
     
     
     //パッキング
@@ -93,7 +93,7 @@ class PostPage:Frame{
     //シグナルハンドラ
     //post
     post_button.clicked.connect(()=>{
-      statuses_update.begin(this.account_array.index(selected_account_num),buffer.text,in_reply_to_status_id_str,(obj,res)=>{
+      statuses_update.begin(this.cpr_account_array.index(selected_account_num),buffer.text,in_reply_to_status_id_str,(obj,res)=>{
         if(statuses_update.end(res)){
           buffer.text="";
         }
@@ -107,10 +107,10 @@ class PostPage:Frame{
     });
     
     //add_text
-    signal_pipe.add_text_event.connect((text,tweet_node,my_list_id)=>{
+    signal_pipe.add_text_event.connect((text,tweet_node,list_id)=>{
       //buffer.txtが更新されるときreply_resetが呼ばれる
       buffer.text=buffer.text+text;
-      account_combo_box.active=my_list_id;
+      account_combo_box.active=list_id;
       if(tweet_node!=null){
         in_reply_to_status_id_str=tweet_node.id_str;
         _tweet_node=tweet_node;

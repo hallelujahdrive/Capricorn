@@ -9,8 +9,8 @@ class EventNode:Node{
   private EventDrawingBox favorite_event_drawing_box;
   private EventDrawingBox retweet_event_drawing_box;
   
-  public EventNode(ParsedJsonObj parsed_json_obj,Account account,Config config,SignalPipe signal_pipe){
-    base(parsed_json_obj,account,config,signal_pipe);
+  public EventNode(ParsedJsonObj parsed_json_obj,CapricornAccount cpr_account,Config config,SignalPipe signal_pipe){
+    base(parsed_json_obj,cpr_account,config,signal_pipe);
     
     //EventDrawingBoxの作成
     retweet_event_drawing_box=new EventDrawingBox.retweet(this.config,this.signal_pipe);
@@ -20,8 +20,8 @@ class EventNode:Node{
     this.attach(favorite_event_drawing_box,1,5,1,1);    
   }
   
-  public EventNode.with_update(ParsedJsonObj parsed_json_obj,Account account,Config config,SignalPipe signal_pipe){
-    this(parsed_json_obj,account,config,signal_pipe);
+  public EventNode.with_update(ParsedJsonObj parsed_json_obj,CapricornAccount cpr_account,Config config,SignalPipe signal_pipe){
+    this(parsed_json_obj,cpr_account,config,signal_pipe);
     
     //シグナルハンドラ
     this.signal_pipe.event_update_event.connect((parsed_json_obj)=>{
@@ -41,8 +41,8 @@ class EventNode:Node{
     });
   }
   
-  public EventNode.no_update(ParsedJsonObj parsed_json_obj,Account account,Config config,SignalPipe signal_pipe){
-    this(parsed_json_obj,account,config,signal_pipe);
+  public EventNode.no_update(ParsedJsonObj parsed_json_obj,CapricornAccount cpr_account,Config config,SignalPipe signal_pipe){
+    this(parsed_json_obj,cpr_account,config,signal_pipe);
     
     event_node_update(this.parsed_json_obj);
     

@@ -6,7 +6,7 @@ using ImageUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/account_combo_box.ui")]
 class AccountComboBox:ComboBox{
-  private unowned Array<Account> account_array;
+  private unowned Array<CapricornAccount> cpr_account_array;
   private unowned Func<int> func;
   private weak Config config;
   //widget
@@ -31,8 +31,8 @@ class AccountComboBox:ComboBox{
     }
   }
   
-  public AccountComboBox(Array<Account> account_array,Func<int> func,Config config,SignalPipe signal_pipe){
-    this.account_array=account_array;
+  public AccountComboBox(Array<CapricornAccount> cpr_account_array,Func<int> func,Config config,SignalPipe signal_pipe){
+    this.cpr_account_array=cpr_account_array;
     this.func=func;
    this.config=config;
     
@@ -56,14 +56,14 @@ class AccountComboBox:ComboBox{
   //account_comboboxの読み込み
   private void load(){
     account_list_store.clear();
-    for(int i=0;i<account_array.length;i++){
+    for(int i=0;i<cpr_account_array.length;i++){
       //RotateSurface戻り値用のbool
       bool profile_image_loaded=false;
       //iter(ローカル)
       TreeIter iter;
       
       account_list_store.append(out iter);
-      account_list_store.set(iter,0,account_array.index(i).my_list_id,2,account_array.index(i).my_screen_name);
+      account_list_store.set(iter,0,cpr_account_array.index(i).list_id,2,cpr_account_array.index(i).screen_name);
       //load中の画像のRotateSurface
       try{
         RotateSurface rotate_surface=new RotateSurface(config.icon_theme.load_icon(LOADING_ICON,16,IconLookupFlags.NO_SVG));
@@ -77,7 +77,7 @@ class AccountComboBox:ComboBox{
       }catch(Error e){
         print("IconTheme Error : %s\n",e.message);
       }
-      get_profile_image_async.begin(account_array.index(i).my_screen_name,account_array.index(i).my_profile_image_url,16,config,(obj,res)=>{
+      get_profile_image_async.begin(cpr_account_array.index(i).screen_name,cpr_account_array.index(i).profile_image_url,16,config,(obj,res)=>{
         //profile_imageの取得
         Pixbuf pixbuf=get_profile_image_async.end(res);
         if(pixbuf!=null){
