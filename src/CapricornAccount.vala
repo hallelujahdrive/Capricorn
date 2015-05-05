@@ -47,7 +47,7 @@ public class CapricornAccount:Account{
     event_notify_list_box=new EventNotifyListBox(this.config,this.signal_pipe);
     
     //UserStream
-    user_stream=new UserStream(this as Account);
+    user_stream=new UserStream(this);
     //tab
     //profile_image_pixbufの取得
     try{

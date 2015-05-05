@@ -39,19 +39,19 @@ public class MainWindow:ApplicationWindow{
     config=capricorn.config;
     signal_pipe=capricorn.signal_pipe;
     cpr_account_array=capricorn.cpr_account_array;
-        
+     
+     //初期化
+    init();
+    
     post_page=new PostPage(cpr_account_array,config,signal_pipe);
     event_notify_page=new EventNotifyPage(cpr_account_array,config,signal_pipe);
     
     settings_button=new IconButton(SETTINGS_ICON,null,null,IconSize.LARGE_TOOLBAR);
-        
-    //load
+    
     various_notebook.append_page(post_page,post_page.tab);
     various_notebook.append_page(event_notify_page,event_notify_page.tab);
     button_box.pack_end(settings_button,false,false,0);
-    
-    init();
-    
+        
     //シグナルハンドラ
     //表示に時間かかるからあとから読み込み
     this.show.connect(()=>{
@@ -89,7 +89,7 @@ public class MainWindow:ApplicationWindow{
         if(i>=account_array.length||cpr_account_array.index(i).id!=account_array.index(i).id){
           delete_account(i,config.db);
           cpr_account_array.index(i).destroy();  
-          weak CapricornAccount del_account=cpr_account_array.index(i);
+          //weak CapricornAccount del_account=cpr_account_array.index(i);
           cpr_account_array.remove_index(i);
           //print("%u\n",del_account.get_user_stream_ref_count());
           //list_idの更新
