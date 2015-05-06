@@ -74,7 +74,11 @@ public class CapricornAccount:Account{
     });
     
     //user_streamの開始
-    user_stream.run();
+    try{
+      user_stream.run();
+    }catch(Error e){
+      print("User stream run error : %s\n",e.message);
+    }
     
     //シグナルハンドラ
     user_stream.callback_json.connect((parsed_json_obj)=>{
@@ -108,7 +112,11 @@ public class CapricornAccount:Account{
     //エラー処理
     user_stream.callback_error.connect((err)=>{
       print("UserStream Error:%s\n",err.message);
-      user_stream.run();
+      try{
+        user_stream.run();
+      }catch(Error e){
+        print("User stream error : %s\n",e.message);
+      }
     });
   }
   

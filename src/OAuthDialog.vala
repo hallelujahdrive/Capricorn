@@ -52,13 +52,21 @@ public class OAuthDialog:Gtk.Dialog{
     pin_entry.set_sensitive(false);
     auth_button.set_sensitive(false);
     
-    token_url=request_token(this.account);
+    try{
+      token_url=request_token(this.account);
+    }catch(Error e){
+      print("Request token error : %s\n",e.message);
+    }
     
     //シグナル
     this.destroy.connect(()=>{
       if(success){
         //アカウント情報の取得
-        account_verify_credential(this.account);
+        try{
+          account_verify_credential(this.account);
+        }catch(Error e){
+          print("Account verify credential error : %s\n",e.message);
+        }
       }
     });
   }
@@ -67,9 +75,12 @@ public class OAuthDialog:Gtk.Dialog{
   private void send_pin(){
     string pin_code=pin_entry.get_text();
     if(pin_code!=""){
-      if(oauth_access_token(account,pin_code)){
+      try{
+        oauth_access_token(account,pin_code);
         success=true;
         this.destroy();
+      }catch(Error e){
+        print("OAuth access token error : %s\n",e.message);
       }
     }
   }

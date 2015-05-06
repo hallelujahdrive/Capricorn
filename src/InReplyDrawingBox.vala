@@ -48,27 +48,31 @@ class InReplyDrawingBox:DrawingBox{
   public async bool draw_tweet(Account account,string in_reply_to_status_id_str){
     bool result=false;
     statuses_show.begin(account,in_reply_to_status_id_str,(obj,res)=>{
-      if((in_reply_parsed_json_obj=statuses_show.end(res))!=null){
-        result=true;
-        //load中の画像のRotateSurface
-        rotate_surface_run(24);
-        //profile_image_pixbufの取得
-        get_profile_image_async.begin(in_reply_parsed_json_obj.user.screen_name,in_reply_parsed_json_obj.user.profile_image_url,24,config,(obj,res)=>{
-          image_surface=cairo_surface_create_from_pixbuf(get_profile_image_async.end(res),1,null);
-          profile_image_loaded=true;
-          //再描画
-          drawing_area.queue_draw();
-        });
-      
-        //シグナルハンドラ
-        rotate_surface.update.connect((surface)=>{
-          if(!profile_image_loaded){
-            image_surface=surface;
-          }
-          //再描画
-          drawing_area.queue_draw();
-          return !profile_image_loaded;
-        });
+      try{
+        if((in_reply_parsed_json_obj=statuses_show.end(res))!=null){
+          result=true;
+          //load中の画像のRotateSurface
+          rotate_surface_run(24);
+          //profile_image_pixbufの取得
+          get_profile_image_async.begin(in_reply_parsed_json_obj.user.screen_name,in_reply_parsed_json_obj.user.profile_image_url,24,config,(obj,res)=>{
+            image_surface=cairo_surface_create_from_pixbuf(get_profile_image_async.end(res),1,null);
+            profile_image_loaded=true;
+            //再描画
+            drawing_area.queue_draw();
+          });
+        
+          //シグナルハンドラ
+          rotate_surface.update.connect((surface)=>{
+            if(!profile_image_loaded){
+              image_surface=surface;
+            }
+            //再描画
+            drawing_area.queue_draw();
+            return !profile_image_loaded;
+          });
+        }
+      }catch(Error e){
+        print("Show error : %s\n",e.message);
       }
       draw_tweet.callback();
     });

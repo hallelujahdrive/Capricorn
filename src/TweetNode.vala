@@ -57,16 +57,24 @@ class TweetNode:Node{
       weak IconButton icon_button=(IconButton)image_button;
       if(icon_button.already){
         statuses_destroy.begin(this.cpr_account,this.parsed_json_obj.retweeted_status_id_str,(obj,res)=>{
-          if(statuses_destroy.end(res)){
-            icon_button.already=!icon_button.already;
-            icon_button.update();
+          try{
+            if(statuses_destroy.end(res)){
+              icon_button.already=!icon_button.already;
+              icon_button.update();
+            }
+          }catch(Error e){
+            print("Retweet destroy error : %s\n",e.message);
           }
         });
       }else{
         statuses_retweet.begin(this.cpr_account,this.parsed_json_obj.id_str,(obj,res)=>{
-          if(statuses_retweet.end(res)){
-            icon_button.already=!icon_button.already;
-            icon_button.update();
+          try{
+            if(statuses_retweet.end(res)){
+              icon_button.already=!icon_button.already;
+              icon_button.update();
+            }
+          }catch(Error e){
+            print("Retweet error : %s \n",e.message);
           }
         });
       }
@@ -77,16 +85,24 @@ class TweetNode:Node{
       weak IconButton icon_button=(IconButton)image_button;
       if(icon_button.already){
         favorites_destroy.begin(this.cpr_account,this.parsed_json_obj.id_str,(obj,res)=>{
-          if(favorites_destroy.end(res)){
-            icon_button.already=!icon_button.already;
-            icon_button.update();
+          try{
+            if(favorites_destroy.end(res)){
+              icon_button.already=!icon_button.already;
+              icon_button.update();
+            }
+          }catch(Error e){
+            print("Favorite destroy error : %s\n",e.message);
           }
         });
       }else{
         favorites_create.begin(this.cpr_account,this.parsed_json_obj.id_str,(obj,res)=>{
-          if(favorites_create.end(res)){
-            icon_button.already=!icon_button.already;
-            icon_button.update();
+          try{
+            if(favorites_create.end(res)){
+              icon_button.already=!icon_button.already;
+              icon_button.update();
+            }
+          }catch(Error e){
+            print("Favorite error : %s\n",e.message);
           }
         });
       }

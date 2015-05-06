@@ -23,7 +23,11 @@ public class TimeLine:ScrolledListBox{
     this(config,signal_pipe);
     //シグナルハンドラ
     this.signal_pipe.show.connect(()=>{
-      init(statuses_home_timeline(cpr_account,config.init_time_line_node_count),cpr_account);
+      try{
+        init(statuses_home_timeline(cpr_account,config.init_time_line_node_count),cpr_account);
+      }catch(Error e){
+        print("Home timeline error : %s\n",e.message);
+      }
     });
   }
   
@@ -32,7 +36,11 @@ public class TimeLine:ScrolledListBox{
     this(config,signal_pipe);
     //シグナルハンドラ
     this.signal_pipe.show.connect(()=>{
-      init(statuses_mention_timeline(cpr_account,config.init_time_line_node_count),cpr_account);
+      try{
+        init(statuses_mention_timeline(cpr_account,config.init_time_line_node_count),cpr_account);
+      }catch(Error e){
+        print("Mention timeline error : %s\n",e.message);
+      }
     });
   }
   

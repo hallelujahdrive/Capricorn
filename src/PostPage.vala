@@ -94,8 +94,12 @@ class PostPage:Frame{
     //post
     post_button.clicked.connect(()=>{
       statuses_update.begin(this.cpr_account_array.index(selected_account_num),buffer.text,in_reply_to_status_id_str,(obj,res)=>{
-        if(statuses_update.end(res)){
-          buffer.text="";
+        try{
+          if(statuses_update.end(res)){
+            buffer.text="";
+          }
+        }catch(Error e){
+          print("Update error : %s\n",e.message);
         }
       });
     });

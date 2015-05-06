@@ -24,7 +24,7 @@ public class Capricorn:Gtk.Application{
   public Config config;
   
   //windowを開けるか否か
-  private bool can_window_open;
+  private bool can_window_open=false;
   
   public Capricorn(){
     application_id="org.gtk.capricorn";
@@ -69,7 +69,12 @@ public class Capricorn:Gtk.Application{
         cpr_account_array.append_val(cpr_account);
         select_account(i,cpr_account_array.index(i),config.db);
         //Account情報の取得
-        can_window_open=account_verify_credential(cpr_account_array.index(i));
+        try{
+          account_verify_credential(cpr_account_array.index(i));
+          can_window_open=true;
+        }catch(Error e){
+          print("Account verify credential error : %s\n",e.message);
+        }
       }
     }
   }
