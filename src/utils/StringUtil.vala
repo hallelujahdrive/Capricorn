@@ -18,7 +18,7 @@ namespace StringUtil{
   }
     
   //textの整形(ほとんどurlだけ)
-  public string parse_text(ref string text,hashtag[] hashtags,url[] media,url[] urls){
+  public string parse_text(ref string text,hashtag[] hashtags,medium[] media,url[] urls){
     string parsed_text=text;
     //urlを置換
     try{
@@ -54,7 +54,7 @@ namespace StringUtil{
   }
   
   //urlのincidesを取得
-  public void update_indices(string text,hashtag[] hashtags,url[] media,url[] urls){
+  public void update_indices(string text,hashtag[] hashtags,medium[] media,url[] urls){
     int start_index=0;
     for(int i=0;i<hashtags.length;i++){
       hashtags[i].indices[0]=text.index_of("#%s".printf(hashtags[i].text),start_index);
