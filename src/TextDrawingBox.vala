@@ -7,7 +7,7 @@ using StringUtil;
 using URIUtil;
 
 class TextDrawingBox:DrawingBox{
-  private weak ParsedJsonObj parsed_json_obj;
+  private weak Ruribitaki.Status status;
   private weak CapricornAccount cpr_account;
   private string text;
   private string parsed_text;
@@ -18,25 +18,26 @@ class TextDrawingBox:DrawingBox{
     
     int index_,trailing;
     layout.xy_to_index((int)event_button.x*Pango.SCALE,(int)event_button.y*Pango.SCALE,out index_,out trailing);
-    //hashtagsから検索
-    for(int i=0;i<parsed_json_obj.hashtags.length;i++){
-      if(index_>=parsed_json_obj.hashtags[i].indices[0]&&index_<parsed_json_obj.hashtags[i].indices[1]){
-        signal_pipe.add_text_event(" #%s".printf(parsed_json_obj.hashtags[i].text),null,cpr_account.list_id);
+    //entities_hashtagsから検索
+    for(int i=0;i<status.entities_hashtags.length;i++){
+      if(index_>=status.entities_hashtags[i].indices[0]&&index_<status.entities_hashtags[i].indices[1]){
+        signal_pipe.add_text_event(" #%s".printf(status.entities_hashtags[i].text),null,cpr_account.list_id);
         break;
       }
     }
-    //mediaから検索
-    for(int i=0;i<parsed_json_obj.media.length;i++){
-      if(index_>=parsed_json_obj.media[i].indices[0]&&index_<parsed_json_obj.media[i].indices[1]){
+    //entities_mediaから検索
+    for(int i=0;i<status.entities_media.length;i++){
+      if(index_>=status.entities_media[i].indices[0]&&index_<status.entities_media[i].indices[1]){
         weak TweetNode parent=(TweetNode)this.get_parent();
-        signal_pipe.media_url_click_event(parent.copy(),parsed_json_obj.media);
+        //MediaPageに渡すのはextended_entities_media
+        signal_pipe.media_url_click_event(parent.copy(),status.extended_entities_media);
         break;
       }
     }
-    //urlsから検索
-    for(int i=0;i<parsed_json_obj.urls.length;i++){
-      if(index_>=parsed_json_obj.urls[i].indices[0]&&index_<parsed_json_obj.urls[i].indices[1]){
-        open_url(parsed_json_obj.urls[i].expanded_url);
+    //entities_urlsから検索
+    for(int i=0;i<status.entities_urls.length;i++){
+      if(index_>=status.entities_urls[i].indices[0]&&index_<status.entities_urls[i].indices[1]){
+        open_url(status.entities_urls[i].expanded_url);
         break;
       }
     }
@@ -65,18 +66,18 @@ class TextDrawingBox:DrawingBox{
     return true;
   }
   
-  public TextDrawingBox(ParsedJsonObj parsed_json_obj,CapricornAccount cpr_account,Config config,SignalPipe signal_pipe){
+  public TextDrawingBox(Ruribitaki.Status status,CapricornAccount cpr_account,Config config,SignalPipe signal_pipe){
     base(config,signal_pipe);
     
-    this.parsed_json_obj=parsed_json_obj;
+    this.status=status;
     this.cpr_account=cpr_account;
-    text=this.parsed_json_obj.text;
+    text=this.status.text;
         
     //縦に広がるようにする
     this.vexpand=true;
     
     //textの整形
-    parsed_text=parse_text(ref text,this.parsed_json_obj.hashtags,this.parsed_json_obj.media,this.parsed_json_obj.urls);
-    update_indices(text,this.parsed_json_obj.hashtags,this.parsed_json_obj.media,this.parsed_json_obj.urls);
+    parsed_text=parse_text(ref text,this.status.entities_hashtags,this.status.entities_media,this.status.entities_urls);
+    update_indices(text,this.status.entities_hashtags,this.status.entities_media,this.status.entities_urls);
   }
 }

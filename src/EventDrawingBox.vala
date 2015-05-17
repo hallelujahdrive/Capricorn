@@ -105,7 +105,6 @@ class EventDrawingBox:DrawingBox{
     user_hash_table.insert(user.id_str,(Surface)null);
     //profile_image_pixbufの取得
     get_profile_image_async.begin(user.screen_name,user.profile_image_url,16,config,(obj,res)=>{
-
       user_hash_table.replace(user.id_str,cairo_surface_create_from_pixbuf(get_profile_image_async.end(res),1,null));
       profile_image_loaded=true;
       //再描画

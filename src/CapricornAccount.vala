@@ -48,7 +48,6 @@ public class CapricornAccount:Account{
     
     //UserStream
     user_stream=new UserStream(this);
-    //tab
     //profile_image_pixbufの取得
     try{
       //load中の画像のRotateSurface
@@ -81,37 +80,33 @@ public class CapricornAccount:Account{
     }
     
     //シグナルハンドラ
-    user_stream.callback_json.connect((parsed_json_obj)=>{
-      switch(parsed_json_obj.type){
+    user_stream.callback_json.connect((status)=>{
+      switch(status.status_type){
         //tweetの削除の処理
-        case ParsedJsonObjType.DELETE:
-        this.signal_pipe.delete_tweet_node_event(parsed_json_obj.id_str);
-        if(parsed_json_obj.id_str!=null){
-          this.signal_pipe.event_update_event(parsed_json_obj);
+        case Ruribitaki.StatusType.DELETE:
+        this.signal_pipe.delete_tweet_node_event(status.id_str);
+        if(status.id_str!=null){
+          this.signal_pipe.event_update_event(status);
         }
         break;
         //eventの処理
-        case ParsedJsonObjType.EVENT:
-        create_event(parsed_json_obj);
-        /*switch(parsed_json_obj.event_type){
-          case Ruribitaki.EventType.FAVORITE:
-          break;
-        }*/
+        case Ruribitaki.StatusType.EVENT:
+        create_event(status);
         break;
         //retweetの処理
-        case ParsedJsonObjType.RETWEET:
-        create_tweet(parsed_json_obj);
-        create_event(parsed_json_obj);
+        case Ruribitaki.StatusType.RETWEET:
+        create_tweet(status);
+        create_event(status);
         break;
         //tweetの処理
-        case ParsedJsonObjType.TWEET:create_tweet(parsed_json_obj);
+        case Ruribitaki.StatusType.TWEET:create_tweet(status);
         break;
       }
     });
     
     //エラー処理
     user_stream.callback_error.connect((err)=>{
-      print("UserStream Error:%s\n",err.message);
+      print("User stream error:%s\n",err.message);
       try{
         user_stream.run();
       }catch(Error e){
@@ -121,29 +116,37 @@ public class CapricornAccount:Account{
   }
   
   //tweetの作成
-  private void create_tweet(ParsedJsonObj parsed_json_obj){
-    TweetNode tweet_node=new TweetNode(parsed_json_obj,this,this.config,this.signal_pipe);
-    home_time_line.prepend_node(tweet_node);
-    switch(parsed_json_obj.tweet_type){
-      //replyの作成
-      case TweetType.REPLY:mention_time_line.prepend_node(tweet_node.copy());
+  private void create_tweet(Ruribitaki.Status status){
+    TweetNode? tweet_node=null;
+    switch(status.status_type){
+      case StatusType.RETWEET:tweet_node=new TweetNode.retweet(status.target_status,status.user,this,this.config,this.signal_pipe);
       break;
+      case StatusType.TWEET:
+      tweet_node=new TweetNode(status,this,this.config,this.signal_pipe);
+      if(status.is_reply){
+        //replyの作成
+        mention_time_line.prepend_node(tweet_node.copy());
+      }
+      break;
+    }
+    if(tweet_node!=null){
+      home_time_line.prepend_node(tweet_node);
     }
   }
   
   //eventの作成
-  private void create_event(ParsedJsonObj parsed_json_obj){
-    if(parsed_json_obj.is_mine){
-      if(!event_notify_list_box.generic_set.contains(parsed_json_obj.id_str)){
-        event_notify_list_box.prepend_node(new EventNode.with_update(parsed_json_obj,this,config,signal_pipe));
+  private void create_event(Ruribitaki.Status status){
+    if(status.target_status.is_mine){
+      if(!event_notify_list_box.generic_set.contains(status.target_status.id_str)){
+        event_notify_list_box.prepend_node(new EventNode.with_update(status,this,config,signal_pipe));
       }
-      if(signal_pipe.event_update_event(parsed_json_obj)){
-        home_time_line.prepend_node(new EventNode.no_update(parsed_json_obj,this,config,signal_pipe));
+      if(signal_pipe.event_update_event(status)){
+        home_time_line.prepend_node(new EventNode.no_update(status,this,config,signal_pipe));
       }
     }
   }
   
-  //オブジェクトの削除
+  //ScrolledWindowの削除
   public void destroy(){
     home_time_line.destroy();
     mention_time_line.destroy();

@@ -30,5 +30,5 @@ public class SignalPipe{
   public signal void delete_tweet_node_event(string id_str);
   
   //event
-  public signal bool event_update_event(ParsedJsonObj parsed_json_obj);
+  public signal bool event_update_event(Status status);
 }

@@ -74,6 +74,7 @@ sources = \
 			utils/IconName.vala \
 			utils/ImageUtil.vala \
 			utils/Keys.vala \
+			utils/NodeType.vala \
 			utils/RotateSueface.vala \
 			utils/StringUtil.vala \
 			utils/UriUtil.vala

@@ -4,7 +4,7 @@ using Gtk;
 using Ruribitaki;
 
 class FooterDrawingBox:DrawingBox{
-  private weak ParsedJsonObj parsed_json_obj;
+  private weak Ruribitaki.Status status;
   private DateTime created_at_local;
   private StringBuilder source_sb=new StringBuilder();
     
@@ -43,15 +43,15 @@ class FooterDrawingBox:DrawingBox{
     return true;
   }
   
-  public FooterDrawingBox(ParsedJsonObj parsed_json_obj,Config config,SignalPipe signal_pipe){
+  public FooterDrawingBox(Ruribitaki.Status status,Config config,SignalPipe signal_pipe){
     base(config,signal_pipe);
     
-    this.parsed_json_obj=parsed_json_obj;
+    this.status=status;
     
     source_sb.append("via ");
-    source_sb.append(parsed_json_obj.source_label);
+    source_sb.append(status.source_label);
     
-    created_at_local=parsed_json_obj.created_at.to_local();
+    created_at_local=status.created_at.to_local();
   }
   
   //color,descriptionの設定

@@ -45,10 +45,18 @@ public class TimeLine:ScrolledListBox{
   }
   
   //Nodeを配置
-  private void init(Array<ParsedJsonObj> parsed_json_obj_array,CapricornAccount cpr_account){
-    for(int i=0;i<parsed_json_obj_array.length;i++){
-      TweetNode tweet_node=new TweetNode(parsed_json_obj_array.index(i),cpr_account,config,signal_pipe);
-      this.add_node(tweet_node);
+  private void init(Array<Ruribitaki.Status> status_array,CapricornAccount cpr_account){
+    for(int i=0;i<status_array.length;i++){
+      TweetNode? tweet_node=null;
+      switch(status_array.index(i).status_type){
+        case StatusType.RETWEET:tweet_node=new TweetNode.retweet(status_array.index(i).target_status,status_array.index(i).user,cpr_account,config,signal_pipe);
+        break;
+        case StatusType.TWEET:tweet_node=new TweetNode(status_array.index(i),cpr_account,config,signal_pipe);
+        break;
+      }
+      if(tweet_node!=null){
+        this.add_node(tweet_node);
+      }
     }
   }
 }
