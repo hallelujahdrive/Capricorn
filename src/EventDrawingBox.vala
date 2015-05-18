@@ -97,8 +97,8 @@ class EventDrawingBox:DrawingBox{
     active=true;
     text=count.to_string();
     //rotate_surfaceの起動
-    if(!profile_image_loaded){
-      profile_image_loaded=false;
+    if(!image_loaded){
+      image_loaded=false;
       rotate_surface_run(16);
     }
     //hash_tableに追加(ダミー)
@@ -106,18 +106,18 @@ class EventDrawingBox:DrawingBox{
     //profile_image_pixbufの取得
     get_profile_image_async.begin(user.screen_name,user.profile_image_url,16,config,(obj,res)=>{
       user_hash_table.replace(user.id_str,cairo_surface_create_from_pixbuf(get_profile_image_async.end(res),1,null));
-      profile_image_loaded=true;
+      image_loaded=true;
       //再描画
       drawing_area.queue_draw();
     });
     //シグナルハンドラ
     rotate_surface.update.connect((surface)=>{
-      if(!profile_image_loaded){
+      if(!image_loaded){
         loading_surface=surface;
       }
       //再描画
       drawing_area.queue_draw();    
-      return !profile_image_loaded;
+      return !image_loaded;
     });
   }
   

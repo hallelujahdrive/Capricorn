@@ -19,7 +19,7 @@ public class CapricornAccount:Account{
   private UserStream user_stream;
     
   //loading用
-  private bool profile_image_loaded=false;
+  private bool image_loaded=false;
   
   public CapricornAccount(Config config,SignalPipe signal_pipe,Account ?account=null){
     base(TWITTER_CONSUMER_KEY,TWITTER_CONSUMER_SECRET);
@@ -54,11 +54,11 @@ public class CapricornAccount:Account{
       RotateSurface rotate_surface=new RotateSurface(this.config.icon_theme.load_icon(LOADING_ICON,24,IconLookupFlags.NO_SVG));
       rotate_surface.run();
       rotate_surface.update.connect((surface)=>{
-        if(!profile_image_loaded){
+        if(!image_loaded){
           home_time_line.tab.set_from_pixbuf(pixbuf_get_from_surface(surface,0,0,24,24));
           mention_time_line.tab.set_from_pixbuf(pixbuf_get_from_surface(surface,0,0,24,24));
         }   
-        return !profile_image_loaded;
+        return !image_loaded;
       });
     }catch(Error e){
       print("IconTheme Error : %s\n",e.message);
@@ -68,7 +68,7 @@ public class CapricornAccount:Account{
       if(pixbuf!=null){
         home_time_line.tab.set_from_pixbuf(pixbuf);
         mention_time_line.tab.set_from_pixbuf(pixbuf);
-        profile_image_loaded=true;
+        image_loaded=true;
       }
     });
     

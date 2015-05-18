@@ -75,7 +75,7 @@ public class MainWindow:ApplicationWindow{
     
     //Mediasのopen
     signal_pipe.media_url_click_event.connect((tweet_node,media_array)=>{
-      MediaPage media_page=new MediaPage(tweet_node,media_array);
+      MediaPage media_page=new MediaPage(tweet_node,media_array,config);
       various_notebook.append_page(media_page,media_page.tab);
       various_notebook.set_current_page(various_notebook.page_num(media_page));
     });

@@ -109,7 +109,7 @@ class AccountSettingsPage:Frame{
     account_list_store.clear();
     for(int i=0;i<account_array.length;i++){
       //戻り値用のbool
-      bool profile_image_loaded=false;
+      bool image_loaded=false;
       TreeIter iter;
       
       account_list_store.append(out iter);
@@ -119,10 +119,10 @@ class AccountSettingsPage:Frame{
         RotateSurface rotate_surface=new RotateSurface(config.icon_theme.load_icon(LOADING_ICON,16,IconLookupFlags.NO_SVG));
         rotate_surface.run();
         rotate_surface.update.connect((surface)=>{
-          if(!profile_image_loaded&&account_list_store!=null){
+          if(!image_loaded&&account_list_store!=null){
             account_list_store.set(iter,1,pixbuf_get_from_surface(surface,0,0,16,16));
           }   
-          return !profile_image_loaded;
+          return !image_loaded;
         });
       }catch(Error e){
         print("IconTheme Error : %s\n",e.message);
@@ -130,7 +130,7 @@ class AccountSettingsPage:Frame{
       //profile_imageの取得
       get_profile_image_async.begin(account_array.index(i).screen_name,account_array.index(i).profile_image_url,16,config,(obj,res)=>{
         account_list_store.set(iter,1,get_profile_image_async.end(res));
-        profile_image_loaded=true;
+        image_loaded=true;
       });
     }
   }

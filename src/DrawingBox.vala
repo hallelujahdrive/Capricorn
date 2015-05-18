@@ -13,7 +13,7 @@ class DrawingBox:EventBox{
   protected RotateSurface rotate_surface;
   
   //rotate_surfaceの戻り値
-  protected bool profile_image_loaded=false;
+  protected bool image_loaded=false;
   
   private RGBA clear=RGBA();
   

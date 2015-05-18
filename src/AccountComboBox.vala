@@ -58,7 +58,7 @@ class AccountComboBox:ComboBox{
     account_list_store.clear();
     for(int i=0;i<cpr_account_array.length;i++){
       //RotateSurface戻り値用のbool
-      bool profile_image_loaded=false;
+      bool image_loaded=false;
       //iter(ローカル)
       TreeIter iter;
       
@@ -69,10 +69,10 @@ class AccountComboBox:ComboBox{
         RotateSurface rotate_surface=new RotateSurface(config.icon_theme.load_icon(LOADING_ICON,16,IconLookupFlags.NO_SVG));
         rotate_surface.run();
         rotate_surface.update.connect((surface)=>{
-          if(!profile_image_loaded&&account_list_store!=null){
+          if(!image_loaded&&account_list_store!=null){
             account_list_store.set(iter,1,pixbuf_get_from_surface(surface,0,0,16,16));
           }   
-          return !profile_image_loaded;
+          return !image_loaded;
         });
       }catch(Error e){
         print("IconTheme Error : %s\n",e.message);
@@ -82,7 +82,7 @@ class AccountComboBox:ComboBox{
         Pixbuf pixbuf=get_profile_image_async.end(res);
         if(pixbuf!=null){
           account_list_store.set(iter,1,pixbuf);
-          profile_image_loaded=true;
+          image_loaded=true;
         }
       });
     }

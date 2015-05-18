@@ -60,19 +60,19 @@ class RetweetDrawingBox:DrawingBox{
     //profile_image_pixbufの取得
     get_profile_image_async.begin(rt_user.screen_name,rt_user.profile_image_url,16,config,(obj,res)=>{
       image_surface=cairo_surface_create_from_pixbuf(get_profile_image_async.end(res),1,null);
-      profile_image_loaded=true;
+      image_loaded=true;
       //再描画
       drawing_area.queue_draw();
     });
     
     //シグナルハンドラ
     rotate_surface.update.connect((surface)=>{
-      if(!profile_image_loaded){
+      if(!image_loaded){
         image_surface=surface;
       }
       //再描画
       drawing_area.queue_draw();    
-      return !profile_image_loaded;
+      return !image_loaded;
     });
   }
   

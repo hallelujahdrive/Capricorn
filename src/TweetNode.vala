@@ -4,6 +4,7 @@ using Ruribitaki;
 class TweetNode:Node{
   //RTのstautsのid_str
   protected string? source_id_str;
+  //RTしたuser
   protected User? user;
   
   //Widget

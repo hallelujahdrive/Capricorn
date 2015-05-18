@@ -53,7 +53,7 @@ public class MediaPage:Frame{
     this.destroy();
   }
   
-  public MediaPage(Node tweet_node,medium[] media){
+  public MediaPage(Node tweet_node,medium[] media,Config config){
     this.media=media;
     
     tweet_node_box.add(tweet_node);
@@ -61,7 +61,7 @@ public class MediaPage:Frame{
 
     //media_arrayからの画像の読み込み
     for(int i=0;i<this.media.length;i++){
-      photo_box_array.append_val(new PhotoBox(i,this.media[i].media_url,open_media_window));
+      photo_box_array.append_val(new PhotoBox(i,this.media[i].media_url,open_media_window,config));
       media_grid.attach(photo_box_array.index(i),i%2,i/2,1,1);
     }
   }
