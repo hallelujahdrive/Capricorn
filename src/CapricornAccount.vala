@@ -83,23 +83,28 @@ public class CapricornAccount:Account{
     user_stream.callback_json.connect((status)=>{
       switch(status.status_type){
         //tweetの削除の処理
-        case Ruribitaki.StatusType.DELETE:
+        case StatusType.DELETE:
         this.signal_pipe.delete_tweet_node_event(status.id_str);
         if(status.id_str!=null){
           this.signal_pipe.event_update_event(status);
         }
         break;
         //eventの処理
-        case Ruribitaki.StatusType.EVENT:
-        create_event(status);
+        case StatusType.EVENT:
+        switch(status.event){
+          case Ruribitaki.EventType.FAVORITE:
+          case Ruribitaki.EventType.UNFAVORITE:
+          create_event(status);
+          break;
+        }
         break;
         //retweetの処理
-        case Ruribitaki.StatusType.RETWEET:
+        case StatusType.RETWEET:
         create_tweet(status);
         create_event(status);
         break;
         //tweetの処理
-        case Ruribitaki.StatusType.TWEET:create_tweet(status);
+        case StatusType.TWEET:create_tweet(status);
         break;
       }
     });

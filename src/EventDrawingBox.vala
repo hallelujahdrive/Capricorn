@@ -51,7 +51,7 @@ class EventDrawingBox:DrawingBox{
       user_hash_table.for_each((hash_key,hash_value)=>{
         if(hash_value!=null){
           context.set_source_surface(hash_value,icon_pos,0);
-        }else{
+        }else if(loading_surface!=null){
           context.set_source_surface(loading_surface,icon_pos,0);
         }
         context.paint();

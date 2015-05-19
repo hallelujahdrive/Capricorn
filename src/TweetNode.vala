@@ -47,7 +47,7 @@ class TweetNode:Node{
     
     //reply
     reply_button.clicked.connect(()=>{
-      this.signal_pipe.add_text_event("@%s ".printf(this.status.user.screen_name),this.copy(),this.cpr_account.list_id);
+      this.signal_pipe.add_text_event(build_reply(this.status.user,this.status.entities_user_mentions),this.copy(),this.cpr_account.list_id);
     });
     
     //retweet
@@ -124,6 +124,21 @@ class TweetNode:Node{
     
     //背景色
     set_bg_color();
+  }
+  
+  //replyのscreen_nameをぽこぽこ
+  private string build_reply(User user,user_mention[] user_mentions){
+    var sb=new StringBuilder("@%s ".printf(user.screen_name));
+    var generic_set=new GenericSet<string>(str_hash,str_equal);
+    for(int i=0;i<user_mentions.length;i++){
+      if(user_mentions[i].screen_name!=this.cpr_account.screen_name){
+        generic_set.add(user_mentions[i].screen_name);
+      }
+    }
+    generic_set.foreach((val)=>{
+      sb.append("@%s ".printf(val));
+    });
+    return sb.str;
   }
   
   //copy
