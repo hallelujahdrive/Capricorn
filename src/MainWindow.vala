@@ -7,12 +7,14 @@ using ImageUtil;
 using SqliteUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/main_window.ui")]
-public class MainWindow:ApplicationWindow{
+class MainWindow:ApplicationWindow{
   private unowned Config config;
   private weak SignalPipe signal_pipe;
 
   //CapricornAccountの配列
   private unowned Array<CapricornAccount> cpr_account_array;
+  
+  private Array<Notebook> notebook_array=new Array<Notebook>();
   
   private PostPage post_page;
   private EventNotifyPage event_notify_page;
@@ -20,18 +22,12 @@ public class MainWindow:ApplicationWindow{
   private IconButton settings_button;
   
   private SettingsWindow settings_window;
-    
+  
+  [GtkChild]
+  private Box notebook_box;
+  
   [GtkChild]
   private Box button_box;
-
-  [GtkChild]
-  private Notebook home_tl_notebook;
-  
-  [GtkChild]
-  private Notebook mention_tl_notebook;
-  
-  [GtkChild]
-  private Notebook various_notebook;
     
   public MainWindow(Capricorn capricorn){
     GLib.Object(application:capricorn);
@@ -40,16 +36,18 @@ public class MainWindow:ApplicationWindow{
     signal_pipe=capricorn.signal_pipe;
     cpr_account_array=capricorn.cpr_account_array;
      
-     //初期化
+    //初期化
     init();
     
     post_page=new PostPage(cpr_account_array,config,signal_pipe);
     event_notify_page=new EventNotifyPage(cpr_account_array,config,signal_pipe);
     
     settings_button=new IconButton(SETTINGS_ICON,null,null,IconSize.LARGE_TOOLBAR);
-    
-    various_notebook.append_page(post_page,post_page.tab);
-    various_notebook.append_page(event_notify_page,event_notify_page.tab);
+
+    load_pages();
+
+    notebook_array.index(2).append_page(post_page,post_page.tab);
+    notebook_array.index(2).append_page(event_notify_page,event_notify_page.tab);
     button_box.pack_end(settings_button,false,false,0);
         
     //シグナルハンドラ
@@ -60,8 +58,8 @@ public class MainWindow:ApplicationWindow{
     
     //アクティブなTLとPostアカウントの同期
     post_page.tl_link.connect((selected_account_num)=>{
-      home_tl_notebook.set_current_page(selected_account_num);
-      mention_tl_notebook.set_current_page(selected_account_num);
+      notebook_array.index(0).set_current_page(selected_account_num);
+      notebook_array.index(1).set_current_page(selected_account_num);
     });
     
     //SettingsWindowを開く
@@ -76,8 +74,8 @@ public class MainWindow:ApplicationWindow{
     //Mediasのopen
     signal_pipe.media_url_click_event.connect((tweet_node,media_array)=>{
       MediaPage media_page=new MediaPage(tweet_node,media_array,config);
-      various_notebook.append_page(media_page,media_page.tab);
-      various_notebook.set_current_page(various_notebook.page_num(media_page));
+      notebook_array.index(2).append_page(media_page,media_page.tab);
+      notebook_array.index(2).set_current_page(notebook_array.index(2).page_num(media_page));
     });
   }
   
@@ -109,8 +107,8 @@ public class MainWindow:ApplicationWindow{
         cpr_account_array.index(i).init();
         insert_account(cpr_account_array.index(i),config.db);
         
-        home_tl_notebook.append_page(cpr_account_array.index(i).home_time_line,cpr_account_array.index(i).home_time_line.tab);
-        mention_tl_notebook.append_page(cpr_account_array.index(i).mention_time_line,cpr_account_array.index(i).mention_time_line.tab);
+        notebook_array.index(0).append_page(cpr_account_array.index(i).home_time_line,cpr_account_array.index(i).home_time_line.tab);
+        notebook_array.index(1).append_page(cpr_account_array.index(i).mention_time_line,cpr_account_array.index(i).mention_time_line.tab);
         
       }
       //account_cboxの再読み込み
@@ -121,11 +119,23 @@ public class MainWindow:ApplicationWindow{
   }
   
   private void init(){
-    //TLの();ロード
+    //notebookの配置(仮置きで3)
+    for(int i=0;i<3;i++){
+      Notebook notebook=new Notebook();
+      notebook_array.append_val(notebook);
+      notebook_box.pack_start(notebook_array.index(i));
+    }
+    notebook_box.show_all();
+    //cpr_accountの初期化
     for(int i=0;i<cpr_account_array.length;i++){
       cpr_account_array.index(i).init();
-      home_tl_notebook.append_page(cpr_account_array.index(i).home_time_line,cpr_account_array.index(i).home_time_line.tab);
-      mention_tl_notebook.append_page(cpr_account_array.index(i).mention_time_line,cpr_account_array.index(i).mention_time_line.tab);
+    }
+  }
+  
+  private void load_pages(){
+    for(int i=0;i<cpr_account_array.length;i++){
+      notebook_array.index(0).append_page(cpr_account_array.index(i).home_time_line,cpr_account_array.index(i).home_time_line.tab);
+      notebook_array.index(1).append_page(cpr_account_array.index(i).mention_time_line,cpr_account_array.index(i).mention_time_line.tab);
     }
     event_notify_page.init(0);
   }
@@ -134,6 +144,7 @@ public class MainWindow:ApplicationWindow{
   public void load_all(){
     signal_pipe.account_array_change_event();
     init();
+    load_pages();
     signal_pipe.show();
   }
 }

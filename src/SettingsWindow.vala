@@ -67,7 +67,7 @@ class SettingsWindow:Dialog{
     if(event_notify_settings_page.changed){
       event_notify_settings_page.update_settings();
       //データベースのアップデート
-      update_event_notify_settings(config);
+      update_event_notify_settings(config.event_node_count,config.event_show_on_time_line,config.db);
       //シグナルの発行
       signal_pipe.event_notify_settings_change_event();
     }
@@ -76,14 +76,14 @@ class SettingsWindow:Dialog{
     if(network_settings_page.changed){
       network_settings_page.update_settings();
       //データベースのアップデート
-      update_network_settings(config);
+      update_network_settings(config.use_proxy,config.proxy_uri,config.db);
     }
     
     //nodeの表示数の更新
     if(time_line_settings_page.changed){
       time_line_settings_page.update_settings();
       //データベースのアップデート
-      update_time_line_settings(config);
+      update_time_line_settings(config.init_time_line_node_count,config.time_line_node_count,config.db);
       //シグナルの発行
       signal_pipe.time_line_node_count_change_event();
     }

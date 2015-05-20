@@ -31,13 +31,13 @@ class HeaderDrawingBox:DrawingBox{
     layout.get_pixel_size(out icon_pos,out height);
     
     //protected_icon_pixbufの描画
-    if(user.is_protected){
+    if(user.protected){
       //描画位置の調整(spacer(5px))
       context.set_source_surface(image_surface,icon_pos+5,0);
       context.paint();
     }
     height/=layout.get_line_count();
-    height=!user.is_protected||height>16?height:16;
+    height=!user.protected||height>16?height:16;
     layout.set_height(height);
     this.set_size_request(-1,height);
     return true;
@@ -49,7 +49,7 @@ class HeaderDrawingBox:DrawingBox{
     this.user=user;
     
     //iconを取得
-    if(this.user.is_protected){
+    if(this.user.protected){
       try{
         Screen screen=Screen.get_default();
         image_surface=config.icon_theme.load_surface(PROTECTED_ICON,16,1,screen.get_active_window(),IconLookupFlags.NO_SVG);

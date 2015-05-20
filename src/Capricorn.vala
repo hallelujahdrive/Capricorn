@@ -47,20 +47,20 @@ public class Capricorn:Gtk.Application{
       config.init();
       //insert
       insert_color(0,config.color_profile,config.db);
-      insert_event_notify_settings(config);
+      insert_event_notify_settings(config.event_node_count,config.event_show_on_time_line,config.db);
       insert_font(0,config.font_profile,config.db);
-      insert_network_settings(config);
-      insert_time_line_settings(config);
+      insert_network_settings(config.use_proxy,config.proxy_uri,config.db);
+      insert_time_line_settings(config.init_time_line_node_count,config.time_line_node_count,config.db);
 
       can_window_open=true;
     }else{
       //テーブルが存在したら
       //select
       select_color(0,config.color_profile,config.db);
-      select_event_notify_settings(config);
+      select_event_notify_settings(out config.event_node_count,out config.event_show_on_time_line,config.db);
       select_font(0,config.font_profile,config.db);
-      select_network_settings(config);
-      select_time_line_settings(config);
+      select_network_settings(out config.use_proxy,out config.proxy_uri,config.db);
+      select_time_line_settings(out config.init_time_line_node_count,out config.time_line_node_count,config.db);
       //Account情報の読み出し
       int account_count=count_records(config.db,"ACCOUNT");
       for(int i=0;i<account_count;i++){

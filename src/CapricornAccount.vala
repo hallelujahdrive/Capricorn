@@ -4,7 +4,6 @@ using Ruribitaki;
 
 using ImageUtil;
 
-[Compact]
 public class CapricornAccount:Account{
   private weak Config config;
   private weak SignalPipe signal_pipe;

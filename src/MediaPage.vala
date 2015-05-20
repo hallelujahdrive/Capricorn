@@ -7,7 +7,7 @@ using URIUtil;
 
 [Compact]
 [GtkTemplate(ui="/org/gtk/capricorn/ui/media_page.ui")]
-public class MediaPage:Frame{
+class MediaPage:Frame{
   private unowned medium[] media;
 
   private Array<PhotoBox> photo_box_array=new Array<PhotoBox>();
