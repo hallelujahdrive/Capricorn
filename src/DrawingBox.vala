@@ -7,7 +7,7 @@ using ImageUtil;
 [GtkTemplate(ui="/org/gtk/capricorn/ui/drawing_box.ui")]
 class DrawingBox:EventBox{
   protected weak Config config;
-  protected weak SignalPipe signal_pipe;
+  protected weak MainWindow main_window;
  
   protected Pango.Layout layout;
   protected RotateSurface rotate_surface;
@@ -35,9 +35,9 @@ class DrawingBox:EventBox{
     return true;
   }
    
-  public DrawingBox(Config? config,SignalPipe? signal_pipe){
+  public DrawingBox(Config? config,MainWindow? main_window){
     this.config=config;
-    this.signal_pipe=signal_pipe;
+    this.main_window=main_window;
     
     clear.alpha=0;
     override_background_color(StateFlags.NORMAL,clear);

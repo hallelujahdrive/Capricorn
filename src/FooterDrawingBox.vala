@@ -43,8 +43,8 @@ class FooterDrawingBox:DrawingBox{
     return true;
   }
   
-  public FooterDrawingBox(Ruribitaki.Status status,Config config,SignalPipe signal_pipe){
-    base(config,signal_pipe);
+  public FooterDrawingBox(Ruribitaki.Status status,Config config,MainWindow main_window){
+    base(config,main_window);
     
     this.status=status;
     

@@ -50,8 +50,8 @@ class RetweetDrawingBox:DrawingBox{
     return true;
   }
   
-  public RetweetDrawingBox(User rt_user,int64 retweet_count,Config config,SignalPipe signal_pipe){
-    base(config,signal_pipe);
+  public RetweetDrawingBox(User rt_user,int64 retweet_count,Config config,MainWindow main_window){
+    base(config,main_window);
     
     text="@%s (%lld)".printf(rt_user.screen_name,retweet_count);
     

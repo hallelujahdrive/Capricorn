@@ -17,8 +17,7 @@ public class Config{
   public Database db;
   //アイコンのHashTable
   public HashTable<string,string?> profile_image_hash_table=new HashTable<string,string?>(str_hash,str_equal);
-  //signal_pipe
-  private weak SignalPipe signal_pipe;
+  
   //font  
   public FontProfile font_profile=new FontProfile();
   //color
@@ -40,11 +39,9 @@ public class Config{
   public int use_proxy;
   public URI proxy_uri;
   
-  public Config(string cpr_dir_path,SignalPipe signal_pipe){
+  public Config(string cpr_dir_path){
     cache_dir_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,cpr_dir_path,"cache");
-    
-    this.signal_pipe=signal_pipe;
-    
+        
     //IconThemeの読み込み
     icon_theme.set_custom_theme("hicolor");
   }

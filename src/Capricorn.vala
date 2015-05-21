@@ -17,9 +17,6 @@ public class Capricorn:Gtk.Application{
   private static string CPR_DIR_PATH=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,GLib.Environment.get_home_dir(),".capricorn");
   private static string DB_PATH=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,CPR_DIR_PATH,"capricorn.db");
   
-  //signal_pipe
-  public SignalPipe signal_pipe;
-  
   //config
   public Config config;
   
@@ -29,9 +26,8 @@ public class Capricorn:Gtk.Application{
   public Capricorn(){
     application_id="org.gtk.capricorn";
     flags=GLib.ApplicationFlags.FLAGS_NONE;
-    
-    signal_pipe=new SignalPipe();
-    config=new Config(CPR_DIR_PATH,signal_pipe);
+
+    config=new Config(CPR_DIR_PATH);
     
     //ディレクトリの作成
     mk_cpr_dir(CPR_DIR_PATH,config.cache_dir_path);
@@ -64,7 +60,7 @@ public class Capricorn:Gtk.Application{
       //Account情報の読み出し
       int account_count=count_records(config.db,"ACCOUNT");
       for(int i=0;i<account_count;i++){
-        var cpr_account=new CapricornAccount(config,signal_pipe);
+        var cpr_account=new CapricornAccount(config);
         //配列に追加
         cpr_account_array.append_val(cpr_account);
         select_account(i,cpr_account_array.index(i),config.db);
@@ -84,7 +80,7 @@ public class Capricorn:Gtk.Application{
     
     //Accountが0なら,認証windowを開く
     if(cpr_account_array.length==0){
-      var cpr_account=new CapricornAccount(config,signal_pipe);
+      var cpr_account=new CapricornAccount(config);
       OAuthDialog oauth_dialog=new OAuthDialog(cpr_account);
       oauth_dialog.show_all();
       

@@ -7,16 +7,15 @@ using ImageUtil;
 using SqliteUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/main_window.ui")]
-class MainWindow:ApplicationWindow{
+public class MainWindow:ApplicationWindow{
   private unowned Config config;
-  private weak SignalPipe signal_pipe;
 
   //CapricornAccountの配列
   private unowned Array<CapricornAccount> cpr_account_array;
   
   private Array<Notebook> notebook_array=new Array<Notebook>();
   
-  private PostPage post_page;
+  public PostPage post_page;
   private EventNotifyPage event_notify_page;
   
   private IconButton settings_button;
@@ -33,14 +32,13 @@ class MainWindow:ApplicationWindow{
     GLib.Object(application:capricorn);
     
     config=capricorn.config;
-    signal_pipe=capricorn.signal_pipe;
     cpr_account_array=capricorn.cpr_account_array;
      
     //初期化
     init();
     
-    post_page=new PostPage(cpr_account_array,config,signal_pipe);
-    event_notify_page=new EventNotifyPage(cpr_account_array,config,signal_pipe);
+    post_page=new PostPage(cpr_account_array,config,this);
+    event_notify_page=new EventNotifyPage(cpr_account_array,config,this);
     
     settings_button=new IconButton(SETTINGS_ICON,null,null,IconSize.LARGE_TOOLBAR);
 
@@ -51,10 +49,6 @@ class MainWindow:ApplicationWindow{
     button_box.pack_end(settings_button,false,false,0);
         
     //シグナルハンドラ
-    //表示に時間かかるからあとから読み込み
-    this.show.connect(()=>{
-      signal_pipe.show();
-    });
     
     //アクティブなTLとPostアカウントの同期
     post_page.tl_link.connect((selected_account_num)=>{
@@ -66,16 +60,9 @@ class MainWindow:ApplicationWindow{
     settings_button.clicked.connect(()=>{
       settings_button.sensitive=false;
       
-      settings_window=new SettingsWindow(cpr_account_array,reload_settings,config,signal_pipe);
+      settings_window=new SettingsWindow(cpr_account_array,reload_settings,config,this);
       settings_window.set_transient_for(this);
       settings_window.show_all();
-    });
-    
-    //Mediasのopen
-    signal_pipe.media_url_click_event.connect((tweet_node,media_array,extended_media_array)=>{
-      MediaPage media_page=new MediaPage(tweet_node,media_array,extended_media_array,config);
-      notebook_array.index(2).append_page(media_page,media_page.tab);
-      notebook_array.index(2).set_current_page(notebook_array.index(2).page_num(media_page));
     });
   }
   
@@ -101,10 +88,10 @@ class MainWindow:ApplicationWindow{
       }
       //追加
       for(uint i=cpr_account_array.length;i<account_array.length;i++){
-        CapricornAccount cpr_account=new CapricornAccount(config,signal_pipe,account_array.index(i));
+        CapricornAccount cpr_account=new CapricornAccount(config,account_array.index(i));
         cpr_account_array.append_val(cpr_account);
         cpr_account_array.index(i).list_id=(int)i;
-        cpr_account_array.index(i).init();
+        cpr_account_array.index(i).init(this);
         insert_account(cpr_account_array.index(i),config.db);
         
         notebook_array.index(0).append_page(cpr_account_array.index(i).home_time_line,cpr_account_array.index(i).home_time_line.tab);
@@ -112,8 +99,8 @@ class MainWindow:ApplicationWindow{
         
       }
       //account_cboxの再読み込み
-      signal_pipe.account_array_change_event();
-      signal_pipe.show();
+      account_array_change_event();
+      this.show();
     }
     settings_button.set_sensitive(true);
   }
@@ -128,7 +115,7 @@ class MainWindow:ApplicationWindow{
     notebook_box.show_all();
     //cpr_accountの初期化
     for(int i=0;i<cpr_account_array.length;i++){
-      cpr_account_array.index(i).init();
+      cpr_account_array.index(i).init(this);
     }
   }
   
@@ -142,9 +129,26 @@ class MainWindow:ApplicationWindow{
   
   //初回起動時,認証後に再読込する
   public void load_all(){
-    signal_pipe.account_array_change_event();
+    account_array_change_event();
     init();
     load_pages();
-    signal_pipe.show();
+    this.show();
   }
+
+  //MediaPageを開く
+  public void open_media_page(Node tweet_node,medium[] media,medium[] extended_media){
+    MediaPage media_page=new MediaPage(tweet_node,media,extended_media,config);
+    notebook_array.index(2).append_page(media_page,media_page.tab);
+    notebook_array.index(2).set_current_page(notebook_array.index(2).page_num(media_page));
+  }
+
+  //signal
+  //AccountComboBoxの再読み込み
+  public signal void account_array_change_event();
+  //colorが変更された
+  public signal void color_change_event();
+  //event_node_node_conutが変更された
+  public signal void event_notify_settings_change_event();
+  //timeline_node_conutが変更された
+  public signal void time_line_node_count_change_event();  
 }

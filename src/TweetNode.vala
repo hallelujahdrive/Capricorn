@@ -12,8 +12,8 @@ class TweetNode:Node{
   private IconButton retweet_button;
   private IconButton favorite_button;
   
-  public TweetNode(Status status,CapricornAccount cpr_account,Config config,SignalPipe signal_pipe){
-    base(status,cpr_account,config,signal_pipe);
+  public TweetNode(Status status,CapricornAccount cpr_account,Config config,MainWindow main_window){
+    base(status,cpr_account,config,main_window);
     
     //IconButtoの作成
     reply_button=new IconButton(REPLY_ICON,REPLY_HOVER_ICON,null,IconSize.BUTTON);
@@ -27,7 +27,7 @@ class TweetNode:Node{
     
     //in_reply_drawing_boxの追加
     if(status.in_reply_to_status_id_str!=null){
-      var in_reply_drawing_box=new InReplyDrawingBox(this.config,this.signal_pipe);
+      var in_reply_drawing_box=new InReplyDrawingBox(this.config,this.main_window);
       
       in_reply_drawing_box.draw_tweet.begin(this.cpr_account,this.status.in_reply_to_status_id_str,(obj,res)=>{
         if(in_reply_drawing_box.draw_tweet.begin.end(res)){
@@ -37,17 +37,9 @@ class TweetNode:Node{
     }
     
     //シグナルハンドラ
-    //delete
-    this.signal_pipe.delete_tweet_node_event.connect((id_str)=>{
-      if(id_str==this.id_str){
-        node_type=NodeType.DELETED;
-        this.queue_draw();
-      }
-    });
-    
     //reply
     reply_button.clicked.connect(()=>{
-      this.signal_pipe.add_text_event(build_reply(this.status.user,this.status.entities_user_mentions),this.copy(),this.cpr_account.list_id);
+      this.main_window.post_page.add_text(build_reply(this.status.user,this.status.entities_user_mentions),this.cpr_account.list_id,this.copy());
     });
     
     //retweet
@@ -108,8 +100,8 @@ class TweetNode:Node{
   }
   
   //Retweet
-  public TweetNode.retweet(Status status,User user,CapricornAccount cpr_account,Config config,SignalPipe signal_pipe){
-    this(status,cpr_account,config,signal_pipe);
+  public TweetNode.retweet(Status status,User user,CapricornAccount cpr_account,Config config,MainWindow main_window){
+    this(status,cpr_account,config,main_window);
     
     this.user=user;
     
@@ -119,7 +111,7 @@ class TweetNode:Node{
     this.node_type=NodeType.RETWEET;
     
     //rt_drawing_boxの追加
-    var rt_drawing_box=new RetweetDrawingBox(this.user,this.status.retweet_count,this.config,this.signal_pipe);
+    var rt_drawing_box=new RetweetDrawingBox(this.user,this.status.retweet_count,this.config,this.main_window);
     this.attach(rt_drawing_box,1,4,1,1);
     
     //背景色
@@ -145,9 +137,9 @@ class TweetNode:Node{
   public TweetNode copy(){
     switch(node_type){
       case NodeType.RETWEET:
-      return new TweetNode.retweet(status,user,cpr_account,config,signal_pipe);
+      return new TweetNode.retweet(status,user,cpr_account,config,main_window);
       default:
-      return new TweetNode(status,cpr_account,config,signal_pipe);
+      return new TweetNode(status,cpr_account,config,main_window);
     }
   }
 }

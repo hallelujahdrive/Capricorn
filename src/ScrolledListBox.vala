@@ -4,7 +4,6 @@ using Gtk;
 public class ScrolledListBox:ScrolledWindow{
   
   protected weak Config config;
-  protected weak SignalPipe signal_pipe;
   
   protected int node_count_limit;
   protected int node_count=0;
@@ -13,9 +12,8 @@ public class ScrolledListBox:ScrolledWindow{
   [GtkChild]
   protected ListBox list_box;
       
-  public ScrolledListBox(Config config,SignalPipe signal_pipe){
+  public ScrolledListBox(Config config){
     this.config=config;
-    this.signal_pipe=signal_pipe;
     
     list_box.override_background_color(StateFlags.NORMAL,this.config.color_profile.white);
     

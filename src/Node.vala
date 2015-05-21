@@ -10,9 +10,9 @@ using URIUtil;
 public class Node:Grid{
   //メンバ
   protected Ruribitaki.Status status;
-  protected unowned CapricornAccount cpr_account;
+  protected weak CapricornAccount cpr_account;
   protected weak Config config;
-  protected weak SignalPipe signal_pipe;
+  protected weak MainWindow main_window;
   
   public string id_str;
   public string screen_name;
@@ -32,11 +32,11 @@ public class Node:Grid{
   [GtkChild]
   protected Box action_box;
   
-  public Node(Ruribitaki.Status status,CapricornAccount cpr_account,Config config,SignalPipe signal_pipe){
+  public Node(Ruribitaki.Status status,CapricornAccount cpr_account,Config config,MainWindow main_window){
     this.status=status;
     this.cpr_account=cpr_account;
     this.config=config;
-    this.signal_pipe=signal_pipe;
+    this.main_window=main_window;
     
     id_str=this.status.id_str;
     screen_name=this.status.user.screen_name;
@@ -48,11 +48,11 @@ public class Node:Grid{
       node_type=NodeType.REPLY;
     }
     
-    header_drawing_box=new HeaderDrawingBox(this.status.user,this.config,this.signal_pipe);
-    text_drawing_box=new TextDrawingBox(this.status,this.cpr_account,this.config,this.signal_pipe);
-    footer_drawing_box=new FooterDrawingBox(this.status,this.config,this.signal_pipe);
+    header_drawing_box=new HeaderDrawingBox(this.status.user,this.config,this.main_window);
+    text_drawing_box=new TextDrawingBox(this.status,this.cpr_account,this.config,this.main_window);
+    footer_drawing_box=new FooterDrawingBox(this.status,this.config,this.main_window);
     
-    profile_image_button=new ProfileImageButton(this.status.user,this.config,this.signal_pipe);
+    profile_image_button=new ProfileImageButton(this.status.user,this.config,this.main_window);
     
     this.attach(header_drawing_box,1,0,1,1);
     this.attach(text_drawing_box,1,1,1,1);
@@ -64,8 +64,16 @@ public class Node:Grid{
     set_bg_color();
     
     //シグナルハンドラ
+    //delete
+    this.cpr_account.delete_tweet_node_event.connect((id_str)=>{
+      if(id_str==this.id_str){
+        node_type=NodeType.DELETED;
+        set_bg_color();
+        this.queue_draw();
+      }
+    });
     //背景色設定のシグナル
-    this.signal_pipe.color_change_event.connect(()=>{
+    this.main_window.color_change_event.connect(()=>{
       set_bg_color();
       this.queue_draw();
     });

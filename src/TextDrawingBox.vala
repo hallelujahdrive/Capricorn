@@ -21,7 +21,7 @@ class TextDrawingBox:DrawingBox{
     //entities_hashtagsから検索
     for(int i=0;i<status.entities_hashtags.length;i++){
       if(index_>=status.entities_hashtags[i].indices[0]&&index_<status.entities_hashtags[i].indices[1]){
-        signal_pipe.add_text_event(" #%s".printf(status.entities_hashtags[i].text),null,cpr_account.list_id);
+        main_window.post_page.add_text(" #%s".printf(status.entities_hashtags[i].text),cpr_account.list_id);
         break;
       }
     }
@@ -30,7 +30,7 @@ class TextDrawingBox:DrawingBox{
       if(index_>=status.entities_media[i].indices[0]&&index_<status.entities_media[i].indices[1]){
         weak TweetNode parent=(TweetNode)this.get_parent();
         //MediaPageに渡すのはextended_entities_media
-        signal_pipe.media_url_click_event(parent.copy(),status.entities_media,status.extended_entities_media);
+        main_window.open_media_page(parent.copy(),status.entities_media,status.extended_entities_media);
         break;
       }
     }
@@ -66,8 +66,8 @@ class TextDrawingBox:DrawingBox{
     return true;
   }
   
-  public TextDrawingBox(Ruribitaki.Status status,CapricornAccount cpr_account,Config config,SignalPipe signal_pipe){
-    base(config,signal_pipe);
+  public TextDrawingBox(Ruribitaki.Status status,CapricornAccount cpr_account,Config config,MainWindow main_window){
+    base(config,main_window);
     
     this.status=status;
     this.cpr_account=cpr_account;

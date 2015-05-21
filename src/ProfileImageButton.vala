@@ -6,7 +6,7 @@ using ImageUtil;
 
 class ProfileImageButton:ImageButton{
   private weak Config config;
-  private weak SignalPipe signal_pipe;
+  private weak MainWindow main_window;
   
   private bool image_loaded=false;
   
@@ -30,9 +30,9 @@ class ProfileImageButton:ImageButton{
     return true;
   }
   
-  public ProfileImageButton(User user,Config config,SignalPipe signal_pipe){
+  public ProfileImageButton(User user,Config config,MainWindow main_window){
     this.config=config;
-    this.signal_pipe=signal_pipe;
+    this.main_window=main_window;
     
     //profile_image_pixbufの取得
     try{

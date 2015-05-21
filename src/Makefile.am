@@ -39,7 +39,6 @@ sources = \
 			RetweetDrawingBox.vala \
 			ScrolledListBox.vala \
 			SettingsWindow.vala \
-			SignalPipe.vala \
 			TextDrawingBox.vala \
 			TimeLine.vala \
 			TimeLineSettingsPage.vala \

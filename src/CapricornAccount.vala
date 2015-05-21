@@ -6,7 +6,8 @@ using ImageUtil;
 
 public class CapricornAccount:Account{
   private weak Config config;
-  private weak SignalPipe signal_pipe;
+
+  private weak MainWindow main_window;
   
   public int list_id;
   
@@ -20,9 +21,10 @@ public class CapricornAccount:Account{
   //loading用
   private bool image_loaded=false;
   
-  public CapricornAccount(Config config,SignalPipe signal_pipe,Account ?account=null){
+  public CapricornAccount(Config config,Account ?account=null){
     base(TWITTER_CONSUMER_KEY,TWITTER_CONSUMER_SECRET);
-    
+
+    //これくらいコピーすれば良い気がする
     if(account!=null){
       this.id=account.id;
       this.id_str=account.id_str;
@@ -36,14 +38,14 @@ public class CapricornAccount:Account{
     }
     
     this.config=config;
-    this.signal_pipe=signal_pipe;
   }
   
-  public void init(){
+  public void init(MainWindow main_window){
+    this.main_window=main_window;
     //TimeLine
-    home_time_line=new TimeLine.home(this,this.config,this.signal_pipe);
-    mention_time_line=new TimeLine.mention(this,this.config,this.signal_pipe);
-    event_notify_list_box=new EventNotifyListBox(this.config,this.signal_pipe);
+    home_time_line=new TimeLine.home(this,this.config,main_window);
+    mention_time_line=new TimeLine.mention(this,this.config,main_window);
+    event_notify_list_box=new EventNotifyListBox(this.config,main_window);
     
     //UserStream
     user_stream=new UserStream(this);
@@ -83,9 +85,9 @@ public class CapricornAccount:Account{
       switch(status.status_type){
         //tweetの削除の処理
         case StatusType.DELETE:
-        this.signal_pipe.delete_tweet_node_event(status.id_str);
+        delete_tweet_node_event(status.id_str);
         if(status.id_str!=null){
-          this.signal_pipe.event_update_event(status);
+          event_update_event(status);
         }
         break;
         //eventの処理
@@ -123,10 +125,10 @@ public class CapricornAccount:Account{
   private void create_tweet(Ruribitaki.Status status){
     TweetNode? tweet_node=null;
     switch(status.status_type){
-      case StatusType.RETWEET:tweet_node=new TweetNode.retweet(status.target_status,status.user,this,this.config,this.signal_pipe);
+      case StatusType.RETWEET:tweet_node=new TweetNode.retweet(status.target_status,status.user,this,this.config,this.main_window);
       break;
       case StatusType.TWEET:
-      tweet_node=new TweetNode(status,this,this.config,this.signal_pipe);
+      tweet_node=new TweetNode(status,this,this.config,this.main_window);
       if(status.is_reply){
         //replyの作成
         mention_time_line.prepend_node(tweet_node.copy());
@@ -142,10 +144,10 @@ public class CapricornAccount:Account{
   private void create_event(Ruribitaki.Status status){
     if(status.target_status.is_mine){
       if(!event_notify_list_box.generic_set.contains(status.target_status.id_str)){
-        event_notify_list_box.prepend_node(new EventNode.with_update(status,this,config,signal_pipe));
+        event_notify_list_box.prepend_node(new EventNode.with_update(status,this,config,main_window));
       }
-      if(signal_pipe.event_update_event(status)){
-        home_time_line.prepend_node(new EventNode.no_update(status,this,config,signal_pipe));
+      if(event_update_event(status)){
+        home_time_line.prepend_node(new EventNode.no_update(status,this,config,main_window));
       }
     }
   }
@@ -156,4 +158,9 @@ public class CapricornAccount:Account{
     mention_time_line.destroy();
     event_notify_list_box.destroy();
   }
+
+  //シグナル
+  public signal void delete_tweet_node_event(string id_str);
+  
+  public signal bool event_update_event(Ruribitaki.Status status);
 }

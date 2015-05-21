@@ -31,10 +31,10 @@ class AccountComboBox:ComboBox{
     }
   }
   
-  public AccountComboBox(Array<CapricornAccount> cpr_account_array,Func<int> func,Config config,SignalPipe signal_pipe){
+  public AccountComboBox(Array<CapricornAccount> cpr_account_array,Func<int> func,Config config,MainWindow main_window){
     this.cpr_account_array=cpr_account_array;
     this.func=func;
-   this.config=config;
+    this.config=config;
     
     //プロパティ
     this.pack_start(cell_pixbuf,false);
@@ -48,7 +48,7 @@ class AccountComboBox:ComboBox{
     load();
     
     //シグナルハンドラ
-    signal_pipe.account_array_change_event.connect(()=>{
+    main_window.account_array_change_event.connect(()=>{
       load();
     });
   }

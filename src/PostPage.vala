@@ -6,16 +6,16 @@ using ImageUtil;
 using StringUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/post_page.ui")]
-class PostPage:Frame{
+public class PostPage:Frame{
   private unowned Array<CapricornAccount> cpr_account_array;
   private weak Config config;
-  private weak SignalPipe signal_pipe;
+  private weak MainWindow main_window;
   
   private IconButton post_button;
   private IconButton url_shorting_button;
   private AccountComboBox account_combo_box;
   
-  private Node _tweet_node;
+  private Node in_reply_to_node;
   
   //tweet_text_view内の文字数
   private static int chars_count=140;
@@ -71,14 +71,14 @@ class PostPage:Frame{
     tl_is_linked=tl_link_cbutton.get_active();
   }
   
-  public PostPage(Array<CapricornAccount> cpr_account_array,Config config,SignalPipe signal_pipe){
+  public PostPage(Array<CapricornAccount> cpr_account_array,Config config,MainWindow main_window){
     this.cpr_account_array=cpr_account_array;
     this.config=config;
-    this.signal_pipe=signal_pipe;
+    this.main_window=main_window;
     
     post_button=new IconButton(POST_ICON,null,null,IconSize.LARGE_TOOLBAR);
     url_shorting_button=new IconButton(URL_SHORTING_ICON,null,null,IconSize.LARGE_TOOLBAR);
-    account_combo_box=new AccountComboBox(cpr_account_array,account_combo_box_changed,config,signal_pipe);
+    account_combo_box=new AccountComboBox(cpr_account_array,account_combo_box_changed,config,main_window);
     
     
     //パッキング
@@ -109,27 +109,12 @@ class PostPage:Frame{
       string parsed_text=parse_post_text(buffer.text);
       buffer.text=parsed_text;
     });
-    
-    //add_text
-    signal_pipe.add_text_event.connect((text,tweet_node,list_id)=>{
-      //buffer.txtが更新されるときreply_resetが呼ばれる
-      buffer.text=buffer.text+text;
-      account_combo_box.active=list_id;
-      if(tweet_node!=null){
-        in_reply_to_status_id_str=tweet_node.id_str;
-        _tweet_node=tweet_node;
-        main_grid.attach(_tweet_node,0,3,2,1);
-      }
-            
-      tweet_text_view.grab_focus();
-    });
-    
   }
   
   //リプライのリセット
   private void reply_reset(){
-    if(_tweet_node!=null){
-      _tweet_node.destroy();
+    if(in_reply_to_node!=null){
+      in_reply_to_node.destroy();
       in_reply_to_status_id_str=null;
     }
   }
@@ -141,6 +126,20 @@ class PostPage:Frame{
     if(tl_is_linked){
       tl_link(_selected_account_num);
     }
+  }
+
+  //text_viewerにtextをセット
+  public void add_text(string text,int list_id,Node? node=null){
+    //buffer.txtが更新されるときreply_resetが呼ばれる
+    buffer.text=buffer.text+text;
+    account_combo_box.active=list_id;
+    if(node!=null){
+      in_reply_to_status_id_str=node.id_str;
+      in_reply_to_node=node;
+      main_grid.attach(in_reply_to_node,0,3,2,1);
+    }
+          
+    tweet_text_view.grab_focus();
   }
   
   //tlとcomboboxの連動

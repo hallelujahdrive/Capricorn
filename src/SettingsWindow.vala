@@ -9,8 +9,8 @@ class SettingsWindow:Dialog{
   private unowned GLib.Array<CapricornAccount> cpr_account_array;
   
   private weak Config config;
-  private weak SignalPipe signal_pipe;
-  
+  private weak MainWindow main_window;
+    
   private AccountSettingsPage account_settings_page;
   private DisplaySettingsPage display_settings_page;
   private EventNotifySettingsPage event_notify_settings_page;
@@ -51,7 +51,7 @@ class SettingsWindow:Dialog{
       //データベースのアップデート
       update_color(0,config.color_profile,config.db);
       //シグナルの発行
-      signal_pipe.color_change_event();
+      main_window.color_change_event();
     }
     
     //fontの更新
@@ -60,7 +60,7 @@ class SettingsWindow:Dialog{
       //データベースのアップデート
       update_font(0,config.font_profile,config.db);
       //シグナルの発行
-      signal_pipe.color_change_event();
+      main_window.color_change_event();
     }
     
     //eventの表示数の更新
@@ -69,7 +69,7 @@ class SettingsWindow:Dialog{
       //データベースのアップデート
       update_event_notify_settings(config.event_node_count,config.event_show_on_time_line,config.db);
       //シグナルの発行
-      signal_pipe.event_notify_settings_change_event();
+      main_window.event_notify_settings_change_event();
     }
     
     //network設定の更新
@@ -85,7 +85,7 @@ class SettingsWindow:Dialog{
       //データベースのアップデート
       update_time_line_settings(config.init_time_line_node_count,config.time_line_node_count,config.db);
       //シグナルの発行
-      signal_pipe.time_line_node_count_change_event();
+      main_window.time_line_node_count_change_event();
     }
     
     this.destroy();
@@ -98,10 +98,10 @@ class SettingsWindow:Dialog{
     this.destroy();
   }
   
-  public SettingsWindow(GLib.Array<CapricornAccount> cpr_account_array,Func<Array<Account>> func,Config config,SignalPipe signal_pipe){
+  public SettingsWindow(GLib.Array<CapricornAccount> cpr_account_array,Func<Array<Account>> func,Config config,MainWindow main_window){
     this.cpr_account_array=cpr_account_array;
     this.config=config;
-    this.signal_pipe=signal_pipe;
+    this.main_window=main_window;
     
     account_settings_page=new AccountSettingsPage(this.cpr_account_array,this.config,this);
     display_settings_page=new DisplaySettingsPage(this.config);

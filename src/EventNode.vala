@@ -9,22 +9,22 @@ class EventNode:Node{
   private EventDrawingBox favorite_event_drawing_box;
   private EventDrawingBox retweet_event_drawing_box;
   
-  public EventNode(Status status,CapricornAccount cpr_account,Config config,SignalPipe signal_pipe){
-    base(status.target_status,cpr_account,config,signal_pipe);
+  public EventNode(Status status,CapricornAccount cpr_account,Config config,MainWindow main_window){
+    base(status.target_status,cpr_account,config,main_window);
     
     //EventDrawingBoxの作成
-    retweet_event_drawing_box=new EventDrawingBox.retweet(this.config,this.signal_pipe);
-    favorite_event_drawing_box=new EventDrawingBox.favorite(this.config,this.signal_pipe);
+    retweet_event_drawing_box=new EventDrawingBox.retweet(this.config,this.main_window);
+    favorite_event_drawing_box=new EventDrawingBox.favorite(this.config,this.main_window);
     
     this.attach(retweet_event_drawing_box,1,4,1,1);
     this.attach(favorite_event_drawing_box,1,5,1,1);
   }
   
-  public EventNode.with_update(Ruribitaki.Status status,CapricornAccount cpr_account,Config config,SignalPipe signal_pipe){
-    this(status,cpr_account,config,signal_pipe);
+  public EventNode.with_update(Ruribitaki.Status status,CapricornAccount cpr_account,Config config,MainWindow main_window){
+    this(status,cpr_account,config,main_window);
     
     //シグナルハンドラ
-    this.signal_pipe.event_update_event.connect((status)=>{
+    this.cpr_account.event_update_event.connect((status)=>{
       bool res=false;
       if(status.status_type==StatusType.DELETE){
         retweet_event_drawing_box.remove_user(status.user);
@@ -41,13 +41,13 @@ class EventNode:Node{
     });
   }
   
-  public EventNode.no_update(Status status,CapricornAccount cpr_account,Config config,SignalPipe signal_pipe){
-    this(status,cpr_account,config,signal_pipe);
+  public EventNode.no_update(Status status,CapricornAccount cpr_account,Config config,MainWindow main_window){
+    this(status,cpr_account,config,main_window);
     
     event_node_update(status);
     
     //シグナルハンドラ
-    this.signal_pipe.event_notify_settings_change_event.connect(()=>{
+    this.main_window.event_notify_settings_change_event.connect(()=>{
       if(!this.config.event_show_on_time_line){
         //userが0の時、Nodeを削除(親遠すぎわろたでち)
         weak ScrolledListBox parent=(ScrolledListBox)this.get_parent().get_parent().get_parent().get_parent();

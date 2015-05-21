@@ -3,26 +3,28 @@ using Gtk;
 using Ruribitaki;
 
 public class TimeLine:ScrolledListBox{
+  private weak MainWindow main_window;
   //tab
   public Image tab=new Image();
       
-  public TimeLine(Config config,SignalPipe signal_pipe){
-    base(config,signal_pipe);
+  public TimeLine(Config config,MainWindow main_window){
+    base(config);
+    this.main_window=main_window;
     
     node_count_limit=config.time_line_node_count;
     
     //シグナルハンドラ
-    signal_pipe.time_line_node_count_change_event.connect(()=>{
+    main_window.time_line_node_count_change_event.connect(()=>{
       node_count_limit=config.time_line_node_count;
       delete_nodes();
     });
   }
   
   //home
-  public TimeLine.home(CapricornAccount cpr_account,Config config,SignalPipe signal_pipe){
-    this(config,signal_pipe);
+  public TimeLine.home(CapricornAccount cpr_account,Config config,MainWindow main_window){
+    this(config,main_window);
     //シグナルハンドラ
-    this.signal_pipe.show.connect(()=>{
+    this.main_window.show.connect(()=>{
       try{
         init(statuses_home_timeline(cpr_account,config.init_time_line_node_count),cpr_account);
       }catch(Error e){
@@ -32,10 +34,10 @@ public class TimeLine:ScrolledListBox{
   }
   
   //mention
-  public TimeLine.mention(CapricornAccount cpr_account,Config config,SignalPipe signal_pipe){
-    this(config,signal_pipe);
+  public TimeLine.mention(CapricornAccount cpr_account,Config config,MainWindow main_window){
+    this(config,main_window);
     //シグナルハンドラ
-    this.signal_pipe.show.connect(()=>{
+    this.main_window.show.connect(()=>{
       try{
         init(statuses_mention_timeline(cpr_account,config.init_time_line_node_count),cpr_account);
       }catch(Error e){
@@ -49,9 +51,9 @@ public class TimeLine:ScrolledListBox{
     for(int i=0;i<status_array.length;i++){
       TweetNode? tweet_node=null;
       switch(status_array.index(i).status_type){
-        case StatusType.RETWEET:tweet_node=new TweetNode.retweet(status_array.index(i).target_status,status_array.index(i).user,cpr_account,config,signal_pipe);
+        case StatusType.RETWEET:tweet_node=new TweetNode.retweet(status_array.index(i).target_status,status_array.index(i).user,cpr_account,config,main_window);
         break;
-        case StatusType.TWEET:tweet_node=new TweetNode(status_array.index(i),cpr_account,config,signal_pipe);
+        case StatusType.TWEET:tweet_node=new TweetNode(status_array.index(i),cpr_account,config,main_window);
         break;
       }
       if(tweet_node!=null){

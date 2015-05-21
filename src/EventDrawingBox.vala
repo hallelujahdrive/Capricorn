@@ -65,19 +65,19 @@ class EventDrawingBox:DrawingBox{
     return true;
   }
   
-  public EventDrawingBox(Config config,SignalPipe signal_pipe){
-    base(config,signal_pipe);
+  public EventDrawingBox(Config config,MainWindow main_window){
+    base(config,main_window);
   }
   
   //RT
-  public EventDrawingBox.retweet(Config config,SignalPipe signal_pipe){
-    this(config,signal_pipe);
+  public EventDrawingBox.retweet(Config config,MainWindow main_window){
+    this(config,main_window);
     init(RETWEET_ON_ICON);
   }
   
   //☆
-  public EventDrawingBox.favorite(Config config,SignalPipe signal_pipe){
-    this(config,signal_pipe);
+  public EventDrawingBox.favorite(Config config,MainWindow main_window){
+    this(config,main_window);
     init(FAVORITE_ON_ICON);
   }
   

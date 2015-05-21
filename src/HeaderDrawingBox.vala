@@ -43,8 +43,8 @@ class HeaderDrawingBox:DrawingBox{
     return true;
   }
   
-  public HeaderDrawingBox(User user,Config config,SignalPipe signal_pipe){
-    base(config,signal_pipe);
+  public HeaderDrawingBox(User user,Config config,MainWindow main_window){
+    base(config,main_window);
     
     this.user=user;
     

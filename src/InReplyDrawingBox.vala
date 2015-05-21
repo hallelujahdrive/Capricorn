@@ -40,8 +40,8 @@ class InReplyDrawingBox:DrawingBox{
     return true;
   }
   
-  public InReplyDrawingBox(Config config,SignalPipe signal_pipe){
-    base(config,signal_pipe);
+  public InReplyDrawingBox(Config config,MainWindow main_window){
+    base(config,main_window);
   }
   
   //reply元のツイートを取得

@@ -5,12 +5,12 @@ public class EventNotifyListBox:ScrolledListBox{
   //NodeのGenericSet
   public GenericSet<string> generic_set=new GenericSet<string>(str_hash,str_equal);
   
-  public EventNotifyListBox(Config config,SignalPipe signal_pipe){
-    base(config,signal_pipe);
+  public EventNotifyListBox(Config config,MainWindow main_window){
+    base(config);
     node_count_limit=config.event_node_count;
     list_box.set_sort_func(list_box_sort_func);
     
-    signal_pipe.event_notify_settings_change_event.connect(()=>{
+    main_window.event_notify_settings_change_event.connect(()=>{
       node_count_limit=config.event_node_count;
       delete_nodes();
     });

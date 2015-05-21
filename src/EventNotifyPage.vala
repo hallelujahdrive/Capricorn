@@ -15,10 +15,10 @@ class EventNotifyPage:Frame{
   
   private AccountComboBox account_combo_box;
   
-  public EventNotifyPage(Array<CapricornAccount> cpr_account_array,Config config,SignalPipe signal_pipe){
+  public EventNotifyPage(Array<CapricornAccount> cpr_account_array,Config config,MainWindow main_window){
     this.cpr_account_array=cpr_account_array;
     
-    account_combo_box=new AccountComboBox(cpr_account_array,account_combo_box_changed,config,signal_pipe);
+    account_combo_box=new AccountComboBox(cpr_account_array,account_combo_box_changed,config,main_window);
     main_grid.attach(account_combo_box,0,0,1,1);
   }
   
