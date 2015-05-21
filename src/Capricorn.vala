@@ -11,7 +11,7 @@ public class Capricorn:Gtk.Application{
   private MainWindow window;
   
   //Accountの配列
-  public GLib.Array<CapricornAccount> cpr_account_array=new GLib.Array<CapricornAccount>();
+  private GLib.Array<CapricornAccount> cpr_account_array=new GLib.Array<CapricornAccount>();
   
   //Path
   private static string CPR_DIR_PATH=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,GLib.Environment.get_home_dir(),".capricorn");
@@ -64,6 +64,7 @@ public class Capricorn:Gtk.Application{
         //配列に追加
         cpr_account_array.append_val(cpr_account);
         select_account(i,cpr_account_array.index(i),config.db);
+        cpr_account_array.index(i).list_id=i;
         //Account情報の取得
         try{
           account_verify_credential(cpr_account_array.index(i));
@@ -88,7 +89,7 @@ public class Capricorn:Gtk.Application{
       oauth_dialog.destroy.connect(()=>{
         if(oauth_dialog.success){
           cpr_account_array.append_val(cpr_account);
-          insert_account(cpr_account_array.index(0),config.db);
+          insert_account(cpr_account_array.index(0).list_id,cpr_account_array.index(0),config.db);
         }
         if(count_records(config.db,"ACCOUNT")==0){
           window.destroy();
@@ -102,7 +103,7 @@ public class Capricorn:Gtk.Application{
     Intl.setlocale(LocaleCategory.TIME,"en_US.UTF-8");
     //Windowを開く
     if(can_window_open){
-      window=new MainWindow(this);
+      window=new MainWindow(this,this.cpr_account_array);
     }
     
     //終了処理

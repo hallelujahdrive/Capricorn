@@ -1,7 +1,7 @@
 using Gtk;
 using Ruribitaki;
 
-public class EventNotifyListBox:ScrolledListBox{
+class EventNotifyListBox:ScrolledListBox{
   //NodeのGenericSet
   public GenericSet<string> generic_set=new GenericSet<string>(str_hash,str_equal);
   

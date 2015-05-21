@@ -6,7 +6,7 @@ using ImageUtil;
 using StringUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/post_page.ui")]
-public class PostPage:Frame{
+class PostPage:Frame{
   private unowned Array<CapricornAccount> cpr_account_array;
   private weak Config config;
   private weak MainWindow main_window;

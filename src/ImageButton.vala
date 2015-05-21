@@ -2,7 +2,7 @@ using Gdk;
 using Gtk;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/image_button.ui")]
-public class ImageButton:EventBox{
+class ImageButton:EventBox{
   
   private RGBA clear=RGBA();
   

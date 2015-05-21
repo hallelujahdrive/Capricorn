@@ -4,7 +4,7 @@ using Ruribitaki;
 
 using ImageUtil;
 
-public class CapricornAccount:Account{
+class CapricornAccount:Account{
   private weak Config config;
 
   private weak MainWindow main_window;

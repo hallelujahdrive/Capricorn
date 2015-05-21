@@ -7,7 +7,7 @@ using Ruribitaki;
 using URIUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/node.ui")]
-public class Node:Grid{
+class Node:Grid{
   //メンバ
   protected Ruribitaki.Status status;
   protected weak CapricornAccount cpr_account;

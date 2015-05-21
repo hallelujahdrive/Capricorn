@@ -41,7 +41,7 @@ class SettingsWindow:Dialog{
       }
       //Databaseへ追加
       for(int i=account_count_records;i<cpr_account_array.length;i++){
-        insert_account(cpr_account_array.index(i),config.db);
+        insert_account(cpr_account_array.index(i).list_id,cpr_account_array.index(i),config.db);
       }
     }
         

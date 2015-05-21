@@ -3,7 +3,7 @@ using Sqlite;
 
 namespace SqliteUtil{
   //accountの読み出し
-  public void select_account(int id,CapricornAccount account,Database db){
+  public void select_account(int list_id,Account account,Database db){
     int ec;
     Statement stmt;
     
@@ -14,14 +14,12 @@ namespace SqliteUtil{
     }
     
     int list_id_param_position=stmt.bind_parameter_index("$LIST_ID");
-    stmt.bind_int(list_id_param_position,id);
+    stmt.bind_int(list_id_param_position,list_id);
     
     int cols=stmt.column_count();
     while(stmt.step()==Sqlite.ROW){
-      for(int i=0;i<cols;i++){
+      for(int i=1;i<cols;i++){
         switch(i){
-          case 0:account.list_id=stmt.column_int(i);
-          break;
           case 1:account.id=stmt.column_int(i);
           break;
           case 2:account.api_proxy.set_token(stmt.column_text(i));

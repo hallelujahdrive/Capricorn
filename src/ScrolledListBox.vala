@@ -1,7 +1,7 @@
 using Gtk;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/scrolled_list_box.ui")]
-public class ScrolledListBox:ScrolledWindow{
+class ScrolledListBox:ScrolledWindow{
   
   protected weak Config config;
   

@@ -3,7 +3,7 @@ using Sqlite;
 
 namespace SqliteUtil{
   //accountのinsert
-  public void insert_account(CapricornAccount cpr_account,Database db){
+  public void insert_account(int list_id,Account account,Database db){
     int ec;
     Statement stmt;
     
@@ -19,10 +19,10 @@ namespace SqliteUtil{
     int token_secret_param_position=stmt.bind_parameter_index("$TOKEN_SECRET");
     
     //インサート
-    stmt.bind_int(list_id_param_position,cpr_account.list_id);
-    stmt.bind_int64(id_param_position,cpr_account.id);
-    stmt.bind_text(token_param_position,cpr_account.api_proxy.get_token());
-    stmt.bind_text(token_secret_param_position,cpr_account.api_proxy.get_token_secret());
+    stmt.bind_int(list_id_param_position,list_id);
+    stmt.bind_int64(id_param_position,account.id);
+    stmt.bind_text(token_param_position,account.api_proxy.get_token());
+    stmt.bind_text(token_secret_param_position,account.api_proxy.get_token_secret());
     
     while(stmt.step()!=Sqlite.DONE);
     stmt.reset();

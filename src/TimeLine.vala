@@ -2,7 +2,7 @@ using Gdk;
 using Gtk;
 using Ruribitaki;
 
-public class TimeLine:ScrolledListBox{
+class TimeLine:ScrolledListBox{
   private weak MainWindow main_window;
   //tab
   public Image tab=new Image();

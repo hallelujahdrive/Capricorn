@@ -6,7 +6,7 @@ using SqliteUtil;
 using URIUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/oauth_window.ui")]
-public class OAuthDialog:Gtk.Dialog{
+class OAuthDialog:Gtk.Dialog{
   //url
   private string token_url;
   

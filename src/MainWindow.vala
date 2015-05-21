@@ -7,7 +7,7 @@ using ImageUtil;
 using SqliteUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/main_window.ui")]
-public class MainWindow:ApplicationWindow{
+class MainWindow:ApplicationWindow{
   private unowned Config config;
 
   //CapricornAccountの配列
@@ -28,11 +28,11 @@ public class MainWindow:ApplicationWindow{
   [GtkChild]
   private Box button_box;
     
-  public MainWindow(Capricorn capricorn){
+  public MainWindow(Capricorn capricorn,Array<CapricornAccount>cpr_account_array){
     GLib.Object(application:capricorn);
     
     config=capricorn.config;
-    cpr_account_array=capricorn.cpr_account_array;
+    this.cpr_account_array=cpr_account_array;
      
     //初期化
     init();
@@ -92,7 +92,7 @@ public class MainWindow:ApplicationWindow{
         cpr_account_array.append_val(cpr_account);
         cpr_account_array.index(i).list_id=(int)i;
         cpr_account_array.index(i).init(this);
-        insert_account(cpr_account_array.index(i),config.db);
+        insert_account(cpr_account_array.index(i).list_id,cpr_account_array.index(i),config.db);
         
         notebook_array.index(0).append_page(cpr_account_array.index(i).home_time_line,cpr_account_array.index(i).home_time_line.tab);
         notebook_array.index(1).append_page(cpr_account_array.index(i).mention_time_line,cpr_account_array.index(i).mention_time_line.tab);
