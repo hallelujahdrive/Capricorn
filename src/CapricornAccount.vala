@@ -125,7 +125,7 @@ class CapricornAccount:Account{
   private void create_tweet(Ruribitaki.Status status){
     TweetNode? tweet_node=null;
     switch(status.status_type){
-      case StatusType.RETWEET:tweet_node=new TweetNode.retweet(status.target_status,status.user,this,this.config,this.main_window);
+      case StatusType.RETWEET:tweet_node=new TweetNode.retweet(status,this,this.config,this.main_window);
       break;
       case StatusType.TWEET:
       tweet_node=new TweetNode(status,this,this.config,this.main_window);

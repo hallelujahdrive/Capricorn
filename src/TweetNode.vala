@@ -2,10 +2,8 @@ using Gtk;
 using Ruribitaki;
 
 class TweetNode:Node{
-  //RTのstautsのid_str
-  protected string? source_id_str;
-  //RTしたuser
-  protected User? user;
+  //RTのstauts
+  private Status? source_status;
   
   //Widget
   private IconButton reply_button;
@@ -46,7 +44,7 @@ class TweetNode:Node{
     retweet_button.clicked.connect((image_button)=>{
       weak IconButton icon_button=(IconButton)image_button;
       if(icon_button.already){
-        statuses_destroy.begin(this.cpr_account,this.source_id_str,(obj,res)=>{
+        statuses_destroy.begin(this.cpr_account,this.source_status.id_str,(obj,res)=>{
           try{
             if(statuses_destroy.end(res)){
               icon_button.already=!icon_button.already;
@@ -99,19 +97,17 @@ class TweetNode:Node{
     });
   }
   
-  //Retweet
-  public TweetNode.retweet(Status status,User user,CapricornAccount cpr_account,Config config,MainWindow main_window){
-    this(status,cpr_account,config,main_window);
+  //RetweetのNode
+  public TweetNode.retweet(Status source_status,CapricornAccount cpr_account,Config config,MainWindow main_window){
+    this(source_status.target_status,cpr_account,config,main_window);
     
-    this.user=user;
-    
-    this.source_id_str=status.id_str;
-    
+    this.source_status=source_status;
+        
     //NodeType
     this.node_type=NodeType.RETWEET;
     
     //rt_drawing_boxの追加
-    var rt_drawing_box=new RetweetDrawingBox(this.user,this.status.retweet_count,this.config,this.main_window);
+    var rt_drawing_box=new RetweetDrawingBox(this.source_status.user,this.status.retweet_count,this.config,this.main_window);
     this.attach(rt_drawing_box,1,4,1,1);
     
     //背景色
@@ -137,7 +133,7 @@ class TweetNode:Node{
   public TweetNode copy(){
     switch(node_type){
       case NodeType.RETWEET:
-      return new TweetNode.retweet(status,user,cpr_account,config,main_window);
+      return new TweetNode.retweet(source_status,cpr_account,config,main_window);
       default:
       return new TweetNode(status,cpr_account,config,main_window);
     }

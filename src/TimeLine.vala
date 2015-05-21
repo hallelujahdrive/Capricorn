@@ -51,7 +51,7 @@ class TimeLine:ScrolledListBox{
     for(int i=0;i<status_array.length;i++){
       TweetNode? tweet_node=null;
       switch(status_array.index(i).status_type){
-        case StatusType.RETWEET:tweet_node=new TweetNode.retweet(status_array.index(i).target_status,status_array.index(i).user,cpr_account,config,main_window);
+        case StatusType.RETWEET:tweet_node=new TweetNode.retweet(status_array.index(i),cpr_account,config,main_window);
         break;
         case StatusType.TWEET:tweet_node=new TweetNode(status_array.index(i),cpr_account,config,main_window);
         break;
