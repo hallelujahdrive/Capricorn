@@ -72,8 +72,8 @@ class MainWindow:ApplicationWindow{
     });
     
     //Mediasのopen
-    signal_pipe.media_url_click_event.connect((tweet_node,media_array)=>{
-      MediaPage media_page=new MediaPage(tweet_node,media_array,config);
+    signal_pipe.media_url_click_event.connect((tweet_node,media_array,extended_media_array)=>{
+      MediaPage media_page=new MediaPage(tweet_node,media_array,extended_media_array,config);
       notebook_array.index(2).append_page(media_page,media_page.tab);
       notebook_array.index(2).set_current_page(notebook_array.index(2).page_num(media_page));
     });

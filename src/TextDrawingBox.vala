@@ -30,7 +30,7 @@ class TextDrawingBox:DrawingBox{
       if(index_>=status.entities_media[i].indices[0]&&index_<status.entities_media[i].indices[1]){
         weak TweetNode parent=(TweetNode)this.get_parent();
         //MediaPageに渡すのはextended_entities_media
-        signal_pipe.media_url_click_event(parent.copy(),status.extended_entities_media);
+        signal_pipe.media_url_click_event(parent.copy(),status.entities_media,status.extended_entities_media);
         break;
       }
     }

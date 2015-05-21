@@ -9,6 +9,7 @@ using URIUtil;
 [GtkTemplate(ui="/org/gtk/capricorn/ui/media_page.ui")]
 class MediaPage:Frame{
   private unowned medium[] media;
+  private unowned medium[] extended_media;
 
   private Array<PhotoBox> photo_box_array=new Array<PhotoBox>();
   
@@ -32,7 +33,7 @@ class MediaPage:Frame{
   [GtkCallback]
   private bool viewport_draw_after_cb(){
     if(height!=(height=viewport.get_allocated_height()-(int)media_grid.get_row_spacing()*2)){
-      for(int i=0;i<media.length;i++){
+      for(int i=0;i<extended_media.length;i++){
         photo_box_array.index(i).change_allocated_height(height);
       }
     }
@@ -42,7 +43,8 @@ class MediaPage:Frame{
   //open_url_buttonのクリック
   [GtkCallback]
   private void open_url_button_clicked_cb(Button open_url_button){
-    for(int i=0;i<media.length;i++){
+    //mediaから開く
+    for(int i=0;i<extended_media.length;i++){
       open_url(media[i].expanded_url);
     }
   }
@@ -53,26 +55,27 @@ class MediaPage:Frame{
     this.destroy();
   }
   
-  public MediaPage(Node tweet_node,medium[] media,Config config){
+  public MediaPage(Node tweet_node,medium[] media,medium[] extended_media,Config config){
     this.media=media;
+    this.extended_media=extended_media;
     
     tweet_node_box.add(tweet_node);
     
 
-    //media_arrayからの画像の読み込み
-    for(int i=0;i<this.media.length;i++){
-      photo_box_array.append_val(new PhotoBox(i,this.media[i].media_url,open_media_window,config));
+    //extended_media_arrayからの画像の読み込み
+    for(int i=0;i<this.extended_media.length;i++){
+      photo_box_array.append_val(new PhotoBox(i,this.extended_media[i].media_url,open_extended_media_window,config));
       media_grid.attach(photo_box_array.index(i),i%2,i/2,1,1);
     }
   }
   
-  private void open_media_window(int num){
-    MediaWindow media_window=new MediaWindow(num,photo_box_array);
-    media_window.show_all();
+  private void open_extended_media_window(int num){
+    MediaWindow extended_media_window=new MediaWindow(num,photo_box_array);
+    extended_media_window.show_all();
     
     //ページ破棄と一緒にウィンドウも破棄
     this.destroy.connect(()=>{
-      media_window.destroy();
+      extended_media_window.destroy();
     });
   }
 }
