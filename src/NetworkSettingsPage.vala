@@ -64,10 +64,8 @@ class NetworkSettingsPage:Frame{
       if(proxy_radio_button_slist.nth_data(i).get_active()){
         config.use_proxy=i;
         //proxy_uriの設定
-        if(i==1){
-          config.proxy_uri=new URI(http_proxy_entry_buffer.get_text());
-          config.proxy_uri.set_port(int.parse(http_proxy_port_entry_buffer.get_text()));
-        }
+        config.proxy_uri=new URI(http_proxy_entry_buffer.get_text());
+        config.proxy_uri.set_port(int.parse(http_proxy_port_entry_buffer.get_text()));
         break;
       }
     }

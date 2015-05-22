@@ -49,6 +49,10 @@ class MainWindow:ApplicationWindow{
     button_box.pack_end(settings_button,false,false,0);
         
     //シグナルハンドラ
+    //初期化
+    this.show.connect(()=>{
+      init_event();
+    });
     
     //アクティブなTLとPostアカウントの同期
     post_page.tl_link.connect((selected_account_num)=>{
@@ -80,7 +84,7 @@ class MainWindow:ApplicationWindow{
           //list_idの更新
           for(int j=i;j<cpr_account_array.length;j++){
             cpr_account_array.index(j).list_id=j;
-            update_account_list_id(j,j+1,config.db);
+            update_account_list_id(j,cpr_account_array.index(j).id,config.db);
           }
         }else{
           i++;
@@ -107,7 +111,7 @@ class MainWindow:ApplicationWindow{
   
   private void init(){
     //notebookの配置(仮置きで3)
-    for(int i=0;i<3;i++){
+    for(int i=0;i<config.column_length;i++){
       Notebook notebook=new Notebook();
       notebook_array.append_val(notebook);
       notebook_box.pack_start(notebook_array.index(i));
@@ -132,7 +136,8 @@ class MainWindow:ApplicationWindow{
     account_array_change_event();
     init();
     load_pages();
-    this.show();
+    //signalの発行
+    init_event();
   }
 
   //MediaPageを開く
@@ -149,6 +154,8 @@ class MainWindow:ApplicationWindow{
   public signal void color_change_event();
   //event_node_node_conutが変更された
   public signal void event_notify_settings_change_event();
+  //初期化
+  public signal void init_event();
   //timeline_node_conutが変更された
   public signal void time_line_node_count_change_event();  
 }

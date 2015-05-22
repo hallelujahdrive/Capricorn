@@ -38,6 +38,10 @@ public class Config{
   //Proxy
   public int use_proxy;
   public URI proxy_uri;
+
+  //notebookの設定
+  //notebookのarrayの長さ(暫定3)
+  public int column_length=3;
   
   public Config(string cpr_dir_path){
     cache_dir_path=GLib.Path.build_path(GLib.Path.DIR_SEPARATOR_S,cpr_dir_path,"cache");

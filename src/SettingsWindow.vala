@@ -33,7 +33,7 @@ class SettingsWindow:Dialog{
           delete_account(i,config.db);
           account_count_records--;
           for(int j=i;j<account_count_records;j++){
-            update_account_list_id(j,j+1,config.db);
+            update_account_list_id(j,cpr_account_array.index(j).id,config.db);
           }
         }else{
           i++;

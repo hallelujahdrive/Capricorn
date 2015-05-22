@@ -24,7 +24,7 @@ class TimeLine:ScrolledListBox{
   public TimeLine.home(CapricornAccount cpr_account,Config config,MainWindow main_window){
     this(config,main_window);
     //シグナルハンドラ
-    this.main_window.show.connect(()=>{
+    this.main_window.init_event.connect(()=>{
       try{
         init(statuses_home_timeline(cpr_account,config.init_time_line_node_count),cpr_account);
       }catch(Error e){
@@ -37,7 +37,7 @@ class TimeLine:ScrolledListBox{
   public TimeLine.mention(CapricornAccount cpr_account,Config config,MainWindow main_window){
     this(config,main_window);
     //シグナルハンドラ
-    this.main_window.show.connect(()=>{
+    this.main_window.init_event.connect(()=>{
       try{
         init(statuses_mention_timeline(cpr_account,config.init_time_line_node_count),cpr_account);
       }catch(Error e){

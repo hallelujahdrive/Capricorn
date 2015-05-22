@@ -2,7 +2,7 @@ using Sqlite;
 
 namespace SqliteUtil{
   //list_idの更新
-  public void update_account_list_id(int new_list_id,int old_list_id,Database db){
+  public void update_account_list_id(int list_id,int64 id,Database db){
     int ec;
     Statement stmt;
     
@@ -12,10 +12,11 @@ namespace SqliteUtil{
       print("Error:%d:%s\n",db.errcode(),db.errmsg());
     }
     
-    int new_list_id_param_position=stmt.bind_parameter_index("$NEW_LIST_ID");
-    stmt.bind_int(new_list_id_param_position,new_list_id);
-    int old_list_id_param_position=stmt.bind_parameter_index("$OLD_LIST_ID");
-    stmt.bind_int(old_list_id_param_position,old_list_id);
+    int list_id_param_position=stmt.bind_parameter_index("$LIST_ID");
+    int id_param_position=stmt.bind_parameter_index("$ID");
+
+    stmt.bind_int(list_id_param_position,list_id);
+    stmt.bind_int64(id_param_position,id);
        
     while(stmt.step()!=Sqlite.DONE);
     stmt.reset();
