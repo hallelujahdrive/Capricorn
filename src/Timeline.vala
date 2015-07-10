@@ -2,31 +2,38 @@ using Gdk;
 using Gtk;
 using Ruribitaki;
 
-class TimeLine:ScrolledListBox{
+class Timeline:Page,ScrolledListBox{
+  //Pageのinstance
+  public Tab tab{get;set;}
+  public position pos{get;set;}
+  
   private weak MainWindow main_window;
-  //tab
-  public Image tab=new Image();
       
-  public TimeLine(Config config,MainWindow main_window){
+  public Timeline(Config config,MainWindow main_window){
     base(config);
     this.main_window=main_window;
+
+    //tab
+    tab=new Tab();
     
-    node_count_limit=config.time_line_node_count;
+    node_count_limit=config.timeline_node_count;
     
     //シグナルハンドラ
-    main_window.time_line_node_count_change_event.connect(()=>{
-      node_count_limit=config.time_line_node_count;
+    main_window.timeline_node_count_change_event.connect(()=>{
+      node_count_limit=config.timeline_node_count;
       delete_nodes();
     });
   }
   
   //home
-  public TimeLine.home(CapricornAccount cpr_account,Config config,MainWindow main_window){
+  public Timeline.home(CapricornAccount cpr_account,Config config,MainWindow main_window){
     this(config,main_window);
+    pos=cpr_account.home_pos;
+    
     //シグナルハンドラ
     this.main_window.init_event.connect(()=>{
       try{
-        init(statuses_home_timeline(cpr_account,config.init_time_line_node_count),cpr_account);
+        init(statuses_home_timeline(cpr_account,config.init_timeline_node_count),cpr_account);
       }catch(Error e){
         print("Home timeline error : %s\n",e.message);
       }
@@ -34,12 +41,14 @@ class TimeLine:ScrolledListBox{
   }
   
   //mention
-  public TimeLine.mention(CapricornAccount cpr_account,Config config,MainWindow main_window){
+  public Timeline.mention(CapricornAccount cpr_account,Config config,MainWindow main_window){
     this(config,main_window);
+    pos=cpr_account.mention_pos;
+    
     //シグナルハンドラ
     this.main_window.init_event.connect(()=>{
       try{
-        init(statuses_mention_timeline(cpr_account,config.init_time_line_node_count),cpr_account);
+        init(statuses_mention_timeline(cpr_account,config.init_timeline_node_count),cpr_account);
       }catch(Error e){
         print("Mention timeline error : %s\n",e.message);
       }

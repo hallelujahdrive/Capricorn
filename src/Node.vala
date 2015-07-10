@@ -24,7 +24,7 @@ class Node:Grid{
   private TextDrawingBox text_drawing_box;
   private FooterDrawingBox footer_drawing_box;
   
-  private ProfileImageButton profile_image_button;
+  private ProfileEventImage profile_event_image;
   
   [GtkChild]
   protected Box profile_image_box;
@@ -52,13 +52,13 @@ class Node:Grid{
     text_drawing_box=new TextDrawingBox(this.status,this.cpr_account,this.config,this.main_window);
     footer_drawing_box=new FooterDrawingBox(this.status,this.config,this.main_window);
     
-    profile_image_button=new ProfileImageButton(this.status.user,this.config,this.main_window);
+    profile_event_image=new ProfileEventImage(this.status.user,this.config,this.main_window);
     
     this.attach(header_drawing_box,1,0,1,1);
     this.attach(text_drawing_box,1,1,1,1);
     this.attach(footer_drawing_box,1,3,1,1);
     
-    profile_image_box.pack_start(profile_image_button,false,false,0);
+    profile_image_box.pack_start(profile_event_image,false,false,0);
         
     //背景色の設定
     set_bg_color();

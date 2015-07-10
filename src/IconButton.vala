@@ -1,7 +1,7 @@
 using Gdk;
 using Gtk;
 
-class IconButton:ImageButton{
+class IconButton:EventImage{
   private string default_icon;
   private string hover_icon;
   private string on_icon;

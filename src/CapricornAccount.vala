@@ -12,11 +12,15 @@ class CapricornAccount:Account{
   public int list_id;
   
   //TLScrolled
-  public TimeLine home_time_line;
-  public TimeLine mention_time_line;
+  public Timeline home_timeline;
+  public Timeline mention_timeline;
   public EventNotifyListBox event_notify_list_box;
   
   private UserStream user_stream;
+
+  //position
+  public position home_pos;
+  public position mention_pos;
     
   //loading用
   private bool image_loaded=false;
@@ -42,9 +46,9 @@ class CapricornAccount:Account{
   
   public void init(MainWindow main_window){
     this.main_window=main_window;
-    //TimeLine
-    home_time_line=new TimeLine.home(this,this.config,main_window);
-    mention_time_line=new TimeLine.mention(this,this.config,main_window);
+    //Timeline
+    home_timeline=new Timeline.home(this,this.config,main_window);
+    mention_timeline=new Timeline.mention(this,this.config,main_window);
     event_notify_list_box=new EventNotifyListBox(this.config,main_window);
     
     //UserStream
@@ -56,8 +60,8 @@ class CapricornAccount:Account{
       rotate_surface.run();
       rotate_surface.update.connect((surface)=>{
         if(!image_loaded){
-          home_time_line.tab.set_from_pixbuf(pixbuf_get_from_surface(surface,0,0,24,24));
-          mention_time_line.tab.set_from_pixbuf(pixbuf_get_from_surface(surface,0,0,24,24));
+          home_timeline.tab.set_from_pixbuf(pixbuf_get_from_surface(surface,0,0,24,24));
+          mention_timeline.tab.set_from_pixbuf(pixbuf_get_from_surface(surface,0,0,24,24));
         }   
         return !image_loaded;
       });
@@ -67,8 +71,8 @@ class CapricornAccount:Account{
     get_profile_image_async.begin(this.screen_name,this.profile_image_url,24,this.config,(obj,res)=>{
       Pixbuf pixbuf=get_profile_image_async.end(res);
       if(pixbuf!=null){
-        home_time_line.tab.set_from_pixbuf(pixbuf);
-        mention_time_line.tab.set_from_pixbuf(pixbuf);
+        home_timeline.tab.set_from_pixbuf(pixbuf);
+        mention_timeline.tab.set_from_pixbuf(pixbuf);
         image_loaded=true;
       }
     });
@@ -131,12 +135,12 @@ class CapricornAccount:Account{
       tweet_node=new TweetNode(status,this,this.config,this.main_window);
       if(status.is_reply){
         //replyの作成
-        mention_time_line.prepend_node(tweet_node.copy());
+        mention_timeline.prepend_node(tweet_node.copy());
       }
       break;
     }
     if(tweet_node!=null){
-      home_time_line.prepend_node(tweet_node);
+      home_timeline.prepend_node(tweet_node);
     }
   }
   
@@ -147,15 +151,15 @@ class CapricornAccount:Account{
         event_notify_list_box.prepend_node(new EventNode.with_update(status,this,config,main_window));
       }
       if(event_update_event(status)){
-        home_time_line.prepend_node(new EventNode.no_update(status,this,config,main_window));
+        home_timeline.prepend_node(new EventNode.no_update(status,this,config,main_window));
       }
     }
   }
   
   //ScrolledWindowの削除
   public void destroy(){
-    home_time_line.destroy();
-    mention_time_line.destroy();
+    home_timeline.destroy();
+    mention_timeline.destroy();
     event_notify_list_box.destroy();
   }
 

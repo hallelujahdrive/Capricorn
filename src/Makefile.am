@@ -17,6 +17,7 @@ sources = \
 			DisplaySettingsPage.vala \
 			DrawingBox.vala \
 			EventDrawingBox.vala \
+			EventImage.vala \
 			EventNode.vala \
 			EventNotifyListBox.vala \
 			EventNotifyPage.vala \
@@ -25,7 +26,6 @@ sources = \
 			FooterDrawingBox.vala \
 			HeaderDrawingBox.vala \
 			IconButton.vala \
-			ImageButton.vala \
 			InReplyDrawingBox.vala \
 			MainWindow.vala \
 			MediaPage.vala \
@@ -33,15 +33,19 @@ sources = \
 			NetworkSettingsPage.vala \
 			Node.vala \
 			OAuthDialog.vala \
+			Page.vala \
+			PageNotebook.vala \
 			PhotoBox.vala \
+			Position.vala \
 			PostPage.vala \
-			ProfileImageButton.vala \
+			ProfileEventImage.vala \
 			RetweetDrawingBox.vala \
 			ScrolledListBox.vala \
 			SettingsWindow.vala \
 			TextDrawingBox.vala \
-			TimeLine.vala \
-			TimeLineSettingsPage.vala \
+			Tab.vala \
+			Timeline.vala \
+			TimelineSettingsPage.vala \
 			TweetNode.vala \
 			bitly/ShortingURL.vala \
 			bitly/Strings.vala \
@@ -54,20 +58,22 @@ sources = \
 			sqlite/InsertEventNotifySettings.vala \
 			sqlite/InsertFont.vala \
 			sqlite/InsertNetworkSettings.vala \
-			sqlite/InsertTimeLineSettings.vala \
+			sqlite/InsertPositions.vala \
+			sqlite/InsertTimelineSettings.vala \
 			sqlite/Query.vala \
 			sqlite/SelecAccount.vala \
 			sqlite/SelectColor.vala \
 			sqlite/SelectEventNotifySettings.vala \
 			sqlite/SelectFont.vala \
 			sqlite/SelectNetworkSettings.vala \
-			sqlite/SelectTimeLineSettings.vala \
+			sqlite/SelectPositions.vala \
+			sqlite/SelectTimelineSettings.vala \
 			sqlite/UpdateAccountListID.vala \
 			sqlite/UpdateColor.vala \
 			sqlite/UpdateEventNotifySettings.vala \
 			sqlite/UpdateFont.vala \
 			sqlite/UpdateNetworkSettings.vala \
-			sqlite/UpdateTimeLineSettings.vala \
+			sqlite/UpdateTimelineSettings.vala \
 			utils/DirPath.vala \
 			utils/FileUtil.vala \
 			utils/IconName.vala \

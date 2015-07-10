@@ -3,7 +3,7 @@ using Sqlite;
 
 namespace SqliteUtil{
   //accountの読み出し
-  public void select_account(int list_id,Account account,Database db){
+  public void select_account(int list_id,Account account,out position home_pos,out position mention_pos,Database db){
     int ec;
     Statement stmt;
     
@@ -25,6 +25,14 @@ namespace SqliteUtil{
           case 2:account.api_proxy.set_token(stmt.column_text(i));
           break;
           case 3:account.api_proxy.set_token_secret(stmt.column_text(i));
+          break;
+          case 4:home_pos.column=stmt.column_int(i);
+          break;
+          case 5:home_pos.tab=stmt.column_int(i);
+          break;
+          case 6:mention_pos.column=stmt.column_int(i);
+          break;
+          case 7:mention_pos.tab=stmt.column_int(i);
           break;
         }
       }

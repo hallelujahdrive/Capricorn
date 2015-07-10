@@ -29,7 +29,7 @@ class EventNode:Node{
       if(status.status_type==StatusType.DELETE){
         retweet_event_drawing_box.remove_user(status.user);
       }else if(status.target_status.id_str==id_str){
-        res=event_node_update(status)&&this.config.event_show_on_time_line;
+        res=event_node_update(status)&&this.config.event_show_on_timeline;
       }
       if(!favorite_event_drawing_box.active&&!retweet_event_drawing_box.active){
         //userが0の時、Nodeを削除(親遠すぎわろたでち)
@@ -48,7 +48,7 @@ class EventNode:Node{
     
     //シグナルハンドラ
     this.main_window.event_notify_settings_change_event.connect(()=>{
-      if(!this.config.event_show_on_time_line){
+      if(!this.config.event_show_on_timeline){
         //userが0の時、Nodeを削除(親遠すぎわろたでち)
         weak ScrolledListBox parent=(ScrolledListBox)this.get_parent().get_parent().get_parent().get_parent();
         weak ListBoxRow child=(ListBoxRow)this.get_parent();

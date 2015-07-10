@@ -13,8 +13,8 @@ namespace SqliteUtil{
     //sql文のquery
     string query;
     
-    query="SELECT * FROM SQLITE_MASTER WHERE TYPE='table'";
-    //sql文の実行.tableが存在しない場合コールバックしないのでtrueの代入のみでok
+    query=SELECT_FROM_SQLITE_MASTER;
+    //sql文の実行.tableが存在しない場合コールバックしないのでfalseの代入のみでok
     ec=db.exec(query,(n_columns,values,column_names)=>{
       res=false;
       return 0;
@@ -25,7 +25,7 @@ namespace SqliteUtil{
     }
     //tableが存在しなければ作る
     if(res){
-      for(int i=0;i<6;i++){
+      for(int i=0;i<7;i++){
         switch(i){
           case 0:query=CREATE_TABLE_ACCOUNT_QUERY;
           break;
@@ -37,7 +37,9 @@ namespace SqliteUtil{
           break;
           case 4:query=CREATE_TABLE_NETWORK_SETTINGS_QUERY;
           break;
-          case 5:query=CREATE_TABLE_TIME_LINE_SETTINGS_QUERY;
+          case 5:query=CREATE_TABLE_POSITIONS_QUERY;
+          break;
+          case 6:query=CREATE_TABLE_TIME_LINE_SETTINGS_QUERY;
           break;
         }
         ec=db.exec(query,null,out errmsg);

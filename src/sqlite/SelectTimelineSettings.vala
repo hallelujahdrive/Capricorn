@@ -2,7 +2,7 @@ using Sqlite;
 
 namespace SqliteUtil{
   //node_countのselect
-  public void select_time_line_settings(out int init_time_line_node_count,out int time_line_node_count,Database db){
+  public void select_timeline_settings(out int init_timeline_node_count,out int timeline_node_count,Database db){
     int ec;
     Statement stmt;
     
@@ -16,9 +16,9 @@ namespace SqliteUtil{
     while(stmt.step()==Sqlite.ROW){
       for(int i=0;i<cols;i++){
         switch(i){
-          case 0:init_time_line_node_count=stmt.column_int(i);
+          case 0:init_timeline_node_count=stmt.column_int(i);
           break;
-          case 1:time_line_node_count=stmt.column_int(i);
+          case 1:timeline_node_count=stmt.column_int(i);
           break;
         }
       }

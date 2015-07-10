@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.18.3 -->
-<interface>
+<interface domain="">
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkTextBuffer" id="buffer">
     <signal name="changed" handler="buffer_changed_cb" swapped="no"/>
@@ -97,10 +97,4 @@
       <placeholder/>
     </child>
   </template>
-  <object class="GtkImage" id="tab">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">capricorn-tweet</property>
-    <property name="icon_size">3</property>
-  </object>
 </interface>

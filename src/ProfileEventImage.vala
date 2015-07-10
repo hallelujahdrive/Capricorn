@@ -4,7 +4,7 @@ using Ruribitaki;
 
 using ImageUtil;
 
-class ProfileImageButton:ImageButton{
+class ProfileEventImage:EventImage{
   private weak Config config;
   private weak MainWindow main_window;
   
@@ -30,7 +30,7 @@ class ProfileImageButton:ImageButton{
     return true;
   }
   
-  public ProfileImageButton(User user,Config config,MainWindow main_window){
+  public ProfileEventImage(User user,Config config,MainWindow main_window){
     this.config=config;
     this.main_window=main_window;
     

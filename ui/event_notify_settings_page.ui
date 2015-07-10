@@ -44,7 +44,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkCheckButton" id="event_show_on_time_line_check_button">
+          <object class="GtkCheckButton" id="event_show_on_timeline_check_button">
             <property name="label" translatable="yes">イベントをタイムラインに表示する</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>

@@ -6,7 +6,11 @@ using ImageUtil;
 using StringUtil;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/post_page.ui")]
-class PostPage:Frame{
+class PostPage:Page,Frame{
+  //Pageのinstance
+  public Tab tab{get;set;}
+  public position pos{get;set;}
+  
   private unowned Array<CapricornAccount> cpr_account_array;
   private weak Config config;
   private weak MainWindow main_window;
@@ -28,10 +32,7 @@ class PostPage:Frame{
   //TLの変更を連動させるかどうか
   private bool tl_is_linked=false;
   
-  //Widget
-  [GtkChild]
-  public Image tab;
-  
+  //Widget  
   [GtkChild]
   private Grid main_grid;
   
@@ -75,6 +76,11 @@ class PostPage:Frame{
     this.cpr_account_array=cpr_account_array;
     this.config=config;
     this.main_window=main_window;
+
+    //tabの設定
+    tab=new Tab.from_icon_name(TWEET_ICON,IconSize.LARGE_TOOLBAR);
+    //pos
+    pos=this.config.positions[PageType.POST];
     
     post_button=new IconButton(POST_ICON,null,null,IconSize.LARGE_TOOLBAR);
     url_shorting_button=new IconButton(URL_SHORTING_ICON,null,null,IconSize.LARGE_TOOLBAR);

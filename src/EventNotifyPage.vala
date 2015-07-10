@@ -3,19 +3,24 @@ using Gtk;
 using Ruribitaki;
 
 [GtkTemplate(ui="/org/gtk/capricorn/ui/event_notify_page.ui")]
-class EventNotifyPage:Frame{
+class EventNotifyPage:Page,Frame{
+  //Pageのinstance
+  public Tab tab{get;set;}
+  public position pos{get;set;}
+  
   public unowned Array<CapricornAccount> cpr_account_array;
     
   //widget
   [GtkChild]
   private Grid main_grid;
   
-  [GtkChild]
-  public Image tab;
-  
   private AccountComboBox account_combo_box;
   
   public EventNotifyPage(Array<CapricornAccount> cpr_account_array,Config config,MainWindow main_window){
+    //Pageのinstanceの初期化
+    tab=new Tab.from_icon_name(EVENT_NOTIFY_ICON,IconSize.LARGE_TOOLBAR);
+    pos=config.positions[PageType.EVENT_NOTIFY];
+    
     this.cpr_account_array=cpr_account_array;
     
     account_combo_box=new AccountComboBox(cpr_account_array,account_combo_box_changed,config,main_window);

@@ -15,7 +15,7 @@ class SettingsWindow:Dialog{
   private DisplaySettingsPage display_settings_page;
   private EventNotifySettingsPage event_notify_settings_page;
   private NetworkSettingsPage network_settings_page;
-  private TimeLineSettingsPage time_line_settings_page;
+  private TimelineSettingsPage timeline_settings_page;
   
   public bool account_is_changed=false;
   
@@ -41,7 +41,7 @@ class SettingsWindow:Dialog{
       }
       //Databaseへ追加
       for(int i=account_count_records;i<cpr_account_array.length;i++){
-        insert_account(cpr_account_array.index(i).list_id,cpr_account_array.index(i),config.db);
+        insert_account(cpr_account_array.index(i).list_id,cpr_account_array.index(i),cpr_account_array.index(i).home_pos,cpr_account_array.index(i).mention_pos,config.db);
       }
     }
         
@@ -67,7 +67,7 @@ class SettingsWindow:Dialog{
     if(event_notify_settings_page.changed){
       event_notify_settings_page.update_settings();
       //データベースのアップデート
-      update_event_notify_settings(config.event_node_count,config.event_show_on_time_line,config.db);
+      update_event_notify_settings(config.event_node_count,config.event_show_on_timeline,config.db);
       //シグナルの発行
       main_window.event_notify_settings_change_event();
     }
@@ -80,12 +80,12 @@ class SettingsWindow:Dialog{
     }
     
     //nodeの表示数の更新
-    if(time_line_settings_page.changed){
-      time_line_settings_page.update_settings();
+    if(timeline_settings_page.changed){
+      timeline_settings_page.update_settings();
       //データベースのアップデート
-      update_time_line_settings(config.init_time_line_node_count,config.time_line_node_count,config.db);
+      update_timeline_settings(config.init_timeline_node_count,config.timeline_node_count,config.db);
       //シグナルの発行
-      main_window.time_line_node_count_change_event();
+      main_window.timeline_node_count_change_event();
     }
     
     this.destroy();
@@ -107,13 +107,13 @@ class SettingsWindow:Dialog{
     display_settings_page=new DisplaySettingsPage(this.config);
     event_notify_settings_page=new EventNotifySettingsPage(this.config);
     network_settings_page=new NetworkSettingsPage(this.config);
-    time_line_settings_page=new TimeLineSettingsPage(this.config);
+    timeline_settings_page=new TimelineSettingsPage(this.config);
     
     settings_notebook.append_page(account_settings_page,account_settings_page.tab);
     settings_notebook.append_page(display_settings_page,display_settings_page.tab);
     settings_notebook.append_page(event_notify_settings_page,event_notify_settings_page.tab);
     settings_notebook.append_page(network_settings_page,network_settings_page.tab);
-    settings_notebook.append_page(time_line_settings_page,time_line_settings_page.tab);
+    settings_notebook.append_page(timeline_settings_page,timeline_settings_page.tab);
         
     //シグナルハンドラ
     this.destroy.connect(()=>{

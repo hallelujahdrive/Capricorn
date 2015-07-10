@@ -2,7 +2,7 @@ using Sqlite;
 
 namespace SqliteUtil{
   //timeline_nodesの更新
-  public void update_event_notify_settings(int event_node_count,bool event_show_on_time_line,Database db){
+  public void update_event_notify_settings(int event_node_count,bool event_show_on_timeline,Database db){
     int ec;
     Sqlite.Statement stmt;
     
@@ -13,11 +13,11 @@ namespace SqliteUtil{
     }
     //パラメータの設定
     int event_node_count_param_position=stmt.bind_parameter_index("$EVENT_NODE_COUNT");
-    int event_show_on_time_line_param_position=stmt.bind_parameter_index("$EVENT_SHOW_ON_TIME_LINE");
+    int event_show_on_timeline_param_position=stmt.bind_parameter_index("$EVENT_SHOW_ON_TIME_LINE");
     
     //インサート
     stmt.bind_int(event_node_count_param_position,event_node_count);
-    stmt.bind_text(event_show_on_time_line_param_position,event_show_on_time_line.to_string());
+    stmt.bind_text(event_show_on_timeline_param_position,event_show_on_timeline.to_string());
     
     while(stmt.step()!=Sqlite.DONE);
     stmt.reset();

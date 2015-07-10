@@ -41,8 +41,8 @@ class TweetNode:Node{
     });
     
     //retweet
-    retweet_button.clicked.connect((image_button)=>{
-      weak IconButton icon_button=(IconButton)image_button;
+    retweet_button.clicked.connect((event_image)=>{
+      weak IconButton icon_button=(IconButton)event_image;
       if(icon_button.already){
         statuses_destroy.begin(this.cpr_account,this.source_status.id_str,(obj,res)=>{
           try{
@@ -69,8 +69,8 @@ class TweetNode:Node{
     });
     
     //favorite
-    favorite_button.clicked.connect((image_button)=>{
-      weak IconButton icon_button=(IconButton)image_button;
+    favorite_button.clicked.connect((event_image)=>{
+      weak IconButton icon_button=(IconButton)event_image;
       if(icon_button.already){
         favorites_destroy.begin(this.cpr_account,this.status.id_str,(obj,res)=>{
           try{

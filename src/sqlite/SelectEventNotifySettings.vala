@@ -2,7 +2,7 @@ using Sqlite;
 
 namespace SqliteUtil{
     //node_countのselect
-  public void select_event_notify_settings(out int event_node_count,out bool event_show_on_time_line,Database db){
+  public void select_event_notify_settings(out int event_node_count,out bool event_show_on_timeline,Database db){
     int ec;
     Statement stmt;
     
@@ -18,7 +18,7 @@ namespace SqliteUtil{
         switch(i){
           case 0:event_node_count=stmt.column_int(i);
           break;
-          case 1:event_show_on_time_line=bool.parse(stmt.column_text(i));
+          case 1:event_show_on_timeline=bool.parse(stmt.column_text(i));
           break;
         }
       }

@@ -5,9 +5,12 @@ using Ruribitaki;
 using ImageUtil;
 using URIUtil;
 
-[Compact]
 [GtkTemplate(ui="/org/gtk/capricorn/ui/media_page.ui")]
-class MediaPage:Frame{
+class MediaPage:Page,Frame{
+  //Pageのinstance
+  public Tab tab{get;set;}
+  public position pos{get;set;}
+  
   private unowned medium[] media;
   private unowned medium[] extended_media;
 
@@ -16,9 +19,6 @@ class MediaPage:Frame{
   private int height=0;
   
   //Widget
-  [GtkChild]
-  public Image tab;
-  
   [GtkChild]
   private Viewport viewport;
   
@@ -58,6 +58,10 @@ class MediaPage:Frame{
   public MediaPage(Node tweet_node,medium[] media,medium[] extended_media,Config config){
     this.media=media;
     this.extended_media=extended_media;
+
+    //Pageのinstanceの初期化
+    tab=new Tab.from_icon_name(MEDIA_ICON,IconSize.LARGE_TOOLBAR);
+    pos=config.positions[PageType.MEDIA];
     
     tweet_node_box.add(tweet_node);
     
